@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "cc5182e0-a437-11e7-8efa-0b3ddee5e271",
+    "_type": "search",
+    "_source": {
+      "title": "Ransomware Extensions",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "_score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-event\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\".ecc, .ezz, .exx, .zzz, .xyz, .abc, .ccc, .vvv, .xxx, .ttt, .micro, .encrypted, .crypto, _crypt, .crinf, .r5a, .XRNT, .XTBL, .crypt, .R16M01D05, .pzdc, .good, .LOL!, .OMG!, .RDM, .RRK, .encryptedRSA, .crjoker, .EnCiPhErEd, .LeChiffre, .keybtc@inbox_com, .0x0, .bleep, .1999, .vault, .HA3, .toxcrypt, .magic, .SUPERCRYPT, .CTBL, .CTB2, .locky\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly",
+      "type": "F",
+      "bucketConfName": "reconnaissanceToolHistogramUserIdProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctReconnaissanceToolHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfReconnaissanceToolExecutedUserIdProcessHourly",
+      "type": "F",
+      "bucketConfName": "reconnaissanceToolCounterUserIdProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "reconnaissanceToolCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfReconnaissanceToolExecutedUserIdDstProcessFileNameProcessHourly",
+      "type": "F",
+      "bucketConfName": "reconnaissanceToolCounterUserIdDstProcessFileNameProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "reconnaissanceToolCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfEventsUserIdProcessHourly",
+      "type": "F",
+      "bucketConfName": "processEventsCounterUserIdProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "processEventsCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    }
+  ]
+}

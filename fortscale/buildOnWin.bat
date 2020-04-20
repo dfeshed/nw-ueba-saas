@@ -1,0 +1,1 @@
+mvn clean install -Pdev -DsplunkServer=integ-splunk-07 -Dtest.int.exgroups=fortscale.utils.test.category.LinuxTestCategory

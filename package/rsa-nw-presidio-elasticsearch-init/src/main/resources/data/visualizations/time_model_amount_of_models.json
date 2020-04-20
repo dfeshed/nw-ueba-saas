@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "fbaa9ac0-e0d4-11e7-a187-9b4868051e49",
+    "_type": "visualization",
+    "_source": {
+      "title": "Time model: amount of models  (write data)",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{\"customLabel\":\"Amount of models\",\"field\":\"value.WRITES\"},\"schema\":\"metric\",\"type\":\"avg\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"customInterval\":\"2h\",\"customLabel\":\"Logical time\",\"extended_bounds\":{},\"field\":\"logicTime\",\"interval\":\"d\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"},{\"enabled\":true,\"id\":\"3\",\"params\":{\"field\":\"tags.MODEL\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":50},\"schema\":\"group\",\"type\":\"terms\"}],\"listeners\":{},\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Logical time\"},\"type\":\"category\"}],\"defaultYExtents\":false,\"drawLinesBetweenPoints\":true,\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"interpolate\":\"linear\",\"legendPosition\":\"right\",\"radiusRatio\":9,\"scale\":\"linear\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Amount of models\"},\"drawLinesBetweenPoints\":true,\"interpolate\":\"linear\",\"lineWidth\":2,\"mode\":\"normal\",\"show\":true,\"showCircles\":true,\"type\":\"line\",\"valueAxis\":\"ValueAxis-1\"}],\"setYExtents\":false,\"showCircles\":true,\"times\":[],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Amount of models\"},\"type\":\"value\"}]},\"title\":\"Time model: amount of models  (write data)\",\"type\":\"line\"}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "6b6fbfe0-e0ce-11e7-814e-83141739bf17",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "d9a4b060-f9e7-11e7-b522-cb9b8f7be7ca",
+    "_type": "visualization",
+    "_source": {
+      "title": "System metric: Application Runtime",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{\"field\":\"value.DEFAULT_METRIC_VALUE\"},\"schema\":\"metric\",\"type\":\"sum\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"field\":\"tags.APPLICATION_NAME\",\"order\":\"desc\",\"orderBy\":\"1\",\"size\":10},\"schema\":\"viewBy\",\"type\":\"terms\"},{\"enabled\":true,\"id\":\"3\",\"params\":{\"customInterval\":\"2h\",\"extended_bounds\":{},\"field\":\"timestamp\",\"interval\":\"auto\",\"min_doc_count\":1},\"schema\":\"timeSplit\",\"type\":\"date_histogram\"}],\"listeners\":{},\"params\":{\"alphabetSortLaneLabels\":\"off\",\"criticalThreshold\":1200000,\"criticalThresholdColor\":\"#fe5050\",\"interval\":{\"description\":\"30 seconds\",\"display\":\"Auto\",\"val\":\"auto\"},\"lowThreshold\":0,\"lowThresholdColor\":\"#d2e9f7\",\"majorThreshold\":600000,\"majorThresholdColor\":\"#ff7e00\",\"minorThreshold\":300000,\"minorThresholdColor\":\"#ffdd00\",\"showLegend\":true,\"tooltipNumberFormat\":\"0.0\",\"warningThreshold\":120000,\"warningThresholdColor\":\"#8bc8fb\"},\"title\":\"System metric: Application Runtime\",\"type\":\"prelert_swimlane\"}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"name:performance\"}},\"filter\":[]}"
+      }
+    }
+  }
+]

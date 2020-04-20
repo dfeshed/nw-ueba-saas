@@ -1,0 +1,123 @@
+{
+  "BucketConfs": [
+    {
+      "name": "sensitiveGroupMembershipOperationCounterUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "sensitiveGroupMembershipOperationCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?('GROUP_MEMBERSHIP_OPERATION' in @['operationTypeCategories'] && 'SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "groupMembershipOperationCounterUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "groupMembershipOperationCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?('GROUP_MEMBERSHIP_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeResultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userManagementSecuritySensitiveOperationResultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('USER_MANAGEMENT' in @['operationTypeCategories'] && 'SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "objectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "objectManagementOperationResultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('OBJECT_MANAGEMENT' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    }
+  ]
+}

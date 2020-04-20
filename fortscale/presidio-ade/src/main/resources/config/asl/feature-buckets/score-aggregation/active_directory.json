@@ -1,0 +1,264 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.startInstant.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "startInstant"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdObjectManagementActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.operationType.userIdObjectManagement.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountEnabled.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountEnabledScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "context.operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountDisabled.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountDisabledScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "context.operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountUnlocked.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountUnlockedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "context.operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountTypeChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountTypeChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "context.operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userAccountLockedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userAccountLocked.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userAccountLockedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "context.operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userPasswordNeverExpiresOptionChanged.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userPasswordNeverExpiresOptionChangedScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "context.operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userPasswordResetScoreUserIdActiveDirectoryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.active_directory.userPasswordReset.userId.activeDirectory.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "userPasswordResetScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "context.operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    }
+  ]
+}

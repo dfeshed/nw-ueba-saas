@@ -1,0 +1,45 @@
+{
+  "ModelConfs": [
+    {
+      "name": "startInstant.userId.registry",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "startInstantHistogramUserIdRegistryDaily"
+      },
+      "retriever": {
+        "type": "context_histogram_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "startInstantHistogramUserIdRegistryDaily",
+        "featureName": "startInstantHistogram",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "time_model_builder",
+        "timeResolution": 86400,
+        "bucketSize": 600,
+        "categoryRarityModelNumOfBuckets": 30
+      }
+    },
+    {
+      "name": "processFilePath.registryKeyGroup.registry",
+      "selector": {
+        "type": "feature_bucket_context_selector",
+        "featureBucketConfName": "processFilePathHistogramRegistryKeyGroupRegistryDaily"
+      },
+      "retriever": {
+        "type": "categorical_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "featureBucketConfName": "processFilePathHistogramRegistryKeyGroupRegistryDaily",
+        "featureName": "processFilePathHistogram"
+      },
+      "builder": {
+        "type": "category_rarity_model_builder",
+        "numOfBuckets": 30,
+        "entriesToSaveInModel": 100000,
+        "partitionsResolutionInSeconds": 86400
+      }
+    }
+  ]
+}

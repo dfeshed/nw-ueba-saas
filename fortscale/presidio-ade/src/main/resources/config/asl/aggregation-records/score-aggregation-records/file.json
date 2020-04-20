@@ -1,0 +1,49 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "highestStartInstantScoreUserIdFileHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestOperationTypeScoresUserIdFilePermissionChangeFileHourly",
+      "type": "P",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "operationTypeToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestOperationTypeScoresUserIdFileActionFileHourly",
+      "type": "P",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "operationTypeToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}

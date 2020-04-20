@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "AWgEsZZ4hhofCgEsjiTV",
+    "_type": "visualization",
+    "_source": {
+      "title": "Adapter: Saved Events Per Schema - logical time",
+      "visState": "{\"title\":\"Adapter: Saved Events Per Schema - logical time\",\"type\":\"metrics\",\"params\":{\"id\":\"cd7fe040-0d08-11e9-8390-218a28db4f87\",\"type\":\"timeseries\",\"series\":[{\"id\":\"cd7fe041-0d08-11e9-8390-218a28db4f87\",\"color\":\"#68BC00\",\"split_mode\":\"terms\",\"metrics\":[{\"id\":\"cd7fe042-0d08-11e9-8390-218a28db4f87\",\"type\":\"sum\",\"field\":\"value.SUCCESS_EVENTS\"}],\"seperate_axis\":0,\"axis_position\":\"right\",\"formatter\":\"number\",\"chart_type\":\"line\",\"line_width\":1,\"point_size\":1,\"fill\":\"0\",\"stacked\":\"none\",\"terms_field\":\"tags.SCHEMA\",\"split_filters\":[{\"color\":\"#68BC00\",\"id\":\"ec8e77d0-0d08-11e9-8390-218a28db4f87\"}],\"split_color_mode\":\"gradient\"}],\"time_field\":\"logicTime\",\"index_pattern\":\"presidio-monitoring-*\",\"interval\":\"auto\",\"axis_position\":\"left\",\"axis_formatter\":\"number\",\"show_legend\":1,\"background_color_rules\":[{\"id\":\"fb489c10-0d08-11e9-8390-218a28db4f87\"}],\"filter\":\"name:adapter.events_processed AND tags.FLUME_COMPONENT_TYPE:\\\"SINK\\\"\"},\"aggs\":[],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"match_all\":{}},\"filter\":[]}"
+      }
+    }
+  }
+]

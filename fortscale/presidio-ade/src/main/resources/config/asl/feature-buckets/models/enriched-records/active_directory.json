@@ -1,0 +1,102 @@
+{
+  "BucketConfs": [
+    {
+      "name": "startInstantHistogramUserIdActiveDirectoryDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "startInstantHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeHistogramUserIdSecuritySensitiveActiveDirectoryDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('SECURITY_SENSITIVE_OPERATION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeHistogramUserIdObjectManagementActiveDirectoryDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('OBJECT_MANAGEMENT' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeHistogramUserIdActiveDirectoryDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "active_directory"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}

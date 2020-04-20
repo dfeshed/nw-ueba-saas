@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "f6aa35c0-a138-11e7-88a9-eda4b6248b9f",
+    "_type": "search",
+    "_source": {
+      "title": "Indicators temp",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "_score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-indicator\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]

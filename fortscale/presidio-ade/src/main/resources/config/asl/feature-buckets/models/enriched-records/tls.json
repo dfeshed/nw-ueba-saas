@@ -1,0 +1,718 @@
+{
+  "BucketConfs": [
+    {
+      "name": "startInstantHistogramSslSubjectOutboundTlsDaily",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "startInstantHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "startInstantHistogramJa3OutboundTlsDaily",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "startInstantHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectHistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "sslSubject.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "domainHistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "domainHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "domain.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortHistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstPort.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstOrgHistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstOrgHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstOrg.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "countryHistogramSslSubjectOutboundTlsDaily",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "countryHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstCountry.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectHistogramCountryOutboundTlsDaily",
+      "contextFieldNames": [
+        "dstCountry.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "sslSubject.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortHistogramSslSubjectOutboundTlsDaily",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstPort.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectHistogramDstPortOutboundTlsDaily",
+      "contextFieldNames": [
+        "dstPort.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "sslSubject.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortHistogramDomainOutboundTlsDaily",
+      "contextFieldNames": [
+        "domain.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstPort.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "domainHistogramDstPortOutboundTlsDaily",
+      "contextFieldNames": [
+        "dstPort.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "domainHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "domain.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortHistogramDstOrgOutboundTlsDaily",
+      "contextFieldNames": [
+        "dstOrg.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstPort.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstOrgHistogramDstPortOutboundTlsDaily",
+      "contextFieldNames": [
+        "dstPort.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstOrgHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstOrg.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ja3HistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3Histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "ja3.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "sslSubjectHistogramJa3OutboundTlsDaily",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "sslSubjectHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "sslSubject.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ja3HistogramSslSubjectOutboundTlsDaily",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3Histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "ja3.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "domainHistogramJa3OutboundTlsDaily",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "domainHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "domain.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ja3HistogramDomainOutboundTlsDaily",
+      "contextFieldNames": [
+        "domain.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3Histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "ja3.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstPortHistogramJa3OutboundTlsDaily",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstPortHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstPort.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ja3HistogramDstPortOutboundTlsDaily",
+      "contextFieldNames": [
+        "dstPort.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "equals",
+          "fieldName": "ja3.name",
+          "expectedValue": null,
+          "negate": true
+        },
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "ja3Histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "ja3.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstAsnHistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstAsnHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstAsn.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstCountryHistogramSrcNetnameOutboundTlsDaily",
+      "contextFieldNames": [
+        "srcNetname"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "dstCountryHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstCountry.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.startInstant.userId.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "startInstant"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdFilePermissionChangeFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.operationType.userIdFilePermissionChange.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeToHighestScoreMapUserIdFileActionFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.file.operationType.userIdFileAction.file.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.operationType"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    }
+  ]
+}

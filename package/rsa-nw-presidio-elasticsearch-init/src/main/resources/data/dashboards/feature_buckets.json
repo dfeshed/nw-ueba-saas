@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "605e0e70-e003-11e7-ae19-af93e4127ee0",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Feature Buckets",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"size_x\":12,\"size_y\":3,\"panelIndex\":1,\"type\":\"visualization\",\"id\":\"09081da0-e003-11e7-88e5-21a458831aca\",\"col\":1,\"row\":1},{\"size_x\":12,\"size_y\":3,\"panelIndex\":2,\"type\":\"visualization\",\"id\":\"1753c8a0-e003-11e7-88e5-21a458831aca\",\"col\":1,\"row\":4},{\"size_x\":12,\"size_y\":3,\"panelIndex\":3,\"type\":\"visualization\",\"id\":\"2e4b4ce0-e003-11e7-88e5-21a458831aca\",\"col\":1,\"row\":7}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\"}}}],\"highlightAll\":true,\"version\":true}"
+      }
+    }
+  }
+]

@@ -1,0 +1,102 @@
+{
+  "BucketConfs": [
+    {
+      "name": "startInstantHistogramUserIdFileDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "startInstantHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeHistogramUserIdFileDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeHistogramUserIdFilePermissionChangeFileDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('FILE_PERMISSION_CHANGE' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "operationTypeHistogramUserIdFileActionFileDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "operationTypeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "operationType"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('FILE_ACTION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    }
+  ]
+}

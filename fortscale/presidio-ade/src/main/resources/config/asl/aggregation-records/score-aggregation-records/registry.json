@@ -1,0 +1,34 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "highestStartInstantScoreUserIdRegistryHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreUserIdRegistryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestProcessFilePathScoresUserIdRegistryKeyGroupRegistryHourly",
+      "type": "P",
+      "bucketConfName": "processFilePathToHighestScoreMapRegistryKeyGroupRegistryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "processFilePathToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}

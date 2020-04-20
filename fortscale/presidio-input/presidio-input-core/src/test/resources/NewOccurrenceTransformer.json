@@ -1,0 +1,8 @@
+{
+  "type": "new-occurrence-transformer",
+  "name": "TLS New Occurrences",
+  "schema": "tls",
+  "inputFieldNameToBooleanFieldNameMap": {
+    "sslSubject.name": "sslSubject.isNewOccurrence"
+  }
+}

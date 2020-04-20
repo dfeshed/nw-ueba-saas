@@ -1,0 +1,59 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdRegistryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.registry.startInstant.userId.registry.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "startInstant"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "processFilePathToHighestScoreMapRegistryKeyGroupRegistryHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.registry.processFilePath.registryKeyGroup.registry.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "processFilePathToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.registryKeyGroup",
+              "context.processFileName",
+              "context.processDirectory",
+              "context.machineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    }
+  ]
+}

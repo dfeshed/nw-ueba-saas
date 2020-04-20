@@ -1,0 +1,50 @@
+{
+  "ModelConfs": [
+    {
+      "name": "smart.global.weights.userId.hourly",
+      "retriever": {
+        "type": "accumulated_smart_data_retriever",
+        "timeRangeInSeconds": 2592000,
+        "functions": [],
+        "smartRecordConfName": "userId_hourly",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "weights_model_builder",
+        "smartRecordConfName": "userId_hourly"
+      }
+    },
+    {
+      "name": "smart.userId.hourly",
+      "selector": {
+        "type": "accumulated_smart_context_selector",
+        "smartRecordConfName": "userId_hourly"
+      },
+      "retriever": {
+        "type": "accumulated_context_smart_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "smartRecordConfName": "userId_hourly",
+        "weightsModelName": "smart.global.weights.userId.hourly"
+      },
+      "builder": {
+        "type": "smart_max_values_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "smart.global.prior.userId.hourly",
+      "retriever": {
+        "type": "accumulated_smart_value_retriever",
+        "timeRangeInSeconds": 2592000,
+        "functions": [],
+        "smartRecordConfName": "userId_hourly",
+        "weightsModelName": "smart.global.weights.userId.hourly",
+        "partitionsResolutionInSeconds": 86400
+      },
+      "builder": {
+        "type": "smart_values_prior_model_builder"
+      }
+    }
+  ]
+}

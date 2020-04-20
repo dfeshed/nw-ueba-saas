@@ -1,0 +1,165 @@
+{
+  "BucketConfs": [
+    {
+      "name": "startInstantHistogramUserIdAuthenticationDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "startInstantHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcMachineNameRegexClusterHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcMachineNameRegexCluster"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramSrcMachineIdAuthenticationDaily",
+      "contextFieldNames": [
+        "srcMachineId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineNameRegexClusterHistogramUserIdAuthenticationDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstMachineNameRegexClusterHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstMachineNameRegexCluster"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramDstMachineIdAuthenticationDaily",
+      "contextFieldNames": [
+        "dstMachineId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "siteHistogramUserIdAuthenticationDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "siteHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "site"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "userIdHistogramSiteAuthenticationDaily",
+      "contextFieldNames": [
+        "site"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "userIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "userId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}

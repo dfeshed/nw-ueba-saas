@@ -1,0 +1,103 @@
+{
+  "BucketConfs": [
+    {
+      "name": "reconnaissanceToolHistogramUserIdProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctReconnaissanceToolHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstProcessFileName"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "reconnaissanceToolCounterUserIdProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "reconnaissanceToolCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?('RECONNAISSANCE_TOOL' in @['dstProcessCategories'] && @.operationType == 'CREATE_PROCESS')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "reconnaissanceToolCounterUserIdDstProcessFileNameProcessHourly",
+      "contextFieldNames": [
+        "userId",
+        "dstProcessFileName"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "contained-in-list",
+          "fieldName": "dstProcessCategories",
+          "expectedValues": [
+            "RECONNAISSANCE_TOOL"
+          ]
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "reconnaissanceToolCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'CREATE_PROCESS')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "processEventsCounterUserIdProcessHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "process"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "processEventsCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    }
+  ]
+}

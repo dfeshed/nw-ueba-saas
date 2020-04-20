@@ -1,0 +1,109 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "highestStartInstantScoreUserIdPrintHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestSrcMachineNameRegexClusterScoresUserIdPrintHourly",
+      "type": "P",
+      "bucketConfName": "srcMachineNameRegexClusterToHighestScoreMapUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "srcMachineNameRegexClusterToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstMachineIdScoresUserIdPrintHourly",
+      "type": "P",
+      "bucketConfName": "dstMachineIdToHighestScoreMapUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstMachineIdToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstMachineNameRegexClusterScoresUserIdPrintHourly",
+      "type": "P",
+      "bucketConfName": "dstMachineNameRegexClusterToHighestScoreMapUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstMachineNameRegexClusterToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "highestNumOfPagesScoreUserIdPrintHourly",
+      "type": "P",
+      "bucketConfName": "highestNumOfPagesScoreUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestNumOfPagesScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestAbsoluteSharedFolderPathScoresUserIdPrintHourly",
+      "type": "P",
+      "bucketConfName": "absoluteSharedFolderPathToHighestScoreMapUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "absoluteSharedFolderPathToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestFileExtensionScoresUserIdPrintHourly",
+      "type": "P",
+      "bucketConfName": "fileExtensionToHighestScoreMapUserIdPrintHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "fileExtensionToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}

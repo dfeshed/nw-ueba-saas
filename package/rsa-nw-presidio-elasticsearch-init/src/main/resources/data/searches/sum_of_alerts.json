@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "32b57900-a132-11e7-b962-5703fbc8bd55",
+    "_type": "search",
+    "_source": {
+      "title": "sum of alerts",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "_score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"index\": \"presidio-output-alert\",\n  \"highlightAll\": true,\n  \"version\": true,\n  \"query\": {\n    \"query_string\": {\n      \"analyze_wildcard\": true,\n      \"query\": \"*\"\n    }\n  },\n  \"filter\": []\n}"
+      }
+    }
+  }
+]

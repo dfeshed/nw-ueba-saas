@@ -1,0 +1,224 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "filePermissionChangeResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "filePermissionChangeHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "SUCCESS"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileActionsUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "fileActionHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "SUCCESS"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfFailedFilePermissionChangesUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "filePermissionChangeResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "filePermissionChangeHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "FAILURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfFailedFileActionsUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileActionResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "fileActionHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "FAILURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfDistinctFileOpenedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "absoluteSrcFilePathHistogramUserIdFileOpenedFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "absoluteSrcFilePathHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctFolderOpenedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "absoluteSrcFolderPathHistogramUserIdFolderOpenedFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "absoluteSrcFolderPathHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfFileDeletedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileDeletedCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "fileDeletedCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileRenamedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileRenamedResultHistogramUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "fileRenamedResultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "SUCCESS"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfFileMovedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileMovedCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "FileMovedCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfFileMovedFromSharedDriveUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileMovedFromSharedDriveCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "fileMovedFromSharedDriveCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfFileMovedToSharedDriveUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileMovedToSharedDriveCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "fileMovedToSharedDriveCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfFileDownloadedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileDownloadedCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "fileDownloadedCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfFileCopiedUserIdFileHourly",
+      "type": "F",
+      "bucketConfName": "fileCopiedCounterUserIdFileHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "fileCopiedCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    }
+  ]
+}

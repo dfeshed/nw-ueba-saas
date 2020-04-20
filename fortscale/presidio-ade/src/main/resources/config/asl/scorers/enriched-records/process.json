@@ -1,0 +1,511 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "process",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "process-event-score",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "startInstant.userId.process.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
+              "additional-models": [],
+              "model": {
+                "name": "startInstant.userId.process"
+              },
+              "number-of-partitions-to-influence-enough": 10,
+              "min-number-of-partitions-to-influence": 1,
+              "max-rare-count": 8,
+              "max-num-of-rare-partitions": 8,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFileName.userId.process.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "RECONNAISSANCE_TOOL"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "linear-noise-reduction-scorer",
+                "name": "dstProcessFileName.userId.process.score",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "dstProcessFileName.userId.process.score",
+                  "model": {
+                    "name": "dstProcessFileName.userId.process"
+                  },
+                  "additional-models": [
+                    {
+                      "name": "startInstant.userId.process"
+                    }
+                  ],
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-partitions": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userId.dstProcessFileName.process.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userId.dstProcessFileName.process.score",
+                    "model": {
+                      "name": "userId.dstProcessFileName.process"
+                    },
+                    "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-num-of-rare-partitions": 15
+                  }
+                },
+                "feature-count-model": {
+                  "name": "userId.dstProcessFileName.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.dstProcessFileName.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "srcProcessFilePath.lsass.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessDirectoryGroups",
+                  "expectedValues": [
+                    "WINDOWS_SYSTEM32"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "dstProcessFileName",
+                  "pattern": "lsass\\.exe"
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_REMOTE_THREAD"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcProcessFilePath.lsass.process.score",
+                "model": {
+                  "name": "srcProcessFilePath.lsass.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "srcProcessFilePath.windowsDstProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "WINDOWS_PROCESS"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_REMOTE_THREAD"
+                },
+                {
+                  "type": "not",
+                  "predicate": {
+                    "type": "and",
+                    "predicates": [
+                      {
+                        "type": "contained-in-list",
+                        "fieldName": "dstProcessDirectoryGroups",
+                        "expectedValues": [
+                          "WINDOWS_SYSTEM32"
+                        ]
+                      },
+                      {
+                        "type": "regex",
+                        "fieldName": "dstProcessFileName",
+                        "pattern": "lsass\\.exe"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcProcessFilePath.windowsDstProcessFileName.process.score",
+                "model": {
+                  "name": "srcProcessFilePath.windowsDstProcessFileName.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "srcProcessFilePath.scriptingDstProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcProcessFilePath.scriptingDstProcessFileName.process.score",
+                "model": {
+                  "name": "srcProcessFilePath.scriptingDstProcessFileName.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathCreated.scriptingSrcProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "srcProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstProcessFilePathCreated.scriptingSrcProcessFileName.process.score",
+                "model": {
+                  "name": "dstProcessFilePathCreated.scriptingSrcProcessFileName.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "srcProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "OPEN_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstProcessFilePathOpened.scriptingSrcProcessFileName.process.score",
+                "model": {
+                  "name": "dstProcessFilePathOpened.scriptingSrcProcessFileName.process"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "dstProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "linear-noise-reduction-scorer",
+                "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process.score",
+                  "model": {
+                    "name": "srcProcessFilePath.userIdScriptingDstProcessFileName.process"
+                  },
+                  "additional-models": [
+                    {
+                      "name": "startInstant.userId.process"
+                    }
+                  ],
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-partitions": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process.score",
+                    "model": {
+                      "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
+                    },
+                    "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-num-of-rare-partitions": 15
+                  }
+                },
+                "feature-count-model": {
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.scriptingDstProcessFileNameSrcProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "srcProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "CREATE_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "linear-noise-reduction-scorer",
+                "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process.score",
+                  "model": {
+                    "name": "dstProcessFilePathCreated.userIdScriptingSrcProcessFileName.process"
+                  },
+                  "additional-models": [
+                    {
+                      "name": "startInstant.userId.process"
+                    }
+                  ],
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-partitions": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process.score",
+                    "model": {
+                      "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
+                    },
+                    "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-num-of-rare-partitions": 15
+                  }
+                },
+                "feature-count-model": {
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.scriptingSrcProcessFileNameCreatedDstProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "srcProcessCategories",
+                  "expectedValues": [
+                    "SCRIPTING_ENGINE"
+                  ]
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "OPEN_PROCESS"
+                }
+              ],
+              "scorerConf": {
+                "type": "linear-noise-reduction-scorer",
+                "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process.score",
+                  "model": {
+                    "name": "dstProcessFilePathOpened.userIdScriptingSrcProcessFileName.process"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-partitions": 15
+                },
+                "reduction-scorer": {
+                  "type": "score-and-certainty-multiplier-scorer",
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process.score",
+                  "base-scorer": {
+                    "type": "category-rarity-model-scorer",
+                    "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process.score",
+                    "model": {
+                      "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
+                    },
+                    "additional-models": [
+                      {
+                        "name": "startInstant.userId.process"
+                      }
+                    ],
+                    "max-rare-count": 8,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "min-number-of-partitions-to-influence": 10,
+                    "use-certainty-to-calculate-score": true,
+                    "max-num-of-rare-partitions": 15
+                  }
+                },
+                "feature-count-model": {
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
+                },
+                "occurrences-to-num-of-distinct-feature-values-model": {
+                  "name": "userId.scriptingSrcProcessFileNameOpenedDstProcessFilePath.process"
+                },
+                "context-model": {
+                  "name": "contexts.process"
+                },
+                "noise-reduction-weight": {
+                  "mapping": {
+                    "0": 0.5,
+                    "1": 0.95,
+                    "100": 0.95
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

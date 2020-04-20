@@ -1,0 +1,24 @@
+{
+  "type": "chain",
+  "name": "tls-transformer",
+  "transformerList": [
+    {
+      "type": "session-split-transformer",
+      "name": "Session Split Transformer"
+    },
+    {
+      "type": "new-occurrence-transformer",
+      "name": "TLS New Occurrences",
+      "schema": "tls",
+      "inputFieldNameToBooleanFieldNameMap": {
+        "sslSubject.name": "sslSubject.isNewOccurrence",
+        "domain.name": "domain.isNewOccurrence",
+        "ja3.name": "ja3.isNewOccurrence",
+        "dstOrg.name": "dstOrg.isNewOccurrence",
+        "dstCountry.name": "dstCountry.isNewOccurrence",
+        "dstPort.name": "dstPort.isNewOccurrence",
+        "dstAsn.name": "dstAsn.isNewOccurrence"
+      }
+    }
+  ]
+}

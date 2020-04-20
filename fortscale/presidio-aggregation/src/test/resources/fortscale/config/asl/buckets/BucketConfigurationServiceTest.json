@@ -1,0 +1,116 @@
+{
+  "BucketConfs": [
+    {
+      "name": "normalized_username_dlpfile_hourly",
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.dlpfile.date_time"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.score > 50)]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "normalized_src_machine_dlpfile_daily",
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.dlpfile.srcMachineId"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_src_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcMachineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "source_path_to_highest_score_dlpfile_hourly",
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.dlpfile.source_path"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcpath_and_srcmachine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sourcePath",
+              "context.srcMachineId"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcPathHistogramDlpfileHourly",
+      "contextFieldNames": [
+        "context.userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.dlpfile.source_path.src_machine_id"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "context.srcMachineId",
+          "pattern": "pc1"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcPathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.sourcePath"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    }
+  ]
+}

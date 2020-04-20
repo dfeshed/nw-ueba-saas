@@ -1,0 +1,290 @@
+general:
+  deployment:
+    bins:
+      base_path:
+        /var/lib/netwitness/presidio/batch
+dags:
+  dags_configs:
+    data_schemas: ${dataPipeline.schemas}
+    start_date: ${dataPipeline.startTime}
+    root:
+      schedule_interval: timedelta(hours=1)
+    indicator:
+      schedule_interval: None
+    model:
+      schedule_interval: None
+    retention:
+      schedule_interval: None
+    input_pre_processing:
+      schedule_interval: None
+      schemas:
+        - name: TLS
+          pre_processors:
+            - name: domain_last_occurrence_instant
+              type: last_occurrence_instant
+              static_arguments:
+                entityTypes: [domain.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: ssl_subject_last_occurrence_instant
+              type: last_occurrence_instant
+              static_arguments:
+                entityTypes: [sslSubject.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: ja3_last_occurrence_instant
+              type: last_occurrence_instant
+              static_arguments:
+                entityTypes: [ja3.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_org_last_occurrence_instant
+              type: last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstOrg.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_country_last_occurrence_instant
+              type: last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstCountry.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_port_last_occurrence_instant
+              type: last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstPort.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+            - name: dst_asn_last_occurrence_instant
+              type: last_occurrence_instant
+              static_arguments:
+                entityTypes: [dstAsn.name]
+                schema: TLS
+              dynamic_arguments: [startInstant, endInstant]
+    smart:
+      schedule_interval: timedelta(hours=1)
+      smart_confs:
+        - smart_conf_name: userId_hourly
+          entity_type: userId
+          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+          enable_output_forwarder: ${outputForwarding.enableForwarding}
+        - smart_conf_name: sslSubject_hourly
+          entity_type: sslSubject
+          depends_on_schemas: [TLS]
+          enable_output_forwarder: ${outputForwarding.enableForwarding}
+        - smart_conf_name: ja3_hourly
+          entity_type: ja3
+          depends_on_schemas: [TLS]
+          enable_output_forwarder: ${outputForwarding.enableForwarding}
+    smart_model:
+      schedule_interval: None
+      smart_confs:
+        - smart_conf_name: userId_hourly
+          depends_on_schemas: [FILE, AUTHENTICATION, ACTIVE_DIRECTORY, REGISTRY, PROCESS]
+        - smart_conf_name: sslSubject_hourly
+          depends_on_schemas: [TLS]
+        - smart_conf_name: ja3_hourly
+          depends_on_schemas: [TLS]
+
+  pools_config:
+    - slots: 7
+      name: spring_boot_jar_pool
+      description: A pool for the spring boot jars with 2G xmx that belong to the dag
+    - slots: 8
+      name: retention_spring_boot_jar_pool
+      description: A pool for the retention spring boot jars
+  tasks_instances:
+    hourly_DLPFILE_feature_aggregations:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr.jar
+        main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
+        xmx: 500
+        xms: 70
+  operators:
+    default_jar_values:
+      pool_name: spring_boot_jar_pool
+      retry_args:
+        retries: 4
+        retry_delay: 5
+        retry_exponential_backoff: True
+        max_retry_delay: 300
+      subdag_retry_args:
+        retries: 4
+        retry_delay: 5
+        retry_exponential_backoff: True
+        max_retry_delay: 300
+      java_path: /usr/bin/java
+      jvm_args:
+        xms: 2048
+        xmx: 2048
+        timezone: -Duser.timezone=UTC
+        remote_debug_enabled: False
+        remote_debug_suspend: False
+        jmx_enabled: False
+        extra_jvm:
+    SmartEventsOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-smart.jar
+        main_class: presidio.ade.smart.SmartApplication
+        xmx: 1024
+        xms: 1024
+    FeatureAggregationsOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-feature-aggr.jar
+        main_class: presidio.ade.processes.shell.FeatureAggregationsApplication
+        xmx: 1024
+        xms: 1024
+    ScoreAggregationsOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-score-aggr.jar
+        main_class: presidio.ade.processes.shell.ScoreAggregationsApplication
+        xmx: 2048
+        xms: 2048
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
+    RawModelFeatureAggregationBucketsOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-model-feature-buckets.jar
+        main_class: presidio.ade.processes.shell.feature.aggregation.buckets.ModelFeatureAggregationBucketsApplication
+        xmx: 1024
+        xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
+    RawModelOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling.jar
+        main_class: presidio.ade.modeling.ModelingServiceApplication
+        xmx: 1024
+        xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
+    AggrModelAccumulateAggregationsOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-aggr.jar
+        main_class: presidio.ade.processes.shell.AccumulateAggregationsApplication
+        xmx: 1024
+        xms: 1024
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
+    AggrModelOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling.jar
+        main_class: presidio.ade.modeling.ModelingServiceApplication
+        xmx: 1024
+        xms: 1024
+    SmartModelAccumulateOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-accumulate-smart.jar
+        main_class: presidio.ade.processes.shell.AccumulateSmartApplication
+        xmx: 1024
+        xms: 1024
+    SmartModelOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-modeling.jar
+        main_class: presidio.ade.modeling.ModelingServiceApplication
+        xmx: 4096
+        xms: 4096
+        extra_jvm: -XX:+UseG1GC -XX:G1RSetUpdatingPauseTimePercent=5
+    AdeManagerOperator:
+      pool_name: retention_spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-ade-app-manager.jar
+        main_class: presidio.ade.manager.AdeManagerApplication
+        xmx: 512
+        xms: 512
+    AdapterOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-adapter.jar
+        main_class: presidio.adapter.FortscaleAdapterApplication
+      execution_timeout_in_seconds: 7200
+      retry_args:
+        retries: 99999
+        retry_delay: 5
+        retry_exponential_backoff: True
+        max_retry_delay: 300
+    InputOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
+        main_class: presidio.input.core.FortscaleInputCoreApplication
+        xmx: 2048
+        xms: 2048
+    OutputOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
+        main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+        xmx: 4096
+        xms: 4096
+    EntityScoreOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
+        main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+        xmx: 4096
+        xms: 4096
+    OutputForwarderOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-forwarder.jar
+        main_class: presidio.output.forwarder.shell.OutputForwarderApplication
+        xmx: 2048
+        xms: 2048
+    InputRetentionOperator:
+      pool_name: retention_spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-core.jar
+        main_class: presidio.input.core.FortscaleInputCoreApplication
+        xmx: 512
+        xms: 512
+    AlertRetentionOperator:
+      pool_name: retention_spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-processor.jar
+        main_class: presidio.output.processor.FortscaleOutputProcessorApplication
+        xmx: 512
+        xms: 512
+    OutputRetentionOperator:
+      pool_name: retention_spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-output-manager.jar
+        main_class: presidio.output.manager.FortscaleOutputManagerApplication
+        xmx: 512
+        xms: 512
+    InputPreProcessorOperator:
+      pool_name: spring_boot_jar_pool
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-input-pre-processing.jar
+        main_class: presidio.input.pre.processing.application.PresidioInputPreProcessingApplication
+        xmx: 512
+        xms: 512
+    HourIsReadyAccordingToS3NWGatewaySensorOperator:
+      jvm_args:
+        jar_path: ${general.deployment.bins.base_path}/presidio-s3.jar
+        main_class: presidio.s3.S3NWGatewayOutputApplication
+        xmx: 512
+        xms: 512
+      retry_args:
+        retries: 99999
+        retry_delay: 5
+        retry_exponential_backoff: True
+        max_retry_delay: 300
+
+components:
+  ade:
+    models:
+      feature_aggregation_records:
+        build_model_interval_in_days: 1
+        accumulate_interval_in_days: 1
+        min_data_time_range_for_building_models_in_days: 14
+      enriched_records:
+        build_model_interval_in_days: 1
+        feature_aggregation_buckets_interval_in_days: 1
+        min_data_time_range_for_building_models_in_days: 14
+      smart_records:
+        build_model_interval_in_days: 1
+        accumulate_interval_in_days: 1
+        min_data_time_range_for_building_models_in_days: 14
+  adapter:
+    hour_is_ready_sensor:
+      type: HourIsReadyAccordingToSystemTime
+
+retention:
+  min_time_to_start_retention_in_days: 2
+  retention_interval_in_hours: 24
+  command: applyRetentionPolicy
+
+

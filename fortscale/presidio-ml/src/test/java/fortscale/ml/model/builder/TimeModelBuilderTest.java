@@ -1,0 +1,60 @@
+package fortscale.ml.model.builder;
+
+import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.TimeModel;
+import fortscale.ml.model.metrics.CategoryRarityModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.TimeModelBuilderMetricsContainer;
+import fortscale.ml.model.metrics.TimeModelBuilderPartitionsMetricsContainer;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.mockito.Mockito.mock;
+
+public class TimeModelBuilderTest {
+
+	private TimeModelBuilderMetricsContainer timeModelBuilderMetricsContainer = mock(TimeModelBuilderMetricsContainer.class);
+	private TimeModelBuilderPartitionsMetricsContainer timeModelBuilderPartitionsMetricsContainer = mock(TimeModelBuilderPartitionsMetricsContainer.class);
+	private CategoryRarityModelBuilderMetricsContainer categoryRarityModelBuilderMetricsContainer = mock(CategoryRarityModelBuilderMetricsContainer.class);
+
+	private static TimeModelBuilderConf getConfig(int timeResolution, int bucketSize, int categoryRarityModelNumOfBuckets) {
+		return new TimeModelBuilderConf(timeResolution, bucketSize, categoryRarityModelNumOfBuckets);
+	}
+
+	@Test
+	public void shouldBuildModelWithGivenParameters() {
+		Integer timeResolution = 86400;
+		Integer bucketSize = 10*60;
+		Integer categoryRarityModelNumOfBuckets = 30;
+		TimeModelBuilder builder = new TimeModelBuilder(getConfig(timeResolution, bucketSize, categoryRarityModelNumOfBuckets), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
+		TimeModel model = (TimeModel) builder.build(new GenericHistogram());
+		Assert.assertEquals(timeResolution, ReflectionTestUtils.getField(model, "timeResolution"));
+		Assert.assertEquals(bucketSize, ReflectionTestUtils.getField(model, "bucketSize"));
+		Assert.assertEquals((int)categoryRarityModelNumOfBuckets, model.getCategoryRarityModel().getOccurrencesToNumOfPartitionsList().size());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNegativeAsTimeResolution() {
+		new TimeModelBuilder(getConfig(-1, 1, 15), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNegativeAsBucketSize() {
+		new TimeModelBuilder(getConfig(1, -1, 15), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNegativeAsCategoryRarityModelNumOfBuckets() {
+		new TimeModelBuilder(getConfig(1, 1, -1), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNullAsInputToBuild() {
+		new TimeModelBuilder(getConfig(1, 1, 15), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer).build(null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenIllegalInputTypeToBuild() {
+		new TimeModelBuilder(getConfig(1, 1, 15), timeModelBuilderMetricsContainer, timeModelBuilderPartitionsMetricsContainer, categoryRarityModelBuilderMetricsContainer).build("");
+	}
+}

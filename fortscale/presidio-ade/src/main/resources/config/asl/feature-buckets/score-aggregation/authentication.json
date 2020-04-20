@@ -1,0 +1,108 @@
+{
+  "BucketConfs": [
+    {
+      "name": "highestStartInstantScoreUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.authentication.startInstant.userId.authentication.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "highestStartInstantScore",
+          "featureNamesMap": {
+            "maximize": [
+              "score"
+            ],
+            "context": [
+              "startInstant"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.authentication.srcMachine.userId.authentication.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "srcMachineNameRegexClusterToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.srcMachineNameRegexCluster"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.authentication.dstMachine.userId.authentication.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "dstMachineNameRegexClusterToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.dstMachineNameRegexCluster"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "siteToHighestScoreMapUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "scored_enriched.authentication.site.userId.authentication.score"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "siteToHighestScoreMap",
+          "featureNamesMap": {
+            "groupBy": [
+              "context.site"
+            ],
+            "maximize": [
+              "score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_keys_to_max_func"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "registry",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "registry-event-score",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "startInstant.userId.registry.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
+              "additional-models": [],
+              "model": {
+                "name": "startInstant.userId.registry"
+              },
+              "number-of-partitions-to-influence-enough": 10,
+              "min-number-of-partitions-to-influence": 1,
+              "max-rare-count": 8,
+              "max-num-of-rare-partitions": 8,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "conditional",
+              "name": "processFilePath.registryKeyGroup.registry.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "registryKeyGroup",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
+                  "type": "regex",
+                  "fieldName": "operationType",
+                  "pattern": "MODIFY_REGISTRY_VALUE"
+                }
+              ],
+              "scorerConf": {
+                "type": "category-rarity-model-scorer",
+                "name": "processFilePath.registryKeyGroup.registry.score",
+                "model": {
+                  "name": "processFilePath.registryKeyGroup.registry"
+                },
+                "max-rare-count": 8,
+                "max-num-of-rare-partitions": 15,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

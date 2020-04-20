@@ -1,0 +1,19 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly",
+      "type": "P",
+      "bucketConfName": "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numberOfReconnaissanceToolExecutedScoresSum"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}

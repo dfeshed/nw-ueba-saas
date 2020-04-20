@@ -1,0 +1,157 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "authentication",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "authentication-event-score",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "startInstant.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
+              "additional-models": [],
+              "model": {
+                "name": "startInstant.userId.authentication"
+              },
+              "number-of-partitions-to-influence-enough": 10,
+              "min-number-of-partitions-to-influence": 1,
+              "max-rare-count": 8,
+              "max-num-of-rare-partitions": 8,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "srcMachine.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "srcMachineNameRegexCluster.userId.authentication.score",
+                "model": {
+                  "name": "srcMachineNameRegexCluster.userId.authentication"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.srcMachineId.authentication.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.srcMachineId.authentication.score",
+                  "model": {
+                    "name": "userId.srcMachineId.authentication"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-partitions": 15
+                }
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "dstMachine.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "dstMachineNameRegexCluster.userId.authentication.score",
+                "model": {
+                  "name": "dstMachineNameRegexCluster.userId.authentication"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.dstMachineId.authentication.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.dstMachineId.authentication.score",
+                  "model": {
+                    "name": "userId.dstMachineId.authentication"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-partitions": 15
+                }
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "site.userId.authentication.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "site.userId.authentication.score",
+                "model": {
+                  "name": "site.userId.authentication"
+                },
+                "max-rare-count": 8,
+                "number-of-partitions-to-influence-enough": 10,
+                "use-certainty-to-calculate-score": true,
+                "max-num-of-rare-partitions": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "userId.site.authentication.reduction.score",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "userId.site.authentication.score",
+                  "model": {
+                    "name": "userId.site.authentication"
+                  },
+                  "max-rare-count": 8,
+                  "number-of-partitions-to-influence-enough": 10,
+                  "min-number-of-partitions-to-influence": 10,
+                  "use-certainty-to-calculate-score": true,
+                  "max-num-of-rare-partitions": 15
+                }
+              },
+              "reduction-weight": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

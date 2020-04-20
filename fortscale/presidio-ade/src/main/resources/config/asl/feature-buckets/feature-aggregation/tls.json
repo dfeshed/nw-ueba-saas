@@ -1,0 +1,1452 @@
+{
+  "BucketConfs": [
+    {
+      "name": "srcIpHistogramJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDstOrgOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDstOrgSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDstPortOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDomainOutboundTlsHourly",
+      "contextFieldNames": [
+        "domain.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDomainSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "domain.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationDomainOutboundTlsHourly",
+      "contextFieldNames": [
+        "domain.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationDomainSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "domain.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationDstOrgOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationDstPortOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "equals",
+          "fieldName": "numOfBytesSent",
+          "expectedValue": null,
+          "negate": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcIpHistogramNewSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "sslSubject.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcIpHistogramNewDomainSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "domain.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "domain.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcIpHistogramNewDstOrgSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstOrg.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcIpHistogramNewDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstPort.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationNewSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "sslSubject.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationNewDomainSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "domain.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "domain.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationNewDstOrgSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstOrg.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentBySrcIpSummationNewDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstPort.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentBySrcIpSummation",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ],
+            "incrementBy": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "sslSubject.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewDomainSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "domain.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "domain.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewDstOrgSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstOrg.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstOrg.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewDstPortSslSubjectOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstPort.name",
+        "sslSubject.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstPort.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewJa3OutboundTlsHourly",
+      "contextFieldNames": [
+        "ja3.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "ja3.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "newSslSubjectHistogramSrcIpOutboundTlsHourly",
+      "contextFieldNames": [
+        "srcIp"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "sslSubject.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "newSslSubjectHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "sslSubject.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "newDomainHistogramSrcIpOutboundTlsHourly",
+      "contextFieldNames": [
+        "srcIp"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "domain.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "newDomainHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "domain.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "newDstOrgHistogramSrcIpOutboundTlsHourly",
+      "contextFieldNames": [
+        "srcIp"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstOrg.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "newDstOrgHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstOrg.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "newDstAsnHistogramSrcIpOutboundTlsHourly",
+      "contextFieldNames": [
+        "srcIp"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstAsn.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "newDstAsnHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstAsn.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "newDstCountryHistogramSrcIpOutboundTlsHourly",
+      "contextFieldNames": [
+        "srcIp"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstCountry.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "newDstCountryHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstCountry.name"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcIpHistogramNewDstAsnOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstAsn.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstAsn.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcIpHistogramNewDstCountryOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstCountry.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstCountry.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "srcIpHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcIp"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewDstAsnOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstAsn.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstAsn.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationToNewDstCountryOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstCountry.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        },
+        {
+          "type": "boolean",
+          "fieldName": "dstCountry.isNewOccurrence",
+          "expectedValue": true
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDstAsnOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstAsn.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "numOfBytesSentSummationDstCountryOutboundTlsHourly",
+      "contextFieldNames": [
+        "dstCountry.name"
+      ],
+      "adeEventTypes": [
+        "tls"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "direction",
+          "pattern": "OUTBOUND"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "numOfBytesSentSummation",
+          "featureNamesMap": {
+            "sum": [
+              "numOfBytesSent"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    }
+  ]
+}

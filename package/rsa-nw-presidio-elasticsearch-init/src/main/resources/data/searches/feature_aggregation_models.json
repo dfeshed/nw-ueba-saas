@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "569d1da0-e593-11e7-8f51-51afc520ede5",
+    "_type": "search",
+    "_source": {
+      "title": "Feature aggregation models",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "logicTime",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:feature-aggregation*\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

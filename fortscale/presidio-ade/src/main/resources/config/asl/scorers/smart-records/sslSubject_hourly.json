@@ -1,0 +1,32 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "smart_sslSubject_hourly",
+      "scorers": [
+        {
+          "type": "smart-max-values-model-scorer",
+          "name": "smart.sslSubject.hourly.scorer",
+          "model": {
+            "name": "smart.sslSubject.hourly"
+          },
+          "global-model": {
+            "name": "smart.global.prior.sslSubject.hourly"
+          },
+          "number-of-partitions-to-influence-enough": 10,
+          "use-certainty-to-calculate-score": true,
+          "base-scorer": {
+            "type": "smart-weights-model-scorer",
+            "name": "smart.sslSubject.smart_value.hourly.scorer",
+            "model": {
+              "name": "smart.global.weights.sslSubject.hourly"
+            }
+          },
+          "global-influence": 5,
+          "max-user-influence": 10,
+          "num-of-partition-user-influence": 5,
+          "min-num-of-user-values": 5
+        }
+      ]
+    }
+  ]
+}

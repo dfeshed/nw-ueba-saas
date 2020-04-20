@@ -1,0 +1,64 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "highestStartInstantScoreUserIdAuthenticationHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestSrcMachineNameRegexClusterScoresUserIdAuthenticationHourly",
+      "type": "P",
+      "bucketConfName": "srcMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "srcMachineNameRegexClusterToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestDstMachineNameRegexClusterScoresUserIdAuthenticationHourly",
+      "type": "P",
+      "bucketConfName": "dstMachineNameRegexClusterToHighestScoreMapUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "dstMachineNameRegexClusterToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestSiteScoresUserIdAuthenticationHourly",
+      "type": "P",
+      "bucketConfName": "siteToHighestScoreMapUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "siteToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}

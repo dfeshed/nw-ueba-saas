@@ -1,0 +1,94 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "sensitiveGroupMembershipOperationCounterUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "sensitiveGroupMembershipOperationCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "groupMembershipOperationCounterUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "groupMembershipOperationCounter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "operationTypeResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "operationTypeResultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "FAILURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "userManagementSecuritySensitiveOperationResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "userManagementSecuritySensitiveOperationResultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "SUCCESS"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly",
+      "type": "F",
+      "bucketConfName": "objectManagementOperationResultHistogramUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "objectManagementOperationResultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "SUCCESS"
+          }
+        ]
+      }
+    }
+  ]
+}

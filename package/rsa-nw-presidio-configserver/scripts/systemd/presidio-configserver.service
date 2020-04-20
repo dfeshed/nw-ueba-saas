@@ -1,0 +1,17 @@
+[Unit]
+Description=Presidio configserver daemon
+After= network.target
+
+[Service]
+User=presidio
+Group=presidio
+Type=simple
+ExecStart=/usr/bin/java -Dspring.profiles.active=native -Dspring.cloud.config.server.native.searchLocations=classpath:/configurations/,file:///etc/netwitness/presidio/configserver/configurations/ -jar /usr/sbin/presidio/configserver/presidio-configuration-server.jar
+KillMode=mixed
+KillSignal=SIGKILL
+Restart=on-failure
+RestartSec=5s
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

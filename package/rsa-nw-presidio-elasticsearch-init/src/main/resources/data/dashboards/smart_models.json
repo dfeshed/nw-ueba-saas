@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "87acfe40-f6e3-11e7-a30f-db7f45afe5a7",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Smart models",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"size_x\":12,\"size_y\":3,\"panelIndex\":1,\"type\":\"visualization\",\"id\":\"69cd49c0-f6e3-11e7-a30f-db7f45afe5a7\",\"col\":1,\"row\":1}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}}}],\"highlightAll\":true,\"version\":true}"
+      }
+    }
+  }
+]

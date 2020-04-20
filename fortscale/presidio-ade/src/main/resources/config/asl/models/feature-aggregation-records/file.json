@@ -1,0 +1,420 @@
+{
+  "ModelConfs": [
+    {
+      "name": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFilePermissionChangesUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFilePermissionChanges.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulFilePermissionChanges.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileActions.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionsUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileActionsUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileActions.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulFileActions.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFailedFilePermissionChanges.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFailedFilePermissionChangesUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFailedFilePermissionChangesUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFailedFilePermissionChanges.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFailedFilePermissionChanges.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFailedFileActions.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFailedFileActionsUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFailedFileActionsUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFailedFileActions.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFailedFileActions.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfDistinctFileOpened.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctFileOpenedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctFileOpenedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctFileOpened.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctFileOpened.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfDistinctFolderOpened.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfDistinctFolderOpenedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfDistinctFolderOpenedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfDistinctFolderOpened.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfDistinctFolderOpened.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFileDeleted.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFileDeletedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFileDeletedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFileDeleted.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileDeleted.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileRenamed.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileRenamedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulFileRenamedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfSuccessfulFileRenamed.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulFileRenamed.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFileMoved.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFileMovedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFileMovedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFileMoved.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileMoved.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFileMovedFromSharedDrive.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFileMovedFromSharedDriveUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFileMovedFromSharedDriveUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFileMovedFromSharedDrive.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileMovedFromSharedDrive.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFileMovedToSharedDrive.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFileMovedToSharedDriveUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFileMovedToSharedDriveUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFileMovedToSharedDrive.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileMovedToSharedDrive.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFileDownloaded.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFileDownloadedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFileDownloadedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFileDownloaded.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileDownloaded.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFileCopied.userId.file.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFileCopiedUserIdFileHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFileCopiedUserIdFileHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFileCopied.userId.prior.file.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFileCopied.userId.file.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 14,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "type": "regex-transformer",
+  "name": "file-extension-transformer",
+  "inputFieldName": "bla",
+  "outputFieldName": "blue",
+  "regex": "bla"
+}

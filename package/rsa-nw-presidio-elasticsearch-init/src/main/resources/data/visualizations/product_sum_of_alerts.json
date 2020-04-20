@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "e51ae030-a132-11e7-b962-5703fbc8bd55",
+    "_type": "visualization",
+    "_source": {
+      "title": "Sum of alerts",
+      "visState": "{\"title\":\"Sum of alerts\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":60},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Alerts\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "32b57900-a132-11e7-b962-5703fbc8bd55",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

@@ -1,0 +1,165 @@
+{
+  "BucketConfs": [
+    {
+      "name": "resultHistogramUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "resultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineDomainHistogramUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctDstMachineDomainHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstMachineDomain"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcMachineIdHistogramUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctSrcMachineIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcMachineId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineIdHistogramUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctDstMachineIdHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstMachineId"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctSrcMachineNameRegexClusterHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "srcMachineNameRegexCluster"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dstMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctDstMachineNameRegexClusterHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "dstMachineNameRegexCluster"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "siteHistogramUserIdAuthenticationHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "authentication"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "distinctSiteHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "site"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}

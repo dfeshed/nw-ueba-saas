@@ -1,0 +1,1254 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentByJa3OutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.ja3Outbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.ja3Outbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.ja3Outbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.ja3Outbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.ja3Outbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 1000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToDstOrgSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.dstOrgSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.dstOrgSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.dstOrgSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.dstOrgOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.dstOrgOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.dstPortSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.dstPortSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.dstPortSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.dstPortOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.dstPortOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToDomainSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.domainSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.domainSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.domainSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.domainOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.domainOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.sslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.sslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.sslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.sslSubjectOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.sslSubjectOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.sslSubjectOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.domainSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.domainOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.domainOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.dstOrgSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.dstOrgSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.dstOrgSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.dstOrgOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.dstOrgOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.dstPortSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.dstPortSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.dstPortSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.dstPortOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "maxSumOfBytesSentBySrcIp.dstPortOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpJa3OutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.ja3Outbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "numberOfDistinctSrcIp.ja3Outbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpForNewSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.newSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.newSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.newSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.newSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.newDomainSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.newDstOrgSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.newDstOrgSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.newDstOrgSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.newDstOrgSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.newDstPortSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToNewSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.newSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.newSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.newSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.newSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToNewDomainSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.newDomainSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.newDomainSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.newDomainSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.newDomainSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToNewDstOrgSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.newDstOrgSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.newDstOrgSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.newDstOrgSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.newDstOrgSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.maxSumOfBytesSentBySrcIpToNewDstPortSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "maxSumOfBytesSentBySrcIp.newDstPortSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "maxSumOfBytesSentBySrcIp.newDstPortSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "maxSumOfBytesSentBySrcIp.newDstPortSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "maxSumOfBytesSentBySrcIp.newDstPortSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToNewSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.newSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.newSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.newSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.newSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.newDomainSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.newDomainSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.newDomainSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.newDomainSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToNewDstOrgSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.newDstOrgSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.newDstOrgSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.newDstOrgSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.newDstOrgSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToNewDstPortSslSubjectOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.newDstPortSslSubjectOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.newDstPortSslSubjectOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.newDstPortSslSubjectOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.newDstPortSslSubjectOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToNewJa3OutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.newJa3Outbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.newJa3Outbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.newJa3Outbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.newJa3Outbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctNewSslSubjectForSrcIpOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctNewSslSubject.srcIpOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctNewSslSubject.srcIpOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctNewSslSubject.srcIpOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctNewSslSubject.srcIpOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctNewDomainForSrcIpOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctNewDomain.srcIpOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctNewDomain.srcIpOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctNewDomain.srcIpOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctNewDomain.srcIpOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctNewDstOrgForSrcIpOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctNewDstOrg.srcIpOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctNewDstOrg.srcIpOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctNewDstOrg.srcIpOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctNewDstOrg.srcIpOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctNewDstAsnForSrcIpOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctNewDstAsn.srcIpOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctNewDstAsn.srcIpOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctNewDstAsn.srcIpOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctNewDstAsn.srcIpOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctNewDstCountryForSrcIpOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctNewDstCountry.srcIpOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpForNewDstAsnOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.newDstAsnOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.newDstAsnOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.newDstAsnOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.newDstAsnOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.numberOfDistinctSrcIpForNewDstCountryOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "numberOfDistinctSrcIp.newDstCountryOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "numberOfDistinctSrcIp.newDstCountryOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "numberOfDistinctSrcIp.newDstCountryOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "numberOfDistinctSrcIp.newDstCountryOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToNewDstAsnOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.newDstAsnOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.newDstAsnOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.newDstAsnOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.newDstAsnOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToNewDstCountryOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.newDstCountryOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.newDstCountryOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.newDstCountryOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.newDstCountryOutbound.tls.hourly"
+              },
+              "global-influence": 0,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3.0,
+              "minValueForNotReduce": 6.0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToDstAsnOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.dstAsnOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.dstAsnOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ade-event-type": "aggr_event.sumOfBytesSentToDstCountryOutboundTlsHourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "sumOfBytesSent.dstCountryOutbound.tls.hourly.scorer",
+          "base-scorer": {
+            "type": "score-exponential-steps-mapper",
+            "name": "sumOfBytesSent.dstCountryOutbound.tls.hourly.mapper",
+            "score-mapping-conf": {
+              "amountOfSteps": 25,
+              "probabilityExponentialStep": 1.5
+            },
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "sumOfBytesSent.dstCountryOutbound.tls.hourly.base_scorer",
+              "model": {
+                "name": "sumOfBytesSent.dstCountryOutbound.tls.hourly"
+              },
+              "additional-models": [
+                {
+                  "name": "sumOfBytesSent.dstCountryOutbound.prior.tls.hourly"
+                }
+              ],
+              "global-influence": 15,
+              "number-of-partitions-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "featureValue",
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 10000000,
+              "minValueForNotReduce": 100000000
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

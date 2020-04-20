@@ -1,0 +1,164 @@
+{
+  "ModelConfs": [
+    {
+      "name": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSensitiveGroupMembershipOperationUserIdActiveDirectoryHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfSensitiveGroupMembershipOperation.userId.prior.activeDirectory.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSensitiveGroupMembershipOperation.userId.activeDirectory.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfGroupMembershipOperationUserIdActiveDirectoryHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfGroupMembershipOperation.userId.prior.activeDirectory.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfGroupMembershipOperation.userId.activeDirectory.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulObjectManagementOperationUserIdActiveDirectoryHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfSuccessfulObjectManagementOperation.userId.prior.activeDirectory.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulObjectManagementOperation.userId.activeDirectory.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfFailedOperationType.userId.activeDirectory.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfFailedOperationTypeUserIdActiveDirectoryHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfFailedOperationType.userId.prior.activeDirectory.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfFailedOperationType.userId.activeDirectory.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 4,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    },
+    {
+      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly",
+      "selector": {
+        "type": "aggregated_event_context_selector",
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly"
+      },
+      "retriever": {
+        "type": "accumulated_aggregated_feature_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "aggregatedFeatureEventConfName": "numberOfSuccessfulUserManagementSecuritySensitiveOperationUserIdActiveDirectoryHourly"
+      },
+      "builder": {
+        "type": "continuous_max_histogram_model_builder",
+        "partitionsResolutionInSeconds": 86400
+      }
+    },
+    {
+      "name": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.prior.activeDirectory.hourly",
+      "retriever": {
+        "type": "model_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "modelConfName": "numberOfSuccessfulUserManagementSecuritySensitiveOperation.userId.activeDirectory.hourly"
+      },
+      "builder": {
+        "type": "gaussian_prior_model_builder",
+        "minAllowedDistFromMean": 6,
+        "distanceBetweenSegmentCenters": 1,
+        "maxSegmentWidthToNotDiscardBecauseOfBadRatio": 3
+      }
+    }
+  ]
+}

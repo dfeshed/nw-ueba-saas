@@ -1,0 +1,154 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "highestStartInstantScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "highestStartInstantScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highestStartInstantScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestOperationTypeScoresUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdGroupMembershipSecuritySensitiveActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "operationTypeToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "sumOfHighestOperationTypeScoresUserIdObjectManagementActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "operationTypeToHighestScoreMapUserIdObjectManagementActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "operationTypeToHighestScoreMap"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountEnabledScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountEnabledScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountDisabledScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountDisabledScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountUnlockedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountUnlockedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountTypeChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountTypeChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userAccountLockedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userAccountLockedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userAccountLockedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userPasswordNeverExpiresOptionChangedScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userPasswordNeverExpiresOptionChangedScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    },
+    {
+      "name": "userPasswordResetScoreUserIdActiveDirectoryHourly",
+      "type": "P",
+      "bucketConfName": "userPasswordResetScoreUserIdActiveDirectoryHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "userPasswordResetScore"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_max_sum_func"
+      }
+    }
+  ]
+}

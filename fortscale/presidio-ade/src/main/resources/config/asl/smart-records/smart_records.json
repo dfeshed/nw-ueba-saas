@@ -1,0 +1,183 @@
+{
+  "SmartRecordConfs": [
+    {
+      "name": "userId_hourly",
+      "contextToFieldsMap": {
+        "userId": [
+          "userId"
+        ]
+      },
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "clusterConfs": [
+        {
+          "aggregationRecordNames": [
+            "userAccountLockedScoreUserIdActiveDirectoryHourly"
+          ],
+          "weight": 0.0
+        },
+        {
+          "aggregationRecordNames": [
+            "userAccountUnlockedScoreUserIdActiveDirectoryHourly"
+          ],
+          "weight": 0.0
+        }
+      ],
+      "excludedAggregationRecords": [
+        "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
+        "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly",
+        "sumOfHighestDstMachineIdScoresUserIdPrintHourly",
+        "numberOfFailedPrintsUserIdPrintHourly",
+        "numberOfDistinctSrcMachineIdUserIdPrintHourly",
+        "numberOfDistinctDstMachineNameRegexClusterUserIdPrintHourly",
+        "numberOfEventsUserIdProcessHourly",
+        "highestStartInstantScoreUserIdProcessHourly",
+        "highestStartInstantScoreUserIdRegistryHourly"
+      ],
+      "defaultWeight": 0.5,
+      "fullCorrelations": [
+        {
+          "name": "sumOfHighestSrcProcessFilePathScoresScriptingProcessHourly",
+          "features": [
+            "sumOfHighestSrcProcessFilePathGlobalScoresUserIdScriptingProcessHourly",
+            "sumOfHighestSrcProcessFilePathScoresUserIdScriptingProcessHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstProcessFilePathCreatedScoresScriptingProcessHourly",
+          "features": [
+            "sumOfHighestDstProcessFilePathCreatedGlobalScoresUserIdScriptingProcessHourly",
+            "sumOfHighestDstProcessFilePathCreatedScoresUserIdScriptingProcessHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstProcessFilePathOpenedScoresScriptingProcessHourly",
+          "features": [
+            "sumOfHighestDstProcessFilePathOpenedGlobalScoresUserIdScriptingProcessHourly",
+            "sumOfHighestDstProcessFilePathOpenedScoresUserIdScriptingProcessHourly"
+          ]
+        },
+        {
+          "name": "numberOfReconnaissanceToolExecutedUserIdProcessHourly",
+          "features": [
+            "numberOfReconnaissanceToolExecutedScoresSumUserIdDstProcessFileNameProcessHourly",
+            "numberOfDistinctReconnaissanceToolExecutedUserIdProcessHourly",
+            "numberOfReconnaissanceToolExecutedUserIdProcessHourly"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sslSubject_hourly",
+      "contextToFieldsMap": {
+        "sslSubject": [
+          "sslSubject.name"
+        ]
+      },
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "clusterConfs": [
+      ],
+      "excludedAggregationRecords": [
+        "numberOfDistinctSrcIpForNewSslSubjectOutboundTlsHourly",
+        "numberOfDistinctSrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+        "numberOfDistinctSrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly",
+        "numberOfDistinctSrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewDstOrgScoresSumSslSubjectOutboundTlsHourly",
+        "maxSumOfBytesSentBySrcIpToNewDstPortScoresSumSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewDomainScoresSumSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewDstOrgScoresSumSslSubjectOutboundTlsHourly",
+        "sumOfBytesSentToNewDstPortScoresSumSslSubjectOutboundTlsHourly"
+      ],
+      "defaultWeight": 0.5,
+      "fullCorrelations": [
+        {
+          "name": "bytesSentToSslSubjectOutboundTlsHourly",
+          "features": [
+            "sumOfBytesSentToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+            "sumOfBytesSentToDstPortScoresSumSslSubjectOutboundTlsHourly",
+            "sumOfBytesSentToDomainScoresSumSslSubjectOutboundTlsHourly",
+            "sumOfBytesSentToSslSubjectOutboundTlsHourly",
+            "maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly",
+            "maxSumOfBytesSentBySrcIpToDomainScoresSumSslSubjectOutboundTlsHourly",
+            "maxSumOfBytesSentBySrcIpToDstOrgScoresSumSslSubjectOutboundTlsHourly",
+            "maxSumOfBytesSentBySrcIpToDstPortScoresSumSslSubjectOutboundTlsHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstEntitySrcNetnameOutboundScoresSslSubjectTlsHourly",
+          "features": [
+            "sumOfHighestSslSubjectSrcNetnameOutboundScoresSslSubjectTlsHourly",
+            "sumOfHighestDomainSrcNetnameOutboundScoresSslSubjectTlsHourly",
+            "sumOfHighestDstPortSrcNetnameOutboundScoresSslSubjectTlsHourly",
+            "sumOfHighestDstOrgSrcNetnameOutboundScoresSslSubjectTlsHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstEntityScoresSslSubjectOutboundTlsHourly",
+          "features": [
+            "sumOfHighestDstPortScoresSslSubjectOutboundTlsHourly",
+            "sumOfHighestDstPortDomainOutboundScoresSslSubjectTlsHourly",
+            "sumOfHighestDstPortDstOrgOutboundScoresSslSubjectTlsHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstEntityJa3OutboundScoresSslSubjectTlsHourly",
+          "features": [
+            "sumOfHighestSslSubjectJa3OutboundScoresSslSubjectTlsHourly",
+            "sumOfHighestDomainJa3OutboundScoresSslSubjectTlsHourly",
+            "sumOfHighestDstPortJa3OutboundScoresSslSubjectTlsHourly"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ja3_hourly",
+      "contextToFieldsMap": {
+        "ja3": [
+          "ja3.name"
+        ]
+      },
+      "fixedDurationStrategy": "fixed_duration_hourly",
+      "includeAllAggregationRecords": true,
+      "clusterConfs": [
+      ],
+      "excludedAggregationRecords": [
+        "sumOfBytesSentToNewJa3OutboundTlsHourly"
+      ],
+      "defaultWeight": 0.5,
+      "fullCorrelations": [
+        {
+          "name": "sumOfHighestDstEntitySrcNetnameOutboundScoresJa3TlsHourly",
+          "features": [
+            "sumOfHighestSslSubjectSrcNetnameOutboundScoresJa3TlsHourly",
+            "sumOfHighestDomainSrcNetnameOutboundScoresJa3TlsHourly",
+            "sumOfHighestDstPortSrcNetnameOutboundScoresJa3TlsHourly",
+            "sumOfHighestDstOrgSrcNetnameOutboundScoresJa3TlsHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstPortDstEntityOutboundScoresJa3TlsHourly",
+          "features": [
+            "sumOfHighestDstPortSslSubjectOutboundScoresJa3TlsHourly",
+            "sumOfHighestDstPortDomainOutboundScoresJa3TlsHourly",
+            "sumOfHighestDstPortDstOrgOutboundScoresJa3TlsHourly"
+          ]
+        },
+        {
+          "name": "sumOfHighestDstEntityScoresJa3OutboundTlsHourly",
+          "features": [
+            "sumOfHighestSslSubjectScoresJa3OutboundTlsHourly",
+            "sumOfHighestDomainScoresJa3OutboundTlsHourly",
+            "sumOfHighestDstPortScoresJa3OutboundTlsHourly"
+          ]
+        }
+      ]
+    }
+  ]
+}

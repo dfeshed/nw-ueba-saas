@@ -1,0 +1,266 @@
+{
+  "BucketConfs": [
+    {
+      "name": "filePermissionChangeResultHistogramUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "filePermissionChangeHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('FILE_PERMISSION_CHANGE' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileActionResultHistogramUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileActionHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?('FILE_ACTION' in @['operationTypeCategories'])]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "absoluteSrcFilePathHistogramUserIdFileOpenedFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "absoluteSrcFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "absoluteSrcFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_OPENED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "absoluteSrcFolderPathHistogramUserIdFolderOpenedFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "absoluteSrcFolderPathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "absoluteSrcFolderFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FOLDER_OPENED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileDeletedCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileDeletedCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_DELETED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileRenamedResultHistogramUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileRenamedResultHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "result"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_multi_key_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_RENAMED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileMovedCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "FileMovedCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileMovedFromSharedDriveCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileMovedFromSharedDriveCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.srcDriveShared == true && @.dstDriveShared == false)]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileMovedToSharedDriveCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileMovedToSharedDriveCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_MOVED' && @.srcDriveShared == false && @.dstDriveShared == true)]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileDownloadedCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileDownloadedCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_DOWNLOADED')]"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fileCopiedCounterUserIdFileHourly",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_hourly",
+      "aggrFeatureConfs": [
+        {
+          "name": "fileCopiedCounter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_COPIED')]"
+          }
+        }
+      ]
+    }
+  ]
+}

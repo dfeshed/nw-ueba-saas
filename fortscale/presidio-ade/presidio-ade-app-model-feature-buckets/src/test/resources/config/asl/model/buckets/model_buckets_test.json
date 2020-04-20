@@ -1,0 +1,89 @@
+{
+  "BucketConfs": [
+    {
+      "name": "normalized_username_dlpfile_daily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "file"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "copied_to_shared_drive_src_paths_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "absoluteSrcFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_COPY' && @.srcDriveShared == false && @.dstDriveShared == true)]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_to_shared_drive_size",
+          "featureNamesMap": {
+            "sum": [
+              "fileSize"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_MOVE' && @.dstDriveShared == true)]"
+          }
+        },
+        {
+          "name": "sum_of_moved_files_from_remote_device_size",
+          "featureNamesMap": {
+            "sum": [
+              "fileSize"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'move' && @.sourceDriveType == 'remote')]"
+          }
+        },
+        {
+          "name": "sum_of_copied_files_to_shared_drive_size",
+          "featureNamesMap": {
+            "sum": [
+              "fileSize"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_COPY' && @.dstDriveShared == true)]"
+          }
+        },
+        {
+          "name": "copied_files_to_shared_drive_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.operationType == 'FILE_COPY' && @.dstDriveShared == true)]"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        }
+      ]
+    }
+  ]
+}

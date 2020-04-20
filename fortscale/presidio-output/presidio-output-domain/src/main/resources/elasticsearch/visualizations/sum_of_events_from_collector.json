@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "0d6cf120-00ee-11e8-b7dc-63e69023fe2a",
+    "_type": "visualization",
+    "_source": {
+      "title": "Sum of events from collector",
+      "visState": "{\"title\":\"Sum of events from collector\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":\"97\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.TOTAL_EVENTS\",\"customLabel\":\"Events Processed\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "f7442e90-00ed-11e8-b7dc-63e69023fe2a",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

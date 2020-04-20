@@ -1,0 +1,22 @@
+[
+  {
+    "_id": "a7bef560-e4b6-11e7-a858-9f584df7e1df",
+    "_type": "search",
+    "_source": {
+      "title": "Enriched models: modeling service",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "logicTime",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring-logical\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"tags.GROUP_NAME:enriched* AND name:\\\"modeling-service.modeling\\\"\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "0ccfc3b0-a29c-11e7-bf94-db45269a46a7",
+    "_type": "search",
+    "_source": {
+      "title": "Top Indicators",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "score",
+        "type",
+        "startDate",
+        "schema",
+        "name",
+        "anomalyValue",
+        "id",
+        "historicalData.indicatorId",
+        "historicalData.aggregation.type",
+        "eventsNum",
+        "alertId"
+      ],
+      "sort": [
+        "score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-output-indicator\",\"highlightAll\":true,\"version\":true,\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]

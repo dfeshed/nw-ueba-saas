@@ -1,0 +1,57 @@
+{
+  "BucketConfs": [
+    {
+      "name": "startInstantHistogramUserIdRegistryDaily",
+      "contextFieldNames": [
+        "userId"
+      ],
+      "adeEventTypes": [
+        "registry"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "startInstantHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "processFilePathHistogramRegistryKeyGroupRegistryDaily",
+      "contextFieldNames": [
+        "registryKeyGroup"
+      ],
+      "adeEventTypes": [
+        "registry"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "predicates": [
+        {
+          "type": "regex",
+          "fieldName": "operationType",
+          "pattern": "MODIFY_REGISTRY_VALUE"
+        }
+      ],
+      "aggrFeatureConfs": [
+        {
+          "name": "processFilePathHistogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "processFilePath"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    }
+  ]
+}

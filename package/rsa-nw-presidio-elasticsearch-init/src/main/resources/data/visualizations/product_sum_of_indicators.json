@@ -1,0 +1,17 @@
+[
+  {
+    "_id": "09c961d0-a139-11e7-88a9-eda4b6248b9f",
+    "_type": "visualization",
+    "_source": {
+      "title": "Sum of indicators",
+      "visState": "{\"title\":\"Sum of indicators\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":60},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"Indicators\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "savedSearchId": "f6aa35c0-a138-11e7-88a9-eda4b6248b9f",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[]}"
+      }
+    }
+  }
+]

@@ -1,0 +1,181 @@
+{
+  "ade-event-type-scorers": [
+    {
+      "ade-event-type": "active_directory",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "activeDirectory-event-score",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "startInstant.userId.activeDirectory.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                }
+              ],
+              "additional-models": [],
+              "model": {
+                "name": "startInstant.userId.activeDirectory"
+              },
+              "number-of-partitions-to-influence-enough": 10,
+              "min-number-of-partitions-to-influence": 1,
+              "max-rare-count": 8,
+              "max-num-of-rare-partitions": 8,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "conditional",
+              "name": "operationType.userIdGroupMembershipSecuritySensitive.activeDirectory.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "operationTypeCategories",
+                  "expectedValues": [
+                    "GROUP_MEMBERSHIP_OPERATION",
+                    "SECURITY_SENSITIVE_OPERATION"
+                  ]
+                }
+              ],
+              "scorerConf": {
+                "type": "max-scorer-container",
+                "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
+                "scorers": [
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userIdSecuritySensitive.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userIdSecuritySensitive.activeDirectory"
+                    },
+                    "max-rare-count": 8,
+                    "max-num-of-rare-partitions": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  },
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userId.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userId.activeDirectory"
+                    },
+                    "max-rare-count": 8,
+                    "max-num-of-rare-partitions": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "conditional",
+              "name": "operationType.userIdObjectManagement.activeDirectory.score",
+              "predicates": [
+                {
+                  "type": "equals",
+                  "fieldName": "userId",
+                  "expectedValue": null,
+                  "negate": true
+                },
+                {
+                  "type": "contained-in-list",
+                  "fieldName": "operationTypeCategories",
+                  "expectedValues": [
+                    "OBJECT_MANAGEMENT"
+                  ]
+                }
+              ],
+              "scorerConf": {
+                "type": "max-scorer-container",
+                "name": "operationType.userIdObjectManagement.activeDirectory.score",
+                "scorers": [
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userIdObjectManagement.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userIdObjectManagement.activeDirectory"
+                    },
+                    "max-rare-count": 8,
+                    "max-num-of-rare-partitions": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  },
+                  {
+                    "type": "category-rarity-model-scorer",
+                    "name": "operationType.userId.activeDirectory.score",
+                    "model": {
+                      "name": "operationType.userId.activeDirectory"
+                    },
+                    "max-rare-count": 8,
+                    "max-num-of-rare-partitions": 15,
+                    "number-of-partitions-to-influence-enough": 10,
+                    "use-certainty-to-calculate-score": true
+                  }
+                ]
+              }
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userAccountEnabled.userId.activeDirectory.score",
+              "regex": "USER_ACCOUNT_ENABLED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userAccountDisabled.userId.activeDirectory.score",
+              "regex": "USER_ACCOUNT_DISABLED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userAccountUnlocked.userId.activeDirectory.score",
+              "regex": "USER_ACCOUNT_UNLOCKED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userAccountTypeChanged.userId.activeDirectory.score",
+              "regex": "USER_ACCOUNT_TYPE_CHANGED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userAccountLocked.userId.activeDirectory.score",
+              "regex": "USER_ACCOUNT_LOCKED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userPasswordNeverExpiresOptionChanged.userId.activeDirectory.score",
+              "regex": "USER_PASSWORD_NEVER_EXPIRES_OPTION_CHANGED",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            },
+            {
+              "type": "constant-regex-scorer",
+              "name": "userPasswordReset.userId.activeDirectory.score",
+              "regex": "USER_PASSWORD_RESET",
+              "regex-field-name": "operationType",
+              "constant-score": 10
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

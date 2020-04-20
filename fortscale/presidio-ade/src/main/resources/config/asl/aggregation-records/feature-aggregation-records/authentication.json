@@ -1,0 +1,134 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "numberOfSuccessfulAuthenticationsUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "resultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "SUCCESS"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfFailedAuthenticationsUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "resultHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "resultHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_func",
+        "keys": [
+          {
+            "result": "FAILURE"
+          }
+        ]
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineDomainUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineDomainHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctDstMachineDomainHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineIdUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "srcMachineIdHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSrcMachineIdHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineIdUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineIdHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctDstMachineIdHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcMachineNameRegexClusterUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "srcMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSrcMachineNameRegexClusterHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctDstMachineNameRegexClusterUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "dstMachineNameRegexClusterHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctDstMachineNameRegexClusterHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSiteUserIdAuthenticationHourly",
+      "type": "F",
+      "bucketConfName": "siteHistogramUserIdAuthenticationHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "distinctSiteHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    }
+  ]
+}

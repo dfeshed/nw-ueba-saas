@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "4716ac10-de69-11e7-ac52-a71b54ecb5bc",
+    "_type": "visualization",
+    "_source": {
+      "title": "Scoring: amount of scored per adeEventType",
+      "visState": "{\"title\":\"Scoring: amount of scored per adeEventType\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"value.AMOUNT_OF_SCORED\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"tags.ADE_EVENT_TYPE\",\"include\":\"\",\"size\":10000,\"order\":\"desc\",\"orderBy\":\"_term\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"presidio-monitoring\",\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}},\"filter\":[]}"
+      }
+    }
+  }
+]

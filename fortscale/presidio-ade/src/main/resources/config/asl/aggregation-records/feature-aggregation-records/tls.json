@@ -1,0 +1,604 @@
+{
+  "AggregatedFeatureEvents": [
+    {
+      "name": "sumOfBytesSentByJa3OutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDstOrgOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstOrgOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDstOrgSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstOrgSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDstPortOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstPortOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDstPortSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstPortSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDomainOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDomainOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDomainOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDomainOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstOrgOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstOrgOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstOrgSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstOrgSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstPortOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstPortOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToDstPortSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationDstPortSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpJa3OutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDstOrgSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDstOrgSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDstPortSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDstPortSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToNewSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationNewSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToNewDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationNewDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToNewDstOrgSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationNewDstOrgSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "maxSumOfBytesSentBySrcIpToNewDstPortSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentBySrcIpSummationNewDstPortSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "numOfBytesSentBySrcIpSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_multi_key_values_to_max_max_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToNewSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToNewDomainSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewDomainSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToNewDstOrgSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewDstOrgSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToNewDstPortSslSubjectOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewDstPortSslSubjectOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToNewJa3OutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewJa3OutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctNewSslSubjectForSrcIpOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "newSslSubjectHistogramSrcIpOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "newSslSubjectHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDomainForSrcIpOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "newDomainHistogramSrcIpOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "newDomainHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDstOrgForSrcIpOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "newDstOrgHistogramSrcIpOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "newDstOrgHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDstAsnForSrcIpOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "newDstAsnHistogramSrcIpOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "newDstAsnHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctNewDstCountryForSrcIpOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "newDstCountryHistogramSrcIpOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "newDstCountryHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDstAsnOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDstAsnOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "numberOfDistinctSrcIpForNewDstCountryOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "srcIpHistogramNewDstCountryOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "srcIpHistogram"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_multi_key_values_counter_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToNewDstAsnOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewDstAsnOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToNewDstCountryOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationToNewDstCountryOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDstAsnOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstAsnOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    },
+    {
+      "name": "sumOfBytesSentToDstCountryOutboundTlsHourly",
+      "type": "F",
+      "bucketConfName": "numOfBytesSentSummationDstCountryOutboundTlsHourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "numOfBytesSentSummation"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      }
+    }
+  ]
+}

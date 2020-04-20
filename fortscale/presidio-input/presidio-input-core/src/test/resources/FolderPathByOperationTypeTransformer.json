@@ -1,0 +1,8 @@
+{
+  "type": "folder-path-by-operation-type-transformer",
+  "name": "ba",
+  "inputPathFieldName": "bla",
+  "filePathFieldName": "blue",
+  "folderPathFieldName": "glue",
+  "operationTypeFieldName": "ADD"
+}
