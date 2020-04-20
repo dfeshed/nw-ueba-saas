@@ -1,0 +1,53 @@
+.rsa-items-sheet {
+  position: relative;
+
+  .liquid-container,
+  .liquid-child {
+    @include rsa-fill-abs();
+  }
+
+  &__table-view,
+  &__details-view {
+    @include rsa-fill-abs();
+
+    &-header {
+      padding: rsa-whitespace();
+    }
+
+    &-body {
+      position: relative;
+    }
+  }
+
+  &__scroller {
+    @include rsa-fill-abs();
+  }
+
+  &__details-view {
+
+    &-header {
+      nav {
+        margin-top: rsa-whitespace();
+      }
+    }
+
+    .rsa-items-sheet__scroller {
+      overflow: auto;
+    }
+  }
+
+  &__table {
+    @include rsa-fill-abs();
+
+    // Prevent the column selector from covering the resizer on the last column
+    .enable-column-selector .rsa-data-table-header-cell:last-child {
+      .rsa-data-table-header-cell-resizer.right {
+        right: 30px;
+      }
+    }
+
+    .rsa-data-table-body-cell {
+      cursor: default;
+    }
+  }
+}

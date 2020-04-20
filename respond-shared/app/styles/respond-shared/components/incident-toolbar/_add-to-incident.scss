@@ -1,0 +1,124 @@
+$searchInputHeight: 75.5px;
+$alertSectionHeight: 100px;
+
+$invBorders: 42px; // 0.25rem + 0.75rem + 0.5rem + 1.5rem @ 16px
+$invAlertSectionHeight: 115px + 2px + $invBorders;
+$invSearchInputHeight: 47.5px;
+
+.rsa-add-to-incident {
+  height: 100%;
+
+  .rsa-panel-message .message {
+    width: 33%;
+    @include border(1px, solid, primary, light);
+    padding: rsa-whitespace();
+    border-radius: 5px;
+    line-height: 2rem;
+  }
+
+  .from-investigate  {
+    height: calc(100% - #{$invSearchInputHeight} - #{$invAlertSectionHeight});
+  }
+
+  .from-respond {
+    height: calc(100% - #{$searchInputHeight});
+  }
+
+  .rsa-data-table {
+    height: 100%;
+    .rsa-data-table-header .rsa-data-table-header-cell {
+      .header-title {
+        &.sortable {
+          cursor: pointer;
+        }
+
+        .sort-indicator {
+          visibility: hidden;
+          position: absolute;
+          right: 7px;
+
+          &.sorted {
+            visibility: visible;
+          }
+        }
+        &:hover .sort-indicator {
+          visibility: visible;
+        }
+      }
+    }
+
+    .rsa-data-table-body-row {
+      .rsa-data-table-body-cell {
+        a {
+          color: text-color(secondary, light);
+        }
+
+        .rsa-icon.selected {
+          color: text-color(secondary, light);
+        }
+      }
+      &:hover {
+        background-color: background-color(primary, darker);
+        cursor: pointer;
+        .rsa-data-table-body-cell {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    background-color: background-color(primary, dark, nearly-transparent);
+
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace();
+      }
+    }
+  }
+
+  .add-to-incident-alert-summary {
+    border: 1px solid border-color(primary);
+    padding: 0.25rem 0.5rem 0.75rem 0.5rem;
+    overflow-y: auto;
+    margin: 0.5rem 1rem 1.5rem 0;
+    width: 66%;
+
+    .alert-severity-invalid {
+      input {
+        background-color: background-color(accentOne, base, nearly-transparent);
+      }
+    }
+
+    .severity-error {
+      @include rsa-font(paragraph, small);
+      padding-left: rsa-whitespace(less);
+      color: text-color(primary, lightest);
+
+      i {
+        vertical-align: middle;
+        margin-right: rsa-whitespace(least);
+      }
+    }
+  }
+
+  .rsa-form-label {
+    display: flex;
+    align-items: flex-start;
+    vertical-align: text-top;
+    margin-bottom: rsa-whitespace(least);
+    color: text-color(primary, light);
+    @include rsa-font(header, small);
+    text-transform: uppercase;
+    margin-top: 1.25rem;
+  }
+}

@@ -1,0 +1,62 @@
+.springboard-pager {
+  background-color: #424242;
+  .page-footer {
+    margin: 0 auto;
+
+    .page {
+      height: 0.5rem;
+      width: 2rem;
+      background-color: #757575;
+      float: left;
+      margin-left: 1rem;
+      border-radius: 2px;
+      margin-top: 1.1rem;
+      cursor: pointer;
+
+      &.active {
+        background-color: #03A9F4;
+      }
+    }
+    .page:hover {
+      background-color: #EEEEEE;
+      &.active {
+        background-color: #03A9F4;
+      }
+    }
+
+    .action {
+      float: left;
+      padding-top: 2px;
+      margin-left: 0.5rem;
+      cursor: pointer;
+      color: #757575;
+
+      &.is-disabled {
+        color: #747474;
+        cursor: default;
+      }
+    }
+    .action:hover {
+      color: #FAFAFA;
+      &.is-disabled {
+        color:  #747474;
+      }
+    }
+
+  }
+  .spring-slide-container {
+    width: calc(350px * 7);
+    z-index: 350;
+    position: relative;
+    right: 0;
+    transition: right 0.8s;
+    .slide {
+      margin-left: 6px;
+      display: inline-block;
+      width: 300px;
+      float: left;
+      background-color: #0b0b0b;
+      height: 636px;
+    }
+  }
+}

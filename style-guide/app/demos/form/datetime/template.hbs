@@ -1,0 +1,64 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+  {{#spec-category title="Date"}}
+    {{#spec-member title="Default configurations"}}
+      {{rsa-form-datetime
+        value=0
+        label='Date Label'
+        placeholder='Date Placeholder'
+        onChange=(action (mut dateValue))
+      }}
+      {{!-- BEGIN-SNIPPET datetime1
+      {{rsa-form-datetime
+        label='Date Label'
+        placeholder='Date Placeholder'
+        onChange=(action (mut dateValue))
+      }}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime1.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Date Picker disabled configurations"
+      subtitle="The disabled attribute is supported as binding so you can disabled the datepicker entirely. If the datepicker is shown to the user and it gets disabled it will close the datepicker itself."}}
+      {{rsa-form-datetime
+        value=0
+        label='Date Label'
+        isDisabled=true
+        onChange=(action (mut dateValue))
+      }}
+      {{!-- BEGIN-SNIPPET datetime2
+      {{rsa-form-datetime
+        label='Date Label'
+        isDisabled=true
+        onChange=(action (mut dateValue))
+      }}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime2.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Date Picker with errors"
+      subtitle="Errors can be passed to the component and messages displayed under the field"}}
+      {{rsa-form-datetime
+        value=0
+        label='Date Label'
+        isError=true
+        errorMessage="Error message"
+        onChange=(action (mut dateValue))
+      }}
+      {{!-- BEGIN-SNIPPET datetime3
+      {{rsa-form-datetime
+        label='Date Label'
+        isError=true
+        errorMessage="Error message"
+        onChange=(action (mut dateValue))
+      }}
+      END-SNIPPET --}}
+      {{code-snippet name="datetime3.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</fill>
+</hbox>

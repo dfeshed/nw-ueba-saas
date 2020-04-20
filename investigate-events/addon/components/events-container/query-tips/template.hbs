@@ -1,0 +1,98 @@
+<p>{{t "investigate.events.eventTips.noResults"}}</p>
+<hbox class="rsa-investigate-query-tips-header">
+  <vbox class="section-1" xs="8">
+    <span class="header">{{t "investigate.events.eventTips.head.headerOne"}}</span>
+    <p>{{t "investigate.events.eventTips.head.summaryOne"}}</p>
+    <span class="text">
+      <ul>
+        <li>
+          {{t "investigate.events.eventTips.head.textOne.one"}}
+          {{rsa-icon class="rsa-icon-arrow-right-7"}}
+          <span class="fakepill"> direction = "outbound" {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakeand">and</span>
+          <span class="fakepill"> service = "http", 22 {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+        </li>
+        <li>
+          {{t "investigate.events.eventTips.head.textOne.two"}}
+          {{rsa-icon class="rsa-icon-arrow-right-7"}}
+          <span class="fakepill"> device.type begins "winevent" {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakeand">and</span>
+          <span class="fakepill"> event.cat.name = "user.activity.failed.login" {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+        </li>
+        <li>
+          {{t "investigate.events.eventTips.head.textOne.three"}}
+          {{rsa-icon class="rsa-icon-arrow-right-7"}}
+          <span class="fakepill"> category = "task" {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakeand">and</span>
+          <span class="fakeand fakeparen open">(</span>
+          <span class="fakepill"> extension = "dll" {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakeand">or</span>
+          <span class="fakepill"> extension = "exe" {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakeand fakeparen close">)</span>
+        </li>
+
+        <li>
+          {{t "investigate.events.eventTips.head.textOne.four"}}
+          {{rsa-icon class="rsa-icon-arrow-right-7"}}
+          <span class="fakepill faketext"> {{rsa-icon name="search" class="faketext-icon"}} {{t "investigate.events.eventTips.head.textOne.fourExample"}} {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+        </li>
+
+        <li>
+          {{t "investigate.events.eventTips.head.textOne.five"}}
+          {{rsa-icon class="rsa-icon-arrow-right-7"}}
+          <span class="fakepill"> ip.src = 10.10.0.0/16 {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+          <span class="fakeand">and</span>
+          <span class="fakepill"> service = 1-1024 {{rsa-icon name="close" size="smaller" class="delete-filter-icon"}}</span>
+        </li>
+      </ul>
+    </span>
+  </vbox>
+  <vbox class="section-2" xs="4">
+    <span class="header">{{t "investigate.events.eventTips.head.headerTwo"}}</span>
+    <p>{{t "investigate.events.eventTips.head.summaryTwo"}}</p>
+    <span class="text">
+      <ul>
+        <li>
+          {{t "investigate.events.eventTips.head.textTwo.one.description"}}
+          {{rsa-icon class="rsa-icon-arrow-right-7"}}
+          <span class="highlight">{{t "investigate.events.eventTips.head.textTwo.one.example"}}</span>
+        </li>
+        <li>
+          {{t "investigate.events.eventTips.head.textTwo.two.description"}}
+          {{rsa-icon class="rsa-icon-arrow-right-7"}}
+          <span class="highlight">{{t "investigate.events.eventTips.head.textTwo.two.example"}}</span>
+        </li>
+      </ul>
+    </span>
+
+  </vbox>
+
+</hbox>
+<hbox class="rsa-inveatigate-query-tips-section">
+  <vbox class="rsa-investigate-query-tips-section-keyboard" xs="6">
+    <span class="header">{{t "investigate.events.eventTips.section.keyboard.header"}}</span>
+    <span class="text">
+      <ul>
+        <li>{{t "investigate.events.eventTips.section.keyboard.textTwo" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.keyboard.textThree" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.keyboard.textFour" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.keyboard.textFive" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.keyboard.textSix" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.keyboard.textSeven" htmlSafe=true}}</li>
+      </ul>
+    </span>
+  </vbox>
+  <vbox class="rsa-investigate-query-tips-section-mouse" xs="6">
+    <span class="header">{{t "investigate.events.eventTips.section.mouse.header"}}</span>
+    <span class="text">
+      <ul>
+        <li>{{t "investigate.events.eventTips.section.mouse.textOne" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.mouse.textTwo" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.mouse.textThree" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.mouse.textFour" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.mouse.textFive" htmlSafe=true}}</li>
+        <li>{{t "investigate.events.eventTips.section.mouse.textSix" htmlSafe=true}}</li>
+      </ul>
+    </span>
+  </vbox>
+</hbox>

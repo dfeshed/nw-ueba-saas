@@ -1,0 +1,51 @@
+.rsa-byte-table-tooltip {
+  background-color: background-color(secondary);
+  @include border(1px, solid, secondary);
+  box-shadow: 1px 1px 2px 0 $dark-box-shadow-color;
+  display: none; /* to be set at run-time by javascript */
+  min-width: 5rem;
+  padding: rsa-whitespace(less);
+  position: absolute;
+  z-index: 10000;
+
+  &.visible {
+    display: block;
+  }
+
+  &.is-signature {
+    background-color: background-color(accentThree);
+    @include border(1px, solid, accentThree);
+    svg {
+      line, polygon {
+        stroke: text-color(accentThree);
+        fill: text-color(accentThree);
+      }
+    }
+  }
+
+  div {
+    color: text-color(primary, lightest);
+
+    &.label {
+      @include rsa-font(header, small);
+      padding-bottom: rsa-whitespace(less);
+    }
+  }
+
+  svg {
+    bottom: -15px;
+    height: 14px;
+    left: calc(50% - 7.5px);
+    position: absolute;
+    width: 14px;
+
+    line {
+      stroke: text-color(secondary);
+      stroke-width: 1;
+    }
+
+    polygon {
+      fill: text-color(secondary);
+    }
+  }
+}

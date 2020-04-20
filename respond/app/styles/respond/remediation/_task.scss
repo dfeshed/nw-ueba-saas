@@ -1,0 +1,126 @@
+.remediation-task, .new-remediation-task {
+  padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+  position: relative;
+  @include border-top(1px, solid, primary);
+
+  span.required-field::after {
+    content: '*';
+    color: text-color(accentOne, dark);
+    padding-left: rsa-whitespace(less);
+  }
+
+  header {
+    @include rsa-font(header);
+    line-height: 1rem;
+
+    .task-id {
+      padding-right: rsa-whitespace(less);
+    }
+    .separator {
+      &::after {
+        content: '/';
+      }
+    }
+    .incident-id {
+      padding-left: rsa-whitespace(less);
+    }
+    .metadata {
+      @include rsa-font(header, small);
+      > span {
+        font-size: 0.7rem;
+      }
+    }
+    .delete {
+      position: absolute;
+      right: 0;
+      top: 0;
+      .rsa-form-button i {
+        font-size: 11px;
+      }
+    }
+  }
+
+  .remediation-task-fields {
+    @include rsa-font(body, small);
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+
+    .editable-field.textarea {
+      width: auto;
+      min-height: 35px;
+
+      &.is-editing {
+        width: 100%;
+        height: 100%;
+        min-height: 200px;
+      }
+
+      span.edit-field {
+        top: 0;
+      }
+    }
+
+    .rsa-form-textarea {
+      @include rsa-font(body, small);
+    }
+
+    .text {
+      @include rsa-font(body, small);
+      padding: rsa-whitespace(less) 0;
+      line-height: 1.2rem;
+      margin-bottom: 20px;
+
+      > label {
+        @include rsa-font(header, small);
+        display: block;
+        padding-bottom: rsa-whitespace(less);
+        color: text-color(primary, light);
+      }
+    }
+  }
+}
+
+.new-remediation-task {
+  box-sizing: border-box;
+  .remediation-task-fields {
+    input[type="text"] {
+      padding: rsa-whitespace(less);
+      width: 100%;
+      @include border(1px, solid, primary, light);
+      box-sizing: border-box;
+    }
+    textarea {
+      @include rsa-font(body, small);
+      @include border(1px, solid, primary, light);
+      box-sizing: border-box;
+      height: 100px;
+      width: 100%;
+      resize: none;
+      background-color: transparent;
+      color: text-color(primary, lightest);
+    }
+    .metadata {
+      display: block;
+      padding: rsa-whitespace() 0;
+
+      > label {
+        display: block;
+
+        + span {
+          display: block;
+        }
+      }
+    }
+ }
+  .controls {
+    @include border-top(1px, solid, primary, light);
+    text-align: right;
+    padding: rsa-whitespace() 0;
+
+    .rsa-form-button-wrapper {
+      display: inline-block;
+      text-align: left;
+    }
+  }
+}

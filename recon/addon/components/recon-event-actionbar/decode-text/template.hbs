@@ -1,0 +1,18 @@
+{{#rsa-content-tethered-panel-trigger panel="decodePanel"}}
+  {{#x-toggle
+    onLabel=(t "recon.textView.compressToggleLabel")
+    onToggle=(action "decodeText")
+    showLabels=true
+    value=(readonly isCompressed) as |toggle|}}
+    {{toggle.switch}}
+    {{toggle.onLabel value=(readonly (not isCompressed))}}
+  {{/x-toggle}}
+{{/rsa-content-tethered-panel-trigger}}
+
+{{#rsa-content-tethered-panel
+  displayCloseButton=false
+  panelId="decodePanel"
+  position="bottom"}}
+  <p>{{t "recon.textView.compressToggleTitle"}}</p>
+{{/rsa-content-tethered-panel}}
+

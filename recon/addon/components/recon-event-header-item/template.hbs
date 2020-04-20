@@ -1,0 +1,35 @@
+<box xs="4" md="2" class="header-item">
+  {{#if hasTooltip}}
+    {{#rsa-content-tethered-panel-trigger
+      panel="eventHeaderTooltip"
+      model=tooltipText}}
+      <div class="name">
+        {{t (concat "recon.eventHeader." name)}}
+      </div>
+    {{/rsa-content-tethered-panel-trigger}}
+  {{else}}
+    <div class="name">
+      {{t (concat "recon.eventHeader." name)}}
+    </div>
+  {{/if}}
+  <div class="value">
+    {{#if isDate}}
+      {{rsa-content-datetime
+        displayMilliseconds=false
+        timestamp=asInteger}}
+    {{else if isByteSize}}
+      {{value}} {{t "memsize.B"}}
+    {{else if hasKey}}
+      {{#each metaValuePairs as |metaValuePair|}}
+        {{#rsa-context-menu
+          contextSelection=metaValuePair
+          contextDetails=contextMenuData}}
+          <span class="entity" data-entity-id={{metaValuePair.metaValue}} data-meta-key={{metaValuePair.metaName}}>{{metaValuePair.displayValue}}</span>
+        {{/rsa-context-menu}}
+      {{/each}}
+    {{else}}
+      {{value}}
+    {{/if}}
+  </div>
+</box>
+

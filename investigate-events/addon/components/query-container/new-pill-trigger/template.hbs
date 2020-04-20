@@ -1,0 +1,16 @@
+{{#if isAddNewPill}}
+  {{query-container/query-pill
+    canPerformTextSearch=canPerformTextSearch
+    metaOptions=metaOptions
+    languageAndAliasesForParser=languageAndAliasesForParser
+    sendMessage=(action "handleMessage")
+    position=newPillPosition
+    pillPlaceholder=pillPlaceholder
+    hasTextPill=hasTextPill
+    pillsInsideParens=pillsInsideParens
+    valueSuggestions=(readonly valueSuggestions)
+    isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
+  }}
+{{else}}
+  <div title={{t "queryBuilder.insertFilter"}} class="new-pill-trigger" {{action "triggerNewPill"}}>&nbsp;</div>
+{{/if}}

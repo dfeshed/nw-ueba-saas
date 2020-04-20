@@ -1,0 +1,36 @@
+@import "recurrence-interval";
+@import "effective-date";
+@import "start-time";
+@import "primary-address";
+@import "cpu-max";
+@import "vm-max";
+@import "custom-config";
+@import "usm-radios";
+@import "usm-ports";
+@import "usm-beacons";
+@import "signature-dropdown";
+
+.schedule-config {
+  min-height: 80vh;
+
+  .schedule-form__content-fields {
+    padding: rsa-whitespace(more) 0 0 0
+  }
+
+  .scan-options, .schedule-time {
+    padding: rsa-whitespace(more) 0 0 0;
+    width: 45%;
+  }
+
+  .text {
+    color: text-color(primary, light);
+    line-height: 2rem;
+    @include rsa-font(header, small);
+  }
+
+  .schedule-form__content {
+    .button-holder {
+      padding-top: rsa-whitespace(more);
+    }
+  }
+}

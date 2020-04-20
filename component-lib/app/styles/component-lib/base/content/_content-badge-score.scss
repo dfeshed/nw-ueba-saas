@@ -1,0 +1,166 @@
+.rsa-content-badge-score {
+  position: relative;
+  overflow: hidden;
+  padding: rsa-whitespace(less);
+  box-sizing: border-box;
+  height: 100%;
+
+  svg {
+    margin: 0;
+    box-sizing: border-box;
+    position: relative;
+    height: 100%;
+    width: 100%;
+
+    circle {
+      stroke: $contentBadgeScoreCircleColor;
+      stroke-width: 2;
+      fill: transparent;
+    }
+  }
+
+  .details {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-60%);
+    text-align: center;
+
+    .score, .label {
+      color: $contentBadgeScoreLabelColor;
+    }
+
+    .score {
+      @include rsa-font(light);
+      font-size: 2.75em;
+    }
+
+    .label {
+      @include rsa-font(light);
+      text-transform: uppercase;
+      font-size: .65rem;
+      width: 80%;
+      margin: 0 auto;
+    }
+  }
+
+  &.is-small,
+  &.is-smaller {
+    .score {
+      font-size: 1.75rem;
+    }
+  }
+
+  &.is-large {
+    .score {
+      font-size: 3rem;
+    }
+  }
+
+  &.is-larger {
+    .score {
+      font-size: 4rem;
+    }
+  }
+
+  &.is-largest {
+    .score {
+      font-size: 5rem;
+    }
+  }
+
+  &.hide-label {
+    .label {
+      display: none;
+    }
+  }
+
+  &:not(.is-inline) {
+    &.invert-color {
+      &.is-danger {
+        circle {
+          stroke: text-color(accentOne);
+        }
+      }
+      &.is-high {
+        circle {
+          stroke: text-color(accentThree);
+        }
+      }
+
+      &.is-medium {
+        circle {
+          stroke: text-color(accentFour);
+        }
+      }
+      &.is-low {
+        circle {
+          stroke: text-color(accentTwo);
+        }
+      }
+    }
+
+    &:not(.invert-color) {
+      &.is-danger {
+        background-image: linear-gradient(180deg, background-color(accentOne), background-color(accentOne, dark));
+      }
+
+      &.is-high {
+        background-image: linear-gradient(180deg, background-color(accentThree), background-color(accentThree, dark));
+      }
+
+      &.is-medium {
+        background-image: linear-gradient(180deg, background-color(accentFour), background-color(accentFour, dark));
+      }
+
+      &.is-low {
+        background-image: linear-gradient(180deg, background-color(accentTwo), background-color(accentTwo, dark));
+      }
+    }
+  }
+
+  &.is-inline {
+    @include rsa-flex-direction(row);
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+
+    .progress-bar {
+      margin-left: rsa-whitespace(least);
+      height: 0.9rem;
+    }
+
+    @for $i from 10 through 100 {
+      &.progress-bar-length-#{$i} {
+        .progress-bar {
+          $rsa-flex-grow-val: $i / 100;
+          @include rsa-vendor-prefix(flex-grow, $rsa-flex-grow-val);
+        }
+      }
+    }
+
+    &.is-danger {
+      .progress-bar {
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentOne, dark));
+      }
+    }
+    &.is-high {
+      .progress-bar {
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentThree, dark));
+      }
+    }
+    &.is-medium {
+      .progress-bar {
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentFour, dark));
+      }
+    }
+    &.is-low {
+      .progress-bar {
+        background-image: linear-gradient(90deg, background-color(neutral, base, transparent), background-color(accentTwo, dark));
+      }
+    }
+  }
+}
+
+

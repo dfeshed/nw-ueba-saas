@@ -1,0 +1,11 @@
+.simple-detail-display-wrapper {
+  background-color: $host-detail-background;
+  .host-property-panel {
+    overflow: auto;
+  }
+  .host-details-file-actionbar {
+    max-height: 3rem;
+    padding-top: 6px;
+  }
+
+}

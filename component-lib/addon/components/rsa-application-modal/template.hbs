@@ -1,0 +1,22 @@
+{{yield}}
+
+{{#if isOpen}}
+  {{#ember-wormhole to="modalDestination"}}
+    <div class="rsa-application-overlay" {{action "closeModal"}}></div>
+
+    <div class="rsa-application-modal-content {{style}}">
+      {{#if contextualHelpRequired}}
+        <div class="button-modal help-button">
+          {{#rsa-form-button isIconOnly=true defaultAction=(action "goToHelp" module topic)}}
+            {{rsa-icon name="help-circle" size="small"}}
+          {{/rsa-form-button}}
+        </div>
+      {{/if}}
+      <div {{action "closeModal"}} class="button-modal close-button">
+        {{rsa-icon name="close" size="small"}}
+      </div>
+      <h3>{{label}}</h3>
+      {{yield}}
+    </div>
+  {{/ember-wormhole}}
+{{/if}}

@@ -1,0 +1,12 @@
+<div class="key">
+  {{#properties-for/key-value/item-definition}}
+    {{formattedName}}
+  {{/properties-for/key-value/item-definition}}
+  {{#if member.isNestedValue}}
+    {{#properties-for/key-value/item-description}}
+      {{component nestedComponentClass item=item itemPath=itemPath keyName=formattedName}}
+    {{/properties-for/key-value/item-description}}
+  {{else}}
+    {{component "properties-for/determine-value" key=member.name value=member.value}}
+  {{/if}}
+</div>

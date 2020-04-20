@@ -1,0 +1,34 @@
+<box fit class="rsa-explorer-inspector__header">
+  {{#if backToRouteName}}
+    <vbox justify="center" class="back">
+      {{#link-to (readonly backToRouteName)}}
+        {{rsa-icon name="arrow-left-12" title=backToRouteText}}
+      {{/link-to}}
+    </vbox>
+  {{/if}}
+  <h2>
+    {{yield (hash
+      inspectorHeader=(component inspectorHeaderComponent
+        info=(readonly info)
+        deleteItem=deleteItem
+        updateItem=updateItem)
+    )}}
+  </h2>
+</box>
+{{#if hasInspectorToolbar}}
+  <hbox fit justify="center" nowrap class="rsa-explorer-inspector__toolbar">
+    <span class="rsa-tab text-only is-active">
+      {{t "rsaExplorer.inspector.overview"}}
+    </span>
+    {{yield "inspector-toolbar" (get this "viewMode")}}
+  </hbox>
+{{/if}}
+<box class="rsa-explorer-inspector__body">
+  {{yield (hash
+    viewMode=(get this "viewMode")
+    inspectorContent=(component inspectorContentComponent
+      info=(readonly info)
+      deleteItem=deleteItem
+      updateItem=updateItem)
+    )}}
+</box>

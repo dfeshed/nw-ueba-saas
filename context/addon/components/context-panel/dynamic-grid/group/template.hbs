@@ -1,0 +1,23 @@
+{{rsa-content-definition label=(t title)}}
+<div>
+  {{#if (eq displayType "inline")}}
+    {{#each groupDataArray as |cellData |}}
+      <div class="rsa-context-panel__grid__host-details__field-value">
+        {{cellData}}
+      </div>
+    {{/each}}
+  {{else}}
+    {{#rsa-content-tethered-panel-trigger class="rsa-context-panel__grid__host-details__tetheredPanel" panel=tetherPanelId}}
+      <div class="rsa-context-panel__grid__host-details__groupdata">{{groupSize}}</div>
+    {{/rsa-content-tethered-panel-trigger}}
+    {{#rsa-content-tethered-panel panelId=tetherPanelId displayCloseButton=false position="top-left"}}
+      <section class="rsa-context-panel__grid__host-details__group">
+        {{#each groupDataArray as |cellData |}}
+          <div class="rsa-context-panel__grid__host-details__field-value" title= {{cellData}}>
+            {{cellData}}
+          </div>
+        {{/each}}
+      </section>
+    {{/rsa-content-tethered-panel}}
+  {{/if}}
+</div>

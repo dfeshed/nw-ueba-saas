@@ -1,0 +1,7 @@
+{{#if (gt searchMatchesCount 1)}}
+  {{events-table-container/header-container/prev-search-match searchScrollIndex=searchScrollIndex searchMatchesCount=searchMatchesCount}}
+  {{events-table-container/header-container/next-search-match searchScrollIndex=searchScrollIndex searchMatchesCount=searchMatchesCount}}
+{{/if}}
+{{#if searchTerm}}
+  {{events-table-container/header-container/clear-search}}
+{{/if}}

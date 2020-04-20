@@ -1,0 +1,29 @@
+<h1 class="large centered">Index</h1>
+{{#rsa-chart data=graphAdapter as |params|}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=0
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=1
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+<h1 class="large centered">{{totalQueries}} Queries</h1>
+{{#dashboard-properties-grid}}
+  {{#if (not isBroker)}}
+    {{dashboard-property-item propertyName="Query Memory" propertyValue=valuesAdapter.query_memory type="bytes"}}
+    {{dashboard-property-item propertyName="Sessions Since Save" propertyValue=valuesAdapter.sessions_since_save type="numeric"}}
+  {{/if}}
+  {{dashboard-property-item propertyName="Earliest Time" propertyValue=valuesAdapter.time_begin}}
+  {{dashboard-property-item propertyName="Most Recent Time" propertyValue=valuesAdapter.time_end}}
+  {{#if (not isBroker)}}
+    {{dashboard-property-item propertyName="Background Indexer" propertyValue=valuesAdapter.updater_state}}
+    {{dashboard-property-item propertyName="Keys Exceeding Value Limit" propertyValue=valuesAdapter.meta_overflow}}
+  {{/if}}
+{{/dashboard-properties-grid}}

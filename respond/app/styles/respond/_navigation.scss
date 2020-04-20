@@ -1,0 +1,13 @@
+$navbarHeight: 49px;
+
+// Hide the Respond nav bar on the incident and alert details page
+.respond-engine.incident, .respond-engine.alert {
+  > .rsa-nav-tab-group {
+    display: none;
+  }
+}
+
+// Adjust the explorer height to account for the navigation
+.respond-engine .rsa-explorer {
+  height: calc(100vh - #{$navbarHeight});
+}

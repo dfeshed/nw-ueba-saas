@@ -1,0 +1,20 @@
+.rsa-investigate-query-container {
+  &__time-selector {
+    margin-right: rsa-whitespace(less);
+    &.time-range-invalid {
+      .rsa-date-time-range {
+        border-color: text-color(accentOne, darker);
+      }
+    }
+  }
+
+}
+.rsa-investigate-time-range {
+  display: inline;
+}
+
+.timerange-selector-panel {
+  max-height: 20rem;
+  overflow-y: auto;
+  overflow-x: hidden
+}

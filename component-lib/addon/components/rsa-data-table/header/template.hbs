@@ -1,0 +1,75 @@
+{{#if enableColumnSelector}}
+
+  {{#rsa-content-tethered-panel-trigger
+    panel="columnSelectorpanel"
+    triggerEvent="click"
+    class="rsa-data-table-header__column-selector"}}
+    {{rsa-icon name="cog" click=(action "clearSearchTerm")}}
+  {{/rsa-content-tethered-panel-trigger}}
+
+  {{#rsa-content-tethered-panel displayCloseButton=false position="left-bottom" panelClass="rsa-data-table-column-selector-panel" panelId="columnSelectorpanel"}}
+    <section>
+      {{#if enableColumnSearch}}
+        <section class="search-text-field">
+          {{rsa-form-input value=searchTerm placeholder=(t "tables.columnChooser.filterPlaceHolder")}}
+        </section>
+      {{/if}}
+      <ul>
+        {{#if (gt filterColumnChooser.length 0)}}
+          {{#each filterColumnChooser as |column|}}
+            {{#if (and (not-eq column.dataType "checkbox") (not-eq column.dataType "radio"))}}
+              <li>
+                <label class="rsa-form-checkbox-label {{if (eq column.field "time") "disabled"}} {{concat "column-selection-" column.field}} {{if column.selected "checked"}}">
+                  {{rsa-form-checkbox
+                    disabled=(eq column.field "time")
+                    checked=column.selected
+                    change=(action "toggleColumn" column)}}
+                  {{#if translateTitles}}
+                    {{t column.title}}
+                  {{else}}
+                    {{column.title}}
+                  {{/if}}
+                </label>
+              </li>
+            {{/if}}
+          {{/each}}
+        {{else}}
+          <span class="no-matching-columns">{{t "tables.columnChooser.noMatchingColumns"}}</span>
+        {{/if}}
+      </ul>
+    </section>
+  {{/rsa-content-tethered-panel}}
+
+{{/if}}
+
+{{#sortable-group
+  class="rsa-data-table-header-row js-header-row"
+  direction="x"
+  model=table.visibleColumns
+  onChange=(action "reorderColumns" target=table)
+  tagName="div" as |group|}}
+
+  {{#if table.columnsDefinedDeclaratively}}
+    {{!assume the consumer provided a block that includes an individual table cell for each column; no need to iterate}}
+    {{yield this}}
+  {{else}}
+    {{!for each column model, render a header-cell, wrapped in sortable-item so it can be drag-moved}}
+    {{#each group.model as |column index|}}
+      {{#group.item
+        class="rsa-data-table-header-cell"
+        model=column
+        spacing=3
+        tagName="div"}}
+        {{#rsa-data-table/header-cell
+          column=column
+          currentSort=currentSort
+          handle=moveHandleSelector
+          index=index
+          translateTitle=translateTitles}}
+          {{yield column index}}
+        {{/rsa-data-table/header-cell}}
+      {{/group.item}}
+    {{/each}}
+  {{/if}}
+
+{{/sortable-group}}

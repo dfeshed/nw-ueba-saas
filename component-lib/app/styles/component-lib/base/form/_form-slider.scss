@@ -1,0 +1,153 @@
+.noUi-target {
+  border: none;
+  margin: 3rem 1rem 3rem 0;
+
+
+  &.noUi-background, .noUi-background {
+    background: $formSliderBackgroundColor;
+    box-shadow: none;
+  }
+
+  .noUi-connect {
+    background: $formSliderConnectColor;
+  }
+
+  &.noUi-horizontal, .noUi-horizontal {
+    height: 3px;
+  }
+
+  .noUi-handle {
+    width: 18px;
+    height: 18px;
+    left: 0px;
+    top: -7px;
+    border: none;
+    border-radius: 18px;
+    background: $formSliderHandleColor;
+    box-shadow: none;
+    transform: none;
+
+    &-lower {
+      .noUi-tooltip {
+        top: auto;
+        bottom: -32px;
+        right: auto;
+        left: 0;
+      }
+    }
+
+    &-upper {
+      .noUi-tooltip {
+        top: -32px;
+        bottom: auto;
+        right: 0;
+        left: auto;
+      }
+    }
+  }
+
+  .noUi-tooltip {
+    display: block;
+    color: $formSliderToolTipTextColor;
+    padding: rsa-whitespace(least);
+    @include border(1px, solid, primary);
+    background: $formSliderToolTipBoxBackgroundColor;
+  }
+
+  &:hover:not(.is-disabled):not(.is-read-only):not(.is-error) {
+    cursor: pointer;
+
+    &.noUi-background, .noUi-background {
+      background: $formSliderHoverBackgroundColor;
+    }
+    .noUi-handle {
+      cursor: pointer;
+      background: $formSliderHoverHandleColor ;
+    }
+    .noUi-connect {
+      background: $formSliderHoverConnectColor;
+    }
+  }
+
+  &.is-error:hover {
+    cursor: pointer;
+
+    .noUi-handle {
+      cursor: pointer;
+    }
+  }
+
+  .noUi-state-drag {
+    background: $formSliderHoverBackgroundColor;
+    &.noUi-background, .noUi-background {
+      background: $formSliderHoverBackgroundColor;
+    }
+    .noUi-handle {
+      cursor: pointer;
+      background: $formSliderHoverHandleColor ;
+    }
+    .noUi-connect {
+      background: $formSliderHoverConnectColor;
+    }
+  }
+
+  .noUi-handle::after, .noUi-handle::before {
+    display: none;
+  }
+
+  &.is-disabled {
+    cursor: default;
+
+    &.noUi-background, .noUi-background {
+      background: $formSliderDisabledBackgroundColor;
+    }
+
+    .noUi-handle {
+      cursor: default;
+      background: $formSliderDisabledHandleColor ;
+    }
+
+    .noUi-connect {
+      background: $formSliderDisabledConnectColor;
+    }
+  }
+
+  &.is-read-only {
+    cursor: default;
+
+    &.noUi-background, .noUi-background {
+      background: $formSliderReadOnlyBackgroundColor;
+    }
+
+    .noUi-handle {
+      cursor: default;
+      background: $formSliderReadOnlyHandleColor;
+    }
+
+    .noUi-connect {
+      background: $formSliderReadOnlyConnectColor;
+    }
+  }
+
+  .noUi-active {
+    @include border(1.5px, solid, secondary);
+  }
+
+  &.is-error {
+    &.noUi-background, .noUi-background {
+      background: $formSliderErrorBackgroundColor;
+    }
+
+    .noUi-handle {
+      background: $formSliderErrorHandleColor;
+    }
+
+    .noUi-connect {
+      background: $formSliderErrorConnectColor;
+    }
+
+    .noUi-active {
+      @include border(1.5px, solid, accentOne);
+    }
+  }
+}

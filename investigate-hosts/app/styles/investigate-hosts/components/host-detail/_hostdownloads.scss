@@ -1,0 +1,65 @@
+.downloaded-files-body {
+  min-height: 100%;
+  .fileType {
+    text-transform: uppercase;
+  }
+  .downloaded-file-name a {
+    color: text-color(secondary, light);
+  }
+  .download-status{
+    .rsa-loader {
+      margin: auto;
+      width: 87px;
+      height: 20px;
+      overflow: hidden;
+    }
+    i {
+      margin-top: 0.3rem;
+    }
+  }
+  .title {
+    font-size: 1.28rem;
+    font-weight: 100;
+    padding-right: 1rem;
+  }
+}
+
+.host-downloads{
+  .downloads-action-bar {
+    padding: 1.5rem;
+    padding-left: 1rem;
+    > div {
+      display: inline-block;
+    }
+    .title, .rsa-form-button-wrapper {
+      margin-right: rsa-whitespace(less);
+    }
+  }
+
+  .show-left-zone .title-header {
+    display: none;
+  }
+
+  .rsa-data-table {
+    height: calc(100% - 101px);
+    .rsa-data-table-header-cell.is-sorted {
+      i.sort {
+        color: text-color(neutral);
+      }
+
+    }
+  }
+
+  .left-zone {
+    .rsa-header {
+
+      height: 70px;
+      .title {
+        padding-top: 1.8rem;
+      }
+      .close-zone {
+        padding-top: 1.4rem;
+      }
+    }
+  }
+}

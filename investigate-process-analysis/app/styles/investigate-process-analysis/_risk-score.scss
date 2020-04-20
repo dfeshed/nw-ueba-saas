@@ -1,0 +1,26 @@
+.process-tree {
+  circle {
+    stroke: $contentBadgeScoreLabelColor;
+    stroke-width: 2;
+    fill: transparent;
+  }
+  .score-text {
+    @include rsa-font(bold, small);
+    fill: $contentBadgeScoreLabelColor;
+    text-anchor: middle;
+    fill: text-color(neutral);
+  }
+  .is-danger {
+      stroke: text-color(accentOne);
+      fill: text-color(accentOne);
+  }
+  .is-high {
+      stroke: text-color(accentThree);
+  }
+  .is-medium {
+      stroke: text-color(accentFour);
+  }
+  .is-low {
+      stroke: text-color(accentTwo);
+  }
+}

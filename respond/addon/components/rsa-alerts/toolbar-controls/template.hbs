@@ -1,0 +1,17 @@
+{{#if accessControl.respondCanManageAlerts}}
+  {{incident-toolbar
+    isDisabled=(or hasNoSelections hasSelectedAlertsBelongingToIncidents)
+    selectedAlerts=alertIds
+    alertCount=alertIds.length
+ }}
+{{/if}}
+{{#if accessControl.respondCanDeleteAlerts}}
+  <div class="action-control delete-button">
+    {{#rsa-form-button
+      style="danger"
+      isDisabled=hasNoSelections
+      defaultAction=(action "deleteAlerts")}}
+      {{t "forms.delete"}}
+    {{/rsa-form-button}}
+  </div>
+{{/if}}

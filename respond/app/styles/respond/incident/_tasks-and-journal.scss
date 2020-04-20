@@ -1,0 +1,41 @@
+$headerHeight: 30px;
+$addNewTaskControlHeight: 58px;
+
+.rsa-journal-and-tasks {
+  height: 100%;
+
+  centered {
+    height: 100%;
+    font-style: italic;
+  }
+
+  &__toolbar {
+    min-height: 25px;
+    @include border-bottom(1px, solid, primary, light, nearly-transparent);
+
+    .rsa-tab {
+      margin: 0 rsa-whitespace();
+    }
+  }
+
+  .liquid-container {
+    height: 100%;
+  }
+  .liquid-child {
+    height: 100%;
+
+    > .rsa-form-button-wrapper {
+      margin: rsa-whitespace();
+    }
+
+    .task-list {
+      height: calc(100% - #{$headerHeight} - #{$addNewTaskControlHeight});
+      overflow: hidden;
+      overflow-y: auto;
+
+      &.read-only {
+        height: calc(100% - #{$headerHeight});
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+.usm-source-wizard {
+
+  .source-wizard-titlebar {
+
+    /* truncate name & description with an ellipsis */
+    div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* margin only on the description */
+    div:nth-child(2) {
+      margin-top: rsa-whitespace(less);
+    }
+
+    .source-name-label {
+      @include rsa-font(header);
+      color: text-color(primary);
+    }
+
+    .source-description-label {
+      @include rsa-font(default, small);
+      color: text-color(primary);
+    }
+  }
+
+}

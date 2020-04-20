@@ -1,0 +1,69 @@
+<div class="recon-email-header">
+  {{#each-in headerFields as |headerField headerValue|}}
+    <hbox class="recon-email-header-item">
+      <box class="meta-name header-label">{{t (concat "recon.emailView." headerField)}}</box>
+      <box class="meta-value header-value">{{headerValue}}</box>
+    </hbox>
+  {{/each-in}}
+  {{#if isEmailExpanded}}
+    {{#if email.attachments}}
+      <div class="recon-email-header-item horizontal">
+        <span class="toggle-icon additional-header attachments">
+          {{rsa-icon
+              name=(concat "arrow-" attachmentsCollapseArrowDirection "-12")
+              click=(action "toggleAttachmentsExpansion")
+          }}
+          {{t "recon.emailView.attachment"}}
+        </span>
+      </div>
+
+      {{#if isAttachmentsExpanded}}
+        <hbox class="recon-email-header-item">
+          <box class="meta-name header-label">
+            <label class="rsa-form-checkbox-label {{if allAttachmentsSelected "checked"}}">
+              {{rsa-form-checkbox
+                  checked=allAttachmentsSelected
+                  change=(action "toggleSelectAll")}}
+            </label>
+          </box>
+          <box class="attachment-name meta-value header-value">
+            {{t "recon.emailView.allAttachments"}}
+          </box>
+        </hbox>
+        {{#each email.attachments as |attachment|}}
+          <hbox class="recon-email-header-item">
+            <box class="meta-name header-label">
+              <label class="rsa-form-checkbox-label {{if (contains attachment.attachmentId selectedAttachments) "checked"}}">
+                {{rsa-form-checkbox
+                    checked=(contains attachment.attachmentId selectedAttachments)
+                    change=(action "toggleSelection" attachment)}}
+              </label>
+            </box>
+            <box class="attachment-name meta-value header-value">
+              {{attachment.filename}}
+            </box>
+          </hbox>
+        {{/each}}
+      {{/if}}
+    {{/if}}
+
+    <div class="recon-email-header-item horizontal">
+      <span class="toggle-icon additional-header">
+        {{rsa-icon
+          name=(concat "arrow-" headersCollapseArrowDirection "-12")
+          click=(action "toggleEmailHeadersExpansion")
+        }}
+        {{t "recon.emailView.additionalHeaderDetails"}}
+      </span>
+    </div>
+  {{/if}}
+
+  {{#if isEmailHeadersExpanded}}
+    {{#each-in additionalHeaderFields as |headerField headerValue|}}
+      <hbox class="recon-email-header-item">
+        <box class="meta-name header-label">{{ headerField }}</box>
+        <box class="meta-value header-value">{{ headerValue }}</box>
+      </hbox>
+    {{/each-in}}
+  {{/if}}
+</div>

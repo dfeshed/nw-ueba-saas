@@ -1,0 +1,25 @@
+<header class="rsa-group-table-group__header-container" style={{headerContainerStyle}}>
+  {{yield (hash
+    header=(component headerComponentClass
+      group=group
+      index=index
+      isSample=isSample
+      table=table)
+  )}}
+</header>
+{{#if (or group.isOpen isSample)}}
+  <section class="rsa-group-table-group__items-container" style={{itemsContainerStyle}}>
+    {{#each itemsInViewport as |item itemIndex|}}
+      {{yield (hash
+        item=(component itemComponentClass
+          group=group
+          groupIndex=index
+          item=item
+          relativeIndex=itemIndex
+          relativeIndexOffset=firstItemIndex
+          isSample=isSample
+          table=table)
+      )}}
+    {{/each}}
+  </section>
+{{/if}}

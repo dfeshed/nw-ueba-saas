@@ -1,0 +1,39 @@
+{{#if metaLoading}}
+  <div class="recon-loader">
+    {{rsa-loader size="larger"}}
+  </div>
+{{else}}
+  {{#if metaError}}
+    {{rsa-panel-message message=metaError}}
+  {{else}}
+    {{#if metaItems}}
+      <hbox class="meta-heading">
+        <h2>{{t "investigateShared.eventMetaTitle"}}</h2>
+      </hbox>
+
+      <hbox class="meta-grouping">
+        <label class="meta-grouping-label">{{t "investigateShared.groupBy.name"}}</label>
+        <div class="meta-grouping-drop-down">
+          {{#power-select
+            options=(readonly groupByOptions)
+            selected=selectedGroupBy
+            searchEnabled=false
+            onchange=(action "changeOption") as |option| }}
+            {{t (concat "investigateShared.groupBy.options." option)}}
+          {{/power-select}}
+        </div>
+      </hbox>
+
+      {{recon-meta-content-group
+        groupType=selectedGroupBy
+        metaItems=metaItems
+        isTextView=isTextView
+        metaToHighlight=metaToHighlight
+        eventHasPayload=eventHasPayload
+        queryInputs=queryInputs
+        language=language
+        metaFormatMap=metaFormatMap
+        metaHighlightCount=metaHighlightCount}}
+    {{/if}}
+  {{/if}}
+{{/if}}

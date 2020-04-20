@@ -1,0 +1,37 @@
+{{#list-manager
+  stateLocation=stateLocation
+  listName=listName
+  modelName=modelName
+  selectedItemId=selectedColumnGroupId
+  list=columnGroups
+  isDisabled=isDisabled
+  itemSelection=(action "selectColumnGroup")
+  helpId=helpId
+  shouldSelectedItemPersist=true
+  as |manager|
+}}
+
+  {{manager.filter}}
+
+  {{#manager.itemList as |itemList|}}
+    {{#itemList.item as |item|}}
+      {{events-table-container/header-container/column-groups/column-group-item columnGroup=item}}
+    {{/itemList.item}}
+  {{/manager.itemList}}
+
+  {{#manager.details
+    itemTransform=(action "columnGroupResponseMapping")
+    isValidItem=(action "validateEditedColumnGroup")
+    as |details|}}
+
+    {{#if details.delete}}
+      {{details.delete disabledOverride=(is-column-group-in-profile details.item profiles)}}
+    {{else}}
+      {{events-table-container/header-container/column-groups/column-group-details
+        columnGroup=details.item
+        editColumnGroup=details.itemEdited}}
+    {{/if}}
+
+  {{/manager.details}}
+
+{{/list-manager}}

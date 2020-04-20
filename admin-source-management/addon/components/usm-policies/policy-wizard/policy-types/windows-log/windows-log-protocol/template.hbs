@@ -1,0 +1,10 @@
+<div class="windows-log-protocol__list">
+  {{#power-select
+    options=protocolsList
+    selected=selectedProtocol
+    searchField=option
+    onchange=(action "updatePolicyProperty" "protocol") as |option|
+  }}
+    {{option}}
+  {{/power-select}}
+</div>

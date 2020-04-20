@@ -1,0 +1,22 @@
+<box class="springboard-pager" {{did-insert this.setup}}>
+  <div class="page-footer">
+    <div class="action ">
+      <RsaFormButton class="action left" @isDisabled={{this.isPagerLeftDisabled}} @isIconOnly={{true}} @defaultAction={{this.moveLeft}}>
+        <RsaIcon @name={{"arrow-left-12" }}/>
+      </RsaFormButton>
+    </div>
+    {{#each numberOfItems as |page index|}}
+      <div title="{{page.name}}({{page.leadCount}})" class="page {{if page.isActive "active"}}" {{action "pageAction" index}}></div>
+    {{/each}}
+    {{#if @showAddLeadAction}}
+      <div class="action add">
+        <RsaIcon @name={{"add-1"}}/>
+      </div>
+    {{/if}}
+    <div class="action ">
+      <RsaFormButton class="action right" @isDisabled={{this.isPagerRightDisabled}} @isIconOnly={{true}} @defaultAction={{this.moveRight}}>
+        <RsaIcon @name={{"arrow-right-12"}}/>
+      </RsaFormButton>
+    </div>
+  </div>
+</box>

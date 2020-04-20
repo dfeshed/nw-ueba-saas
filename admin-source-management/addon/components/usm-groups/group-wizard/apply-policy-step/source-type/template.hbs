@@ -1,0 +1,137 @@
+<table class="policy-assignment">
+  <tbody>
+    <tr>
+      <td class="source-type-selector">
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            <div class="tooltip">
+              {{#rsa-text-with-tooltip value=(t "adminUsm.groupWizard.applyPolicy.sourceTypeTooltip")
+                style="standard"
+                alwaysShow=true}}
+                {{t "adminUsm.groupWizard.applyPolicy.sourceType"}}
+              {{/rsa-text-with-tooltip}}
+            </div>
+          </div>
+          {{#power-select
+            searchEnabled=true
+            tabIndex="1"
+            placeholder=(t "adminUsm.groupWizard.sourceTypePlaceholder")
+            options=limitedPolicySourceTypes
+            selected=selectedSourceTypeObj
+            searchField="name"
+            triggerClass=(if validator.showError "selector-error")
+            onchange=(action "handleSourceTypeChange") as |option|
+          }}
+            {{rsa-form-select/default-option
+              disabled=option.disabled
+              disabledTooltip=(t option.disabledTooltip)
+              optionLabel=(t option.label)
+            }}
+          {{/power-select}}
+          {{#if validator.showError}}
+            <span class="input-error">
+              {{t (concat "adminUsm.groupCriteria.inputValidations." "validPolicyAssigned" )}}
+            </span>
+          {{/if}}
+        </label>
+      </td>
+      <td class="remove-cell">
+        <span class="remove-source-type" onclick={{action "handleSourceTypeRemove" selectedSourceType}} onkeyup={{action "handleSourceTypeRemove" selectedSourceType}}>
+          {{rsa-icon size="large" displayOnTab=true name="remove-circle-1"}}
+        </span>
+      </td>
+    </tr>
+    <tr>
+      <td class="available">
+        <div class="label-header">
+          {{t "adminUsm.groupWizard.applyPolicy.available"}}
+          <div class="tooltip">
+            {{#rsa-text-with-tooltip value=(t "adminUsm.groupWizard.applyPolicy.availableTooltip")
+              style="standard"
+              alwaysShow=true}}
+              {{rsa-icon size="large" displayOnTab=true name="information-circle"}}
+            {{/rsa-text-with-tooltip}}
+          </div>
+        </div>
+        <table>
+          <tbody>
+            <tr><th>{{t "adminUsm.groupWizard.applyPolicy.policyName"}}</th><th>{{t "adminUsm.groupWizard.applyPolicy.appliedToGroup"}}</th><th>{{t "adminUsm.groupWizard.applyPolicy.description"}}</th><th></th></tr>
+            {{#each availablePoliciesForSourceType as |item|}}
+              {{#if (not-eq selectedPolicy.id item.id)}}
+                <tr>
+                  <td class="policy-name table-cell-text">
+                    {{#rsa-text-with-tooltip value=item.name style="standard"}}
+                      {{item.name}}
+                    {{/rsa-text-with-tooltip}}
+                  </td>
+                  <td class="applied-to-group">
+                    {{#each item.associatedGroups as |group index|}}
+                      {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+                    {{/each}}
+                  </td>
+                  <td class="description table-cell-text">
+                    {{#rsa-text-with-tooltip value=item.description style="standard"}}
+                      {{item.description}}
+                    {{/rsa-text-with-tooltip}}
+                  </td>
+                  <td>
+                    {{#rsa-form-button class="assign-policy"
+                      isIconOnly=true
+                      isDisabled=hasSelectedPolicy
+                      defaultAction=(action "handlePolicyAssignment" item)}}
+                      {{rsa-icon name="add-circle-1" displayOnTab=(not hasSelectedPolicy)}}
+                    {{/rsa-form-button}}
+                  </td>
+                </tr>
+              {{/if}}
+            {{/each}}
+          </tbody>
+        </table>
+      </td>
+      <td class="selected">
+        <div class="label-header">
+          {{t "adminUsm.groupWizard.applyPolicy.selected"}}
+          <div class="tooltip">
+            {{#rsa-text-with-tooltip value=(t "adminUsm.groupWizard.applyPolicy.selectedTooltip")
+              style="standard"
+              alwaysShow=true}}
+              {{rsa-icon size="large" displayOnTab=true name="information-circle"}}
+            {{/rsa-text-with-tooltip}}
+          </div>
+        </div>
+        <table>
+          <tbody>
+            <tr><th>{{t "adminUsm.groupWizard.applyPolicy.policyName"}}</th><th>{{t "adminUsm.groupWizard.applyPolicy.appliedToGroup"}}</th><th>{{t "adminUsm.groupWizard.applyPolicy.description"}}</th><th></th></tr>
+            {{#if selectedPolicy}}
+              <tr>
+                <td class="policy-name table-cell-text">
+                  {{#rsa-text-with-tooltip value=selectedPolicy.name style="standard"}}
+                    {{selectedPolicy.name}}
+                  {{/rsa-text-with-tooltip}}
+                </td>
+                <td class="applied-to-group">
+                  {{#each selectedPolicy.associatedGroups as |group index|}}
+                    {{#if (not-eq index 0)}},  {{/if}}{{group.name}}
+                  {{/each}}
+                </td>
+                <td class="description table-cell-text">
+                  {{#rsa-text-with-tooltip value=selectedPolicy.description style="standard"}}
+                    {{selectedPolicy.description}}
+                  {{/rsa-text-with-tooltip}}
+                </td>
+                <td>
+                  {{#rsa-form-button class="remove-policy"
+                    isIconOnly=true
+                    isDisabled=false
+                    defaultAction=(action "handlePolicyRemove" selectedPolicy)}}
+                    {{rsa-icon name="remove-circle-1" displayOnTab=true}}
+                  {{/rsa-form-button}}
+                </td>
+              </tr>
+            {{/if}}
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>

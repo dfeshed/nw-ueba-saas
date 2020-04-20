@@ -1,0 +1,19 @@
+<div class="rsa-context-panel__liveconnect__heading">{{t "context.lc.identity"}}</div>
+<hbox>
+  <vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.asn") value=liveConnectData.asnNumber}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.organization") value=liveConnectData.asnOrganization}}
+    </div>
+  </vbox>
+  <vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.countryCode") value=liveConnectData.countryCode}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.countryName") value=liveConnectData.country}}
+    </div>
+  </vbox>
+</hbox>

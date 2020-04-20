@@ -1,0 +1,89 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+  {{#spec-category title="States"}}
+    {{#spec-member title="Default ... (new - IS accessible)"}}
+      <label class="rsa-form-checkbox-wrapper">
+        {{rsa-form-checkbox
+          checked=isChecked
+          change=(action 'toggleIsChecked')
+        }}
+        <span>Accessible Checkbox Label</span>
+      </label>
+
+      {{!-- BEGIN-SNIPPET checkbox1
+      <label class="rsa-form-checkbox-wrapper">
+        {{rsa-form-checkbox
+          checked=isChecked
+          change=(action 'toggleIsChecked')
+        }}
+        <span>Accessible Checkbox Label</span>
+      </label>
+      END-SNIPPET --}}
+      {{code-snippet name="checkbox1.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Default"}}
+      <label class="rsa-form-checkbox-label {{if isChecked 'checked'}}">
+        {{rsa-form-checkbox
+        checked=isChecked
+        change=(action 'toggleIsChecked')}}
+        Input Label
+      </label>
+
+      {{!-- BEGIN-SNIPPET checkbox1
+      <label class="rsa-form-checkbox-label {{if isChecked 'checked'}}">
+        {{rsa-form-checkbox
+        checked=isChecked
+        change=(action 'toggleIsChecked')}}
+        Input Label
+      </label>
+      END-SNIPPET --}}
+      {{code-snippet name="checkbox1a.hbs"}}
+    {{/spec-member}}     
+
+    {{#spec-member title="Disabled"}}
+      <label class="rsa-form-checkbox-wrapper {{if true 'disabled'}} {{if isChecked 'checked'}}">
+        {{rsa-form-checkbox
+        checked=isChecked
+        disabled=true
+        change=(action 'toggleIsChecked')}}
+        <span>Input Label</span>
+      </label>
+      {{!-- BEGIN-SNIPPET checkbox3
+      <label class="rsa-form-checkbox-label {{if true 'disabled'}} {{if isChecked 'checked'}}">
+        {{rsa-form-checkbox
+        checked=isChecked
+        disabled=true
+        change=(action 'toggleIsChecked')}}
+        Input Label
+      </label>
+      END-SNIPPET --}}
+      {{code-snippet name="checkbox3.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Error"}}
+      <label class="rsa-form-checkbox-wrapper {{if true 'error'}} {{if isChecked 'checked'}}">
+        {{rsa-form-checkbox
+        checked=isChecked
+        error=true
+        change=(action 'toggleIsChecked')}}
+        <span>Input Label</span>
+      </label>
+      {{!-- BEGIN-SNIPPET checkbox4
+      <label class="rsa-form-checkbox-label {{if true 'error'}} {{if isChecked 'checked'}}">
+        {{rsa-form-checkbox
+        checked=isChecked
+        error=true
+        change=(action 'toggleIsChecked')}}
+        Input Label
+      </label>
+      END-SNIPPET --}}
+      {{code-snippet name="checkbox4.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</fill>
+</hbox>

@@ -1,0 +1,65 @@
+{{#if hasRenderIds}}
+  {{#if stickyContent}}
+    <div class="recon-packet-stuck-header">
+      {{recon-event-detail/single-packet/header
+        isPayloadOnly=isPayloadOnly
+        isSticky=true
+        packet=stickyContent
+      }}
+    </div>
+  {{/if}}
+  <div class="scroll-box">
+    {{#if shouldDisplayNoContentMessage}}
+      {{rsa-panel-message
+        class="content-hidden-message"
+        message=(t "recon.textView.contentHiddenMessage")
+      }}
+    {{else if hasNoRenderedPayload}}
+      {{rsa-panel-message message=(t "recon.packetView.noPayload")}}
+    {{/if}}
+    {{#each renderedPackets key="sequence" as |packet index|}}
+      {{recon-event-detail/single-packet
+        hasSignaturesHighlighted=hasSignaturesHighlighted
+        hasStyledBytes=hasStyledBytes
+        isPayloadOnly=isPayloadOnly
+        index=index
+        packet=packet
+      }}
+    {{/each}}
+
+    {{#if isPacketRenderingUnderWay}}
+      <centered class="rendering-more">
+        {{rsa-loader size="large" label=(t "recon.packetView.renderingMore")}}
+      </centered>
+    {{/if}}
+  </div>
+
+  {{recon-event-detail/single-packet/byte-tooltip}}
+{{else}}
+  {{!--
+    If no processedPackets, but there are packets, means either
+    they are hidden by the UI, or in the process of being rendered.
+    If no packets, show error message
+  --}}
+  {{#if hasPackets}}
+    {{!-- If all data has been hidden by the user, just leave component markup blank --}}
+    {{#if isPacketRenderingUnderWay}}
+      {{!--
+        If the user has not hidden the data themselves, then the data
+        is due to arrive soon via incremental render, so show spinner
+      --}}
+      <div class="recon-loader">
+        {{rsa-loader size="larger"}}
+      </div>
+    {{/if}}
+  {{else}}
+    {{rsa-panel-message message=(t "recon.packetView.noHexData")}}
+  {{/if}}
+{{/if}}
+
+{{recon-pager
+  eventIndex=eventIndex
+  eventTotal=eventTotal
+  isPacket=true
+  isText=false
+}}

@@ -1,0 +1,15 @@
+.rsa-header {
+  .title {
+    @include rsa-font(header, large);
+    padding: rsa-whitespace();
+    letter-spacing: 1px;
+  }
+  .close-zone {
+    position: absolute;
+    right: 0;
+    font-size: 0.5rem;
+    padding: rsa-whitespace(less);
+  }
+
+  @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+}

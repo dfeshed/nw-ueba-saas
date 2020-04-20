@@ -1,0 +1,65 @@
+@import './_styles';
+@import 'components/manifest';
+
+@mixin detail-sizing($width) {
+  .host-container {
+    &-list {
+      right: $width;
+      background-color: background-color(secondary, darkest, nearly-transparent);
+    }
+    &-detail {
+      width: $width;
+    }
+  }
+}
+
+// overwrite the component-lib scss - rsa-data-table__column-chooser
+.panel-content.left-bottom {
+  section {
+    padding-bottom: 0;
+    section.column-chooser-input {
+      margin-right: rsa-whitespace();
+    }
+    ul.column-chooser-lists {
+      height: 30rem;
+    }
+  }
+}
+.rsa-data-table-column-selector-panel > section {
+  max-width: 18rem;
+}
+
+#rsa-data-table__column-selctor__sorted-columns {
+  .rsa-form-checkbox-label::before {
+    top: rsa-whitespace(less);
+  }
+}
+.hosts-route {
+  height: calc(100vh - 90px);
+  .liquid-container,
+  .liquid-child {
+    height: 100%;
+    width: 100%;
+  }
+}
+.host-container {
+  height: 100%;
+  color: text-color(primary, lightest);
+  background-color: background-color(custom, respond);
+  &-list {
+    transition-property: background-color right;
+    transition-duration: 0.3s;
+    overflow: hidden;
+    flex-wrap: nowrap;
+    height: 100%;
+    a {
+      color: text-color(secondary, light);
+      text-decoration: underline;
+    }
+  }
+}
+
+.license-banner.shown + .hosts-route {
+  height: calc(100vh - 126px);
+  width: 100%;
+}

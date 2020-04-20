@@ -1,0 +1,1 @@
+export { default, isEqual } from 'component-lib/helpers/is-equal';

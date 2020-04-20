@@ -1,0 +1,50 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 40px;
+
+@import "create-incident";
+@import "add-to-incident";
+
+@mixin content-panel() {
+  width: 65%;
+  min-height: 300px;
+  .modal-content {
+    padding: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+    // modal content's height does not include header/footer and the padding (1rem)
+    height: calc(100% - #{$modalHeaderHeight} - #{$footerHeight} - 1rem);
+  }
+}
+
+.rsa-application-modal-content.create-incident-modal {
+  width: 33%;
+  height: 33%;
+  max-height: 450px;
+  min-height: 450px;
+
+  .modal-content {
+    height: calc(100% - #{$modalHeaderHeight});
+  }
+}
+
+.rsa-application-modal-content.add-to-incident-modal.investigate-panel{
+  height: 75%;
+  max-height: 600px;
+  @include content-panel();
+}
+
+.rsa-application-modal-content.add-to-incident-modal.respond-panel{
+  height: 65%;
+  max-height: 500px;
+  @include content-panel();
+}
+
+.incident-toolbar {
+  float: left;
+  display: inline-flex;
+  margin-bottom: rsa-whitespace(less);
+
+  .incident-buttons,
+  .create-incident-button,
+  .add-to-incident-button {
+    float: left;
+  }
+}

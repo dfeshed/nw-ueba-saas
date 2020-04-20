@@ -1,0 +1,65 @@
+// Tweaks for tooltip in text view
+.list-item {
+  padding: rsa-whitespace(less) rsa-whitespace();
+
+  &:hover {
+    cursor: pointer;
+    color: text-color(primary, lightest);
+    text-decoration: underline;
+    background-color: background-color(secondary, dark);
+  }
+}
+
+.recon-tooltip.panel-content {
+  color: text-color(primary, lightest);
+  &.standard {
+    @include border(1px, solid, primary);
+    background-color: background-color(primary);
+    svg {
+      line, polygon {
+        stroke: text-color(primary);
+        fill: text-color(primary);
+      }
+    }
+  }
+
+  header {
+    padding: rsa-whitespace(less) rsa-whitespace();
+  }
+
+  .body {
+    overflow-y: scroll;
+    max-height: 200px;
+  }
+
+  .selection-name {
+    @include rsa-font(header, small);
+    padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(less);
+  }
+
+  .selection-value {
+    @include rsa-font(body);
+    @include rsa-word-wrap();
+    padding: 0 rsa-whitespace() rsa-whitespace(less);
+    max-width: 25rem;
+  }
+
+  > p {
+    max-width: 180px;
+    min-width: auto;
+    padding: 3px 8px 4px;
+  }
+}
+
+// Tweaks to persist the default text highlight color when going out of focus
+::selection {  /* WebKit/Blink Browsers */
+  background: background-color(secondary, dark);
+}
+::-moz-selection { /* Gecko Browsers */
+  background: background-color(secondary, dark);
+}
+.text-container {
+  span {
+    background: background-color(secondary, dark);
+  }
+}

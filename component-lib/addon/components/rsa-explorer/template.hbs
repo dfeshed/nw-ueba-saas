@@ -1,0 +1,134 @@
+<hbox class="main-zone">
+  <vbox class="filter-zone">
+    {{yield (hash name="explorer-filters" instance=this filters=(component "rsa-explorer/explorer-filters"
+      timeframeFilter=timeframeFilter
+      hasCustomDate=hasCustomDate
+      defaultDateFilterField=defaultDateFilterField
+      updateFilter=(action "updateFilter")
+      resetFilters=(action "resetFilters")
+      toggleCustomDate=(action "toggleCustomDate"))
+    )}}
+    {{#rsa-form-button class="close-filters" isIconOnly=true defaultAction=(action "toggleFilterPanel")}}{{rsa-icon name="close"}}{{/rsa-form-button}}
+  </vbox>
+  <vbox class="items-zone">
+    <box fit class="toolbar-zone">
+      {{yield (hash name="explorer-toolbar" instance=this
+        toolbar=(component "rsa-explorer/explorer-toolbar"
+          isFilterPanelOpen=isFilterPanelOpen
+          itemsSelected=itemsSelected
+          hasNoSelections=hasNoSelections
+          selectionCount=selectionCount
+          toggleFilterPanel=(action "toggleFilterPanel")
+          deleteItem=(action "deleteItem")
+          confirm=(action "showConfirmationDialog")
+          updateItem=(action "updateItem")
+        )
+      )}}
+    </box>
+    <box class="items-main">
+      <box class="items-body">
+        {{yield (hash name="explorer-table" instance=this table=(component "rsa-explorer/explorer-table"
+          columns=columns
+          focusedItem=focusedItem
+          itemsSelected=itemsSelected
+          isSelectAll=isSelectAll
+          items=items
+          fetchStatus=itemsStatus
+          noResultsMessage=(or noResultsMessage (t "rsaExplorer.noResults"))
+          sortBy=(action "sortBy")
+          toggleSelectAll=(action "toggleSelectAll")
+          focus=(action "focus")
+          sortField=sortField
+          isSortDescending=isSortDescending)
+          select=(action "select")
+        )}}
+      </box>
+      <box class="items-footer">
+        {{#if (not-eq itemsStatus "wait") }}
+          <centered>
+            <span>{{t "rsaExplorer.footer" count=itemsCount total=itemsTotal}}</span>
+            <span class="vertical-separator"></span>
+            <span class="selection-count">{{ t "rsaExplorer.selectionCount" selectionCount=selectionCount}}</span>
+          </centered>
+        {{/if}}
+      </box>
+    </box>
+  </vbox>
+  <vbox class="inspector-zone">
+    {{yield (hash name="explorer-inspector"
+      instance=this
+      inspector=(component "rsa-explorer/explorer-inspector"
+        info=focusedItem
+        updateItem=(action "updateItem")
+        deleteItem=(action "deleteItem")
+      )
+    )}}
+    {{#rsa-form-button class="close-inspector" isIconOnly=true defaultAction=(action "clearFocusItem")}}{{rsa-icon name="close"}}{{/rsa-form-button}}
+  </vbox>
+</hbox>
+{{#if isTransactionUnderway}}
+  <div class="transaction-overlay">
+    <centered class="transaction-overlay">
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}
+{{#rsa-application-modal eventId="bulk-update-entities" label=(t "rsaExplorer.confirmation.updateTitle") style="standard explorer-confirmation-dialog"}}
+  <div class="modal-content rsa-explorer-bulk-update-confirm">
+    <p>{{t "rsaExplorer.confirmation.bulkUpdateConfrimation"}}:</p>
+    <ul>
+      <li>
+        <span class="label">{{t "rsaExplorer.confirmation.field"}}:</span>
+        <span class="value"><em>{{confirmationData.fieldLabel}}</em></span>
+      </li>
+      <li>
+        <span class="label">{{t "rsaExplorer.confirmation.value"}}:</span>
+        <span class="value">{{confirmationData.valueLabel}}</span>
+      </li>
+      <li>
+        <span class="label">{{t "rsaExplorer.confirmation.recordCountAffected"}}:</span>
+        <span class="value">{{confirmationData.count}}</span>
+      </li>
+    </ul>
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button defaultAction=(action "cancel")}}
+        {{t "forms.cancel"}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style="primary" defaultAction=(action "confirm")}}
+        {{t "forms.ok"}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}
+{{#rsa-application-modal eventId="delete-entities" label=(t "rsaExplorer.confirmation.deleteTitle") style="standard explorer-confirmation-dialog"}}
+  <div class="modal-content rsa-explorer-bulk-delete-confirm">
+    {{#if confirmationData.warningTitle}}
+      <p test-id="test-warning-title">{{confirmationData.warningTitle}}</p>
+    {{/if}}
+    {{#if confirmationData.warnings}}
+      <span test-id="test-warnings" class="text">
+        <ul class="rsa-disc">
+          {{#each confirmationData.warnings as |warning|}}
+            <li>{{warning}}</li>
+          {{/each}}
+        </ul>
+      </span>
+    {{/if}}
+    {{#if confirmationData.warning}}
+      <p test-id="test-warning">{{confirmationData.warning}}</p>
+    {{/if}}
+    <p>{{t "rsaExplorer.confirmation.deleteConfirmation" count=confirmationData.count}}</p>
+  </div>
+  <footer>
+    <hbox class="modal-footer-buttons">
+      {{#rsa-form-button defaultAction=(action "cancel")}}
+        {{t "forms.cancel"}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button style="primary" defaultAction=(action "confirm")}}
+        {{t "forms.ok"}}
+      {{/rsa-form-button}}
+    </hbox>
+  </footer>
+{{/rsa-application-modal}}

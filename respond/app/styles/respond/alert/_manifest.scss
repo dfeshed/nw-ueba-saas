@@ -1,0 +1,50 @@
+@import 'container';
+
+$alertNamesRowHeight: 25px;
+
+.original-alert-details {
+  pre {
+    font-family: monospace;
+    font-size: smaller;
+  }
+}
+
+// Alert Name Filter controls - Alerts Listing page
+.filter-option.alert-name-filter {
+  .rsa-data-table {
+    width: 100%;
+  }
+  .rsa-data-table-body {
+    overflow: auto;
+    @include border(1px, solid, primary);
+    overflow-x: hidden;
+  }
+  .rsa-data-table-body-row {
+    border-top: none;
+    height: $alertNamesRowHeight;
+    label {
+      @include rsa-font(body);
+      color: text-color(primary, lighter);
+    }
+    // 1px bottom border causes a redundant scrollbar to appear
+    &.is-last {
+      border-bottom: 0;
+    }
+  }
+
+  .rsa-data-table-body-cell {
+    padding: 0;
+
+    .rsa-form-checkbox-label {
+      &::before {
+        position: relative;
+        right: 0;
+        margin-right: rsa-whitespace(least);
+      }
+    }
+  }
+
+  .rsa-form-checkbox-label:hover {
+    color: text-color(secondary);
+  }
+}

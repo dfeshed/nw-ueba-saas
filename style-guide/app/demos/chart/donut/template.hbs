@@ -1,0 +1,32 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Donut Chart with Column Name Default Options"}}
+        {{rsa-chart-donut data=model.chartData columnName=model.columnName}}
+        {{!-- BEGIN-SNIPPET donut1
+        {{rsa-chart-donut data=model.chartData columnName=model.columnName}}
+        END-SNIPPET --}}
+        {{code-snippet name="donut1.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Donut Chart with custom options"}}
+        {{rsa-chart-donut data=model.chartData options=model.options columnName=model.columnName}}
+        {{!-- BEGIN-SNIPPET donut2
+        const options = {
+          radius: 150,
+          innerRadius: 125,
+          colorScale: 'MULTI'
+        }
+
+        {{rsa-chart-donut data=model.chartData options=options columnName=model.columnName}}
+        END-SNIPPET --}}
+        {{code-snippet name="donut2.hbs"}}
+      {{/spec-member}}
+
+    {{/spec-category}}
+  </fill>
+</hbox>

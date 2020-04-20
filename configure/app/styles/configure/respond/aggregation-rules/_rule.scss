@@ -1,0 +1,166 @@
+$appNavigationHeaderHeight: 40px;
+$configureNavigationHeight: 48px;
+
+.rsa-incident-rule {
+  height: calc(100vh - #{$appNavigationHeaderHeight} - #{$configureNavigationHeight});
+
+  centered {
+    height: 100%;
+  }
+  .back {
+    justify-content: left;
+    height: 50px;
+    a {
+      text-decoration: none;
+    }
+  }
+  .incident-rule-form {
+    color: text-color(primary, light);
+    padding: 0 rsa-whitespace(more);
+    overflow: auto;
+    height: calc(100% - 60px);
+    .form{
+      display: table;
+      width:100%;
+      border-collapse:collapse;
+    }
+    .form-row{
+      display: table-row;
+    }
+    .form-cell {
+      display: table-cell;
+      padding: rsa-whitespace();
+      &.group-name {
+        width: 150px;
+        @include rsa-font(header, small);
+        vertical-align: top;
+        padding-top: rsa-whitespace();
+        line-height: 21px;
+      }
+    }
+    .incident-rule-grouping-options {
+      .form .form {
+        .group-name, .content {
+          padding-top: 0;
+        }
+      }
+    }
+  }
+  .rule-control {
+    padding-top: rsa-whitespace();
+    > label {
+      display: block;
+      vertical-align: text-top;
+      margin-bottom: rsa-whitespace(least);
+      color: $formInputLabelColor;
+      @include rsa-font(header, small);
+      text-transform: uppercase;
+      line-height: 1rem;
+    }
+    &.description {
+      .rsa-form-textarea textarea {
+        min-height: 5rem;
+      }
+    }
+    &.match-conditions {
+      .query-type {
+        width: 150px;
+        display: inline-block;
+
+        label {
+          display: inline-block;
+          padding-right: rsa-whitespace();
+          color: $formInputLabelColor;
+          @include rsa-font(header, small);
+        }
+      }
+    }
+    &.time-window .rsa-form-input input {
+      line-height: 2rem;
+    }
+    &.group-by-fields, &.time-window, &.incident-categories, &.incident-assignee {
+      width: 480px;
+    }
+    &.group-by-fields .input-error {
+      padding: 0;
+      line-height: 20px;
+      text-transform: uppercase;
+      font-size: .85rem;
+      color: text-color(primary, lightest);
+      border-bottom: 1px solid border-color(accentOne);
+    }
+    &.incident-title, &.incident-summary {
+      width: 700px;
+    }
+    &.incident-title {
+      display: inline-block;
+    }
+    &.time-window {
+      .rsa-form-input {
+        width: 60px;
+        display: inline-block;
+      }
+      .ember-power-select-trigger {
+        display: inline-block;
+        height: 35px;
+        width: 400px;
+        vertical-align: bottom;
+        margin-bottom: 3.5px;
+      }
+    }
+    &.priority {
+      padding-top: 30px;
+      .average-score, .highest-score, .number-alerts {
+        display: block;
+        padding-top: rsa-whitespace();
+        line-height: 20px;
+      }
+      .scoring-options, .scoring-ranges {
+        display: inline-block;
+        vertical-align: top;
+      }
+      .scoring-options {
+        max-width: 575px;
+        min-width: 575px;
+      }
+      .scoring-ranges {
+        label {
+          width: 70px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+        .color-code {
+          display: inline-block;
+          height: 21px;
+          width: 6px;
+          border-radius: 4px;
+          vertical-align: middle;
+          &.critical {
+            background-color: background-color(accentOne)
+          }
+          &.high {
+            background-color: background-color(accentThree);
+          }
+          &.medium {
+            background-color: background-color(accentFour);
+          }
+          &.low {
+            background-color: background-color(accentTwo);
+          }
+        }
+        .rsa-form-input {
+          width: 50px;
+          display: inline-block;
+        }
+        .priority-score-error {
+          color: text-color(accentOne, dark);
+          margin: rsa-whitespace();
+          display: inline-block;
+        }
+      }
+    }
+  }
+  .rule-control:first-of-type {
+    padding-top: 0;
+  }
+}

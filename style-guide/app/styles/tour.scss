@@ -1,0 +1,79 @@
+.swiper-container {
+  position: absolute;
+  top: 2rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .swiper-slide {
+    justify-content: center;
+    align-items: center;
+
+    h2 {
+      text-align: center;
+      color: text-color(primary, lightest);
+      @include rsa-font(header, small);
+    }
+
+    img {
+      @include border(1px, solid, neutral, dark);
+      margin: rsa-whitespace() auto 0;
+      display: block;
+      max-width: calc(100% - 4rem);
+      position: relative;
+      top: -1rem;
+    }
+
+    centered {
+      height: 100%;
+    }
+  }
+}
+
+.swiper-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  padding: rsa-whitespace(less);
+  background: background-color(primary, darkest);
+  @include rsa-layer(controls);
+  justify-content: center;
+
+  .x-toggle-component {
+    margin-left: rsa-whitespace(more);
+    .toggle-text {
+      padding: 0 rsa-whitespace(less);
+    }
+  }
+
+  .run-selector {
+    margin-left: rsa-whitespace(more);
+
+    .rsa-icon {
+      margin-right: rsa-whitespace();
+      color: text-color(primary, lightest);
+
+      &:hover:not(.disabled):not(.swiper-button-disabled) {
+        cursor: pointer;
+        color: text-color(secondary);
+      }
+
+      &.disabled,
+      &.swiper-button-disabled {
+        color: text-color(primary);
+      }
+    }
+  }
+}
+
+body {
+  > .ember-view {
+    height: 100%;
+
+    .images {
+      height: 100%;
+    }
+  }
+}

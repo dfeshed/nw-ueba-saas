@@ -1,0 +1,73 @@
+.rsa-incident-entities-legend {
+  padding: rsa-whitespace(least) rsa-whitespace();
+  @include rsa-font(body,small);
+  line-height: 1.35;
+  text-align: right;
+  background-color: background-color(primary,darker, nearly-opaque);
+
+  &.has-no-data {
+    display: none;
+  }
+
+  .has-exceeded-node-limit {
+    margin-top: rsa-whitespace(least);
+    color: text-color(primary, light);
+
+    .show-all {
+      color: text-color(secondary, light);
+      cursor: pointer;
+    }
+  }
+
+  .datum {
+    @include rsa-font();
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0 0 0 rsa-whitespace(less);
+    color: text-color(neutral);
+
+    label {
+      padding-left: rsa-whitespace(least);
+    }
+
+    &.user {
+      label {
+        color: $entityUserColor;
+      }
+    }
+    &.host {
+      label {
+        color: $entityHostColor;
+      }
+    }
+    &.domain {
+      label {
+        color: $entityDomainColor;
+      }
+    }
+    &.ip {
+      label {
+        color: $entityIPColor;
+      }
+    }
+    &.mac-address {
+      label {
+        color: text-color(primary, light);
+      }
+    }
+    &.file-name {
+      label {
+        color: $entityFileNameColor;
+      }
+    }
+    &.file-hash {
+      label {
+        color: $entityFileHashColor;
+      }
+    }
+  }
+
+  .selection {
+    color: text-color(primary,light);
+  }
+}

@@ -1,0 +1,46 @@
+{{context-panel/data-source-header contextData=contextData dataSourceDetails=liveConnectDsDetails}}
+
+{{#if liveConnectError}}
+  <div class="rsa-context-panel__liveconnect__field">{{t "context.lc.errorMsg" error=liveConnectError}}</div>
+{{else if showContextPanel}}
+  {{#if contextData.liveConnectData.allTags}}
+    <div>
+      {{#if (is-equal model.meta "IP")}}
+        {{context-panel/live-connect/lc-community-activity
+        liveConnectData=contextData.liveConnectData.IpReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
+        {{context-panel/live-connect/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
+      {{else if (is-equal model.meta "FILE_HASH")}}
+        {{context-panel/live-connect/lc-community-activity
+        liveConnectData=contextData.liveConnectData.FileReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
+        {{context-panel/live-connect/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
+        {{context-panel/live-connect/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
+      {{else if (is-equal model.meta "DOMAIN")}}
+        {{context-panel/live-connect/lc-community-activity
+        liveConnectData=contextData.liveConnectData.DomainReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
+        {{context-panel/live-connect/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
+        {{context-panel/live-connect/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
+      {{/if}}
+      {{#each lcColumnList as |columns|}}
+        {{#if (gt (get contextData columns.header) -1)}}
+          <div class="rsa-application-layout-panel rsa-context-panel__liveconnect__heading">
+            {{t columns.title}}&#40;
+            {{check-null (get contextData columns.header) 0}} &#41;
+          </div>
+          <div class="rsa-context-panel__liveconnect__related-entity-error">
+            {{empty-related-entity-msg columns.dataStore (get contextData columns.header) i18n}}
+          </div>
+          {{context-panel/data-table contextData=(get contextData columns.dataStore) dataSourceDetails=columns}}
+        {{/if}}
+      {{/each}}
+    </div>
+  {{/if}}
+{{/if}}

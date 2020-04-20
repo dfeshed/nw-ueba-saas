@@ -1,0 +1,18 @@
+{{#investigate-header
+  activeTab="investigate.investigate-events"
+  as |section| }}
+
+  {{#if section.isIconBar}}
+    {{recon-size-toggle}}
+    {{events-preferences}}
+  {{/if}}
+
+  {{#if section.isMain}}
+    {{outlet}}
+  {{/if}}
+{{/investigate-header}}
+
+
+{{preferences-panel}}
+{{context-menu}}
+

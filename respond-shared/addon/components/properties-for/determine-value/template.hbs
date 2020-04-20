@@ -1,0 +1,9 @@
+{{#if key}}
+  {{#properties-for/determine-value/meta-na hasValue=hasValue as |meta|}}
+    {{meta.template key=key value=value tagName=childTagName testId=childTestId}}
+  {{/properties-for/determine-value/meta-na}}
+{{else}}
+  {{#properties-for/determine-value/na-value hasValue=hasValue as |na|}}
+    {{na.template value=value}}
+  {{/properties-for/determine-value/na-value}}
+{{/if}}

@@ -1,0 +1,77 @@
+$panel-width: 200px;
+
+.divider {
+  @include border-top(1px, solid, primary);
+  @include border-bottom(0, solid, primary);
+  margin: rsa-whitespace() 0;
+}
+
+.host-property-panel {
+  overflow: auto;
+  padding: 0 rsa-whitespace();
+  background: background-color(primary, darkest);;
+}
+
+.header-section {
+  &__title {
+    @include rsa-font(header, small);
+    font-size: 0.85rem;
+    color: text-color(secondary, light);
+    padding: rsa-whitespace() 0;
+  }
+  &__search-box {
+    .rsa-form-input {
+      width: 100%;
+      input {
+        padding-left: rsa-whitespace(less);
+      }
+    }
+    .filter-icon {
+      position: absolute;
+      top: rsa-whitespace();
+      color: text-color(primary, light);
+    }
+  }
+  &__check-box {
+    padding: rsa-whitespace() 0;
+  }
+}
+
+.content-section {
+  &__section-name {
+    font-size: 14px;
+    line-height: 20px;
+    color: text-color(primary, light);
+  }
+  &__property {
+    min-height: 1.7rem;
+    margin-top: 0.5rem;
+    .property-name {
+      @include rsa-font(body, small);
+      display: block;
+      text-align: right;
+      padding-right: rsa-whitespace();
+      color: text-color(primary, light);
+      padding-top: .2rem;
+      line-height: 1.25rem;
+    }
+    .property-value {
+      @include rsa-font(body, small);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      display: block;
+      line-height: 1.25rem;
+      color: text-color(primary, lightest);
+    }
+    .user-name {
+      text-decoration: underline;
+      text-decoration-style: dashed;
+    }
+    .userLink {
+      cursor: pointer;
+      text-decoration: underline;
+      color: text-color(secondary);
+    }
+  }
+}

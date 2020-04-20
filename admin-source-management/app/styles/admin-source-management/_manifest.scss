@@ -1,0 +1,16 @@
+/* import this first so it behaves the same if/when moved to component-lib */
+@import "rsa-lib/manifest";
+
+@import "admin-usm-engine";
+
+@import "usm-create";
+@import "usm-listing";
+
+/* all policy and group related component styles */
+@import "usm-policies/manifest";
+@import "usm-groups/manifest";
+@import "usm-sources/manifest";
+
+/* all policy and group related detail slide out styles */
+@import "usm-detail";
+

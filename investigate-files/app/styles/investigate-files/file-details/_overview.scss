@@ -1,0 +1,44 @@
+.file-overview {
+  min-height: calc(100vh - 140px);
+
+  .file-detail-box {
+    height: calc(100vh - 140px);
+  }
+
+  .alert-context__container {
+    cursor: pointer;
+  }
+
+  .alerts {
+    height: 100%;
+    overflow: auto;
+    max-width: 400px;
+    @include border-right(1px, solid, primary, lightest, nearly-transparent);
+    opacity: opacity-value(opaque);
+  }
+
+  .events {
+    overflow: hidden;
+    .rsa-panel-message{
+      height: 100%;
+    }
+  }
+  .events-list__scroller {
+    display: block;
+    height: calc(100vh - 250px);
+    overflow: auto;
+    position: relative;
+  }
+  .rsa-page-layout {
+    .right-zone {
+      height: calc(100% - 70px);
+    }
+  }
+}
+
+.license-banner.shown + .files-route .file-overview {
+  min-height: calc(100vh - 190px);
+  .file-detail-box {
+    height: calc(100vh - 190px);
+  }
+}

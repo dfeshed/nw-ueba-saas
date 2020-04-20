@@ -1,0 +1,55 @@
+.securityConfigWrapper {
+  column-count: 3;
+  .security-configuration__column {
+    display: inline-block;
+    width: 100%;
+    .securityConfigIcon {
+      width: 5%;
+      margin-right: rsa-whitespace(least);
+      display: inline-block;
+    }
+    .securityConfigDisc {
+      width: 80%;
+      margin-right: rsa-whitespace(least);
+      display: inline-block;
+    }
+  }
+}
+.host-overview {
+  height: 100%;
+  .host-detail-box {
+    height: 100%;
+  }
+  .alerts {
+    height: 100%;
+    min-width: 400px;
+    max-width: 400px;
+    @include border-right(1px, solid, primary, lightest, nearly-transparent);
+    opacity: opacity-value(opaque);
+  }
+
+  .events {
+    .rsa-panel-message{
+      height: 100%;
+    }
+  }
+
+  .alert-context__container {
+    cursor: pointer;
+  }
+  .events-list__table-view-body {
+    height: calc(100% - 45px);
+  }
+}
+
+.host-overview {
+  .center-zone, .right-zone {
+    height: 100%;
+  }
+  .right-zone .rsa-content-warn-text-box {
+    margin-top: rsa-whitespace(more);
+    .message {
+      color: rgba(var(--text-color-primary-lightest), var(--opacity-opaque));
+    }
+  }
+}

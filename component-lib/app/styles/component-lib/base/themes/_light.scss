@@ -1,0 +1,213 @@
+.light-theme {
+  --opacity-opaque: 1;
+  --opacity-nearly-opaque: .8;
+  --opacity-somewhat-opaque: .6;
+  --opacity-translucent: .4;
+  --opacity-nearly-transparent: .2;
+  --opacity-almost-transparent: .1;
+  --opacity-transparent: 0;
+  --opacity-shade-one: .06;
+  --opacity-shade-two: .13;
+  --opacity-shade-three: .19;
+  --opacity-shade-four: .25;
+  --opacity-shade-five: .31;
+  --opacity-shade-six: .38;
+  --opacity-shade-seven: .44;
+  --opacity-shade-eight: .50;
+  --opacity-shade-nine: .56;
+  --opacity-shade-ten: .63;
+  --opacity-shade-eleven: .69;
+  --opacity-shade-twelve: .75;
+  --opacity-shade-thirteen: .81;
+  --opacity-shade-fourteen: .88;
+  --opacity-shade-fifteen: .94;
+  --opacity-shade-sixteen: 1;
+
+  --text-color-neutral-base: 0,0,0; //#000;
+  --text-color-neutral-dark: 255,255,255; //#fff;
+  --border-color-neutral-base: 0,0,0; //#000;
+  --border-color-neutral-dark: 255,255,255; //#fff;
+  --background-color-neutral-base: 0,0,0; //#000;
+  --background-color-neutral-dark: 255,255,255; //#fff;
+
+  --background-color-byte-cell: 247,160,138; //#f7a08a;
+  --background-color-respond-specific: 255,255,255; //#fff;
+  --background-color-nav-menu: 22,22,22; //#161616;
+  --background-color-nav-menu-hover: 33,33,33; //#212121;
+  --text-color-nav-link: 189,189,189; //#BDBDBD;
+  --text-color-nav-link-active: 255,255,255; //#fff;
+  --text-color-nav-link-hover: 255,255,255; //#fff;
+  --text-color-nav-link-lighter: 238,238,238; //#EEEEEE;
+  --text-color-nav-text: 117,117,117; //#757575;
+  --border-color-nav-menu: 66,66,66; //#424242;
+  --border-color-nav-menu-darkest: 22,22,22; //#161616;
+
+  --text-color-primary-darkest: 255,255,255; //#ffffff;
+  --text-color-primary-darker: 246,246,246; //#f6f6f6;
+  --text-color-primary-dark: 238,238,238; //#eeeeee;
+  --text-color-primary-base: 168,168,168; //#A8A8A8;
+  --text-color-primary-light: 118,118,118; //#767676;
+  --text-color-primary-lighter: 96,96,96; //#606060;
+  --text-color-primary-lightest: 17,17,17; //#111111;
+
+  --border-color-primary-darkest: 255,255,255; //#ffffff;
+  --border-color-primary-darker: 246,246,246; //#f6f6f6;
+  --border-color-primary-dark: 238,238,238; //#eeeeee;
+  --border-color-primary-base: 168,168,168; //#A8A8A8;
+  --border-color-primary-light: 118,118,118; //#767676;
+  --border-color-primary-lighter: 96,96,96; //#606060;
+  --border-color-primary-lightest: 17,17,17; //#111111;
+
+  --border-color-accent-one-darkest: 240,162,158; //#F0A29E;
+  --border-color-accent-one-darker: 240,162,158; //#F0A29E;
+  --border-color-accent-one-dark: 232,125,120; //#E87D78;
+  --border-color-accent-one-base: 232,101,91; //#E8655B;
+  --border-color-accent-one-light: 244,26,26; //#F41A1A;
+  --border-color-accent-one-lighter: 166,8,8; //#A60808;
+  --border-color-accent-one-lightest: 166,8,8; //#A60808;
+
+  --border-color-accent-two-darkest: 188,217,94; //#BCD95E;
+  --border-color-accent-two-darker: 188,217,94; //#BCD95E;
+  --border-color-accent-two-dark: 170,207,48; //#AACF30;
+  --border-color-accent-two-base: 149,182,43; //#95B62B;
+  --border-color-accent-two-light: 83,171,48; //#53AB30;
+  --border-color-accent-two-lighter: 51,105,30; //#33691E;
+  --border-color-accent-two-lightest: 51,105,30; //#33691E;
+
+  --border-color-accent-three-darkest: 255,145,82; //#FF9152;
+  --border-color-accent-three-darker: 255,145,82; //#FF9152;
+  --border-color-accent-three-dark: 255,135,66; //#FF8742;
+  --border-color-accent-three-base: 255,117,36; //#FF7524;
+  --border-color-accent-three-light: 241,86,39; //#F15627;
+  --border-color-accent-three-lighter: 191,54,12; //#BF360C;
+  --border-color-accent-three-lightest: 191,54,12; //#BF360C;
+
+  --border-color-accent-four-darkest: 240,209,142; //#F0D18E;
+  --border-color-accent-four-darker: 240,209,142; //#F0D18E;
+  --border-color-accent-four-dark: 235,189,92; //#EBBD5C;
+  --border-color-accent-four-base: 215,155,25; //#d79b19;
+  --border-color-accent-four-light: 192,138,22; //#C08A16;
+  --border-color-accent-four-lighter: 164,118,19; //#A47613;
+  --border-color-accent-four-lightest: 164,118,19; //#A47613;
+
+  --background-color-primary-darkest: 255,255,255; //#ffffff;
+  --background-color-primary-darker: 246,246,246; //#f6f6f6;
+  --background-color-primary-dark: 238,238,238; //#eeeeee;
+  --background-color-primary-base: 168,168,168; //#A8A8A8;
+  --background-color-primary-light: 118,118,118; //#767676;
+  --background-color-primary-lighter: 96,96,96; //#606060;
+  --background-color-primary-lightest: 17,17,17; //#111111;
+
+  --text-color-secondary-darkest: 169,227,254; //#A9E3FE;
+  --text-color-secondary-darker: 169,227,254; //#A9E3FE;
+  --text-color-secondary-dark: 67,195,254; //#43C3FE;
+  --text-color-secondary-base: 1,174,254; //#01AEFE;
+  --text-color-secondary-light: 0,125,184; //#007dB8;
+  --text-color-secondary-lighter: 0,102,150; //#006696;
+  --text-color-secondary-lightest: 0,102,150; //#006696;
+
+  --border-color-secondary-darkest: 169,227,254; //#A9E3FE;
+  --border-color-secondary-darker: 169,227,254; //#A9E3FE;
+  --border-color-secondary-dark: 67,195,254; //#43C3FE;
+  --border-color-secondary-base: 1,174,254; //#01AEFE;
+  --border-color-secondary-light: 0,125,184; //#007dB8;
+  --border-color-secondary-lighter: 0,102,150; //#006696;
+  --border-color-secondary-lightest: 0,102,150; //#006696;
+
+  --background-color-secondary-darkest: 169,227,254; //#A9E3FE;
+  --background-color-secondary-darker: 169,227,254; //#A9E3FE;
+  --background-color-secondary-dark: 67,195,254; //#43C3FE;
+  --background-color-secondary-base: 1,174,254; //#01AEFE;
+  --background-color-secondary-light: 0,125,184; //#007dB8;
+  --background-color-secondary-lighter: 0,102,150; //#006696;
+  --background-color-secondary-lightest: 0,102,150; //#006696;
+
+  --text-color-accent-one-darkest: 240,162,158; //#F0A29E;
+  --text-color-accent-one-darker: 240,162,158; //#F0A29E;
+  --text-color-accent-one-dark: 232,125,120; //#E87D78;
+  --text-color-accent-one-base: 232,101,91; //#E8655B;
+  --text-color-accent-one-light: 244,26,26; //#F41A1A;
+  --text-color-accent-one-lighter: 166,8,8; //#A60808;
+  --text-color-accent-one-lightest: 166,8,8; //#A60808;
+
+  --text-color-accent-two-darkest: 188,217,94; //#BCD95E;
+  --text-color-accent-two-darker: 188,217,94; //#BCD95E;
+  --text-color-accent-two-dark: 170,207,48; //#AACF30;
+  --text-color-accent-two-base: 149,182,43; //#95B62B;
+  --text-color-accent-two-light: 83,171,48; //#53AB30;
+  --text-color-accent-two-lighter: 51,105,30; //#33691E;
+  --text-color-accent-two-lightest: 51,105,30; //#33691E;
+
+  --text-color-accent-three-darkest: 255,145,82; //#FF9152;
+  --text-color-accent-three-darker: 255,145,82; //#FF9152;
+  --text-color-accent-three-dark: 255,135,66; //#FF8742;
+  --text-color-accent-three-base: 255,117,36; //#FF7524;
+  --text-color-accent-three-light: 241,86,39; //#F15627;
+  --text-color-accent-three-lighter: 191,54,12; //#BF360C;
+  --text-color-accent-three-lightest: 191,54,12; //#BF360C;
+
+  --text-color-accent-four-darkest: 240,209,142; //#F0D18E;
+  --text-color-accent-four-darker: 240,209,142; //#F0D18E;
+  --text-color-accent-four-dark: 235,189,92; //#EBBD5C;
+  --text-color-accent-four-base: 215,155,25; //#d79b19;
+  --text-color-accent-four-light: 192,138,22; //#C08A16;
+  --text-color-accent-four-lighter: 164,118,19; //#A47613;
+  --text-color-accent-four-lightest: 164,118,19; //#A47613;
+
+  --background-color-accent-one-darkest: 240,162,158; //#F0A29E;
+  --background-color-accent-one-darker: 240,162,158; //#F0A29E;
+  --background-color-accent-one-dark: 232,125,120; //#E87D78;
+  --background-color-accent-one-base: 232,101,91; //#E8655B;
+  --background-color-accent-one-light: 244,26,26; //#F41A1A;
+  --background-color-accent-one-lighter: 166,8,8; //#A60808;
+  --background-color-accent-one-lightest: 166,8,8; //#A60808;
+
+  --background-color-accent-two-darkest: 188,217,94; //#BCD95E;
+  --background-color-accent-two-darker: 188,217,94; //#BCD95E;
+  --background-color-accent-two-dark: 170,207,48; //#AACF30;
+  --background-color-accent-two-base: 149,182,43; //#95B62B;
+  --background-color-accent-two-light: 83,171,48; //#53AB30;
+  --background-color-accent-two-lighter: 51,105,30; //#33691E;
+  --background-color-accent-two-lightest: 51,105,30; //#33691E;
+
+  --background-color-accent-three-darkest: 255,145,82; //#FF9152;
+  --background-color-accent-three-darker: 255,145,82; //#FF9152;
+  --background-color-accent-three-dark: 255,135,66; //#FF8742;
+  --background-color-accent-three-base: 255,117,36; //#FF7524;
+  --background-color-accent-three-light: 241,86,39; //#F15627;
+  --background-color-accent-three-lighter: 191,54,12; //#BF360C;
+  --background-color-accent-three-lightest: 191,54,12; //#BF360C;
+
+  --background-color-accent-four-darkest: 240,209,142; //#F0D18E;
+  --background-color-accent-four-darker: 240,209,142; //#F0D18E;
+  --background-color-accent-four-dark: 235,189,92; //#EBBD5C;
+  --background-color-accent-four-base: 215,155,25; //#d79b19;
+  --background-color-accent-four-light: 192,138,22; //#C08A16;
+  --background-color-accent-four-lighter: 164,118,19; //#A47613;
+  --background-color-accent-four-lightest: 164,118,19; //#A47613;
+
+  --text-color-tertiary-lightest: 32,42,50; //#202A32;
+  --text-color-tertiary-lighter: 45,59,70; //#2D3B46;
+  --text-color-tertiary-light: 58,75,90; //#3A4B5A;
+  --text-color-tertiary-base: 65,84,100; //#415464;
+  --text-color-tertiary-light: 84,101,116; //#546574;
+  --text-color-tertiary-lighter: 122,136,147; //#7A8893;
+  --text-color-tertiary-lightest: 198,204,209; //#C6CCD1;
+
+  --border-color-tertiary-lightest: 32,42,50; //#202A32;
+  --border-color-tertiary-lighter: 45,59,70; //#2D3B46;
+  --border-color-tertiary-light: 58,75,90; //#3A4B5A;
+  --border-color-tertiary-base: 65,84,100; //#415464;
+  --border-color-tertiary-light: 84,101,116; //#546574;
+  --border-color-tertiary-lighter: 122,136,147; //#7A8893;
+  --border-color-tertiary-lightest: 198,204,209; //#C6CCD1;
+
+  --background-color-tertiary-lightest: 32,42,50; //#202A32;
+  --background-color-tertiary-lighter: 45,59,70; //#2D3B46;
+  --background-color-tertiary-light: 58,75,90; //#3A4B5A;
+  --background-color-tertiary-base: 65,84,100; //#415464;
+  --background-color-tertiary-light: 84,101,116; //#546574;
+  --background-color-tertiary-lighter: 122,136,147; //#7A8893;
+  --background-color-tertiary-lightest: 198,204,209; //#C6CCD1;
+
+}

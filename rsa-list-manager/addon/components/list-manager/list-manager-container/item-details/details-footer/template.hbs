@@ -1,0 +1,32 @@
+<div class="footer-buttons">
+  {{#if isNewItem}}
+    {{#if isItemEditedValid}}
+      {{#rsa-form-button class="cancel" defaultAction=(action "detailsDone")}}
+        Cancel
+      {{/rsa-form-button}}
+    {{else}}
+      {{#rsa-form-button class="close" defaultAction=(action "detailsDone")}}
+        Close
+      {{/rsa-form-button}}
+    {{/if}}
+    {{#rsa-form-button isDisabled=(not isItemEditedValid) title=inValidReason class="save" defaultAction=(action "saveItem")}}
+      Save {{itemType}}
+    {{/rsa-form-button}}
+  {{else}}
+    {{#if didItemChange}}
+      {{#rsa-form-button class="reset" defaultAction=(action itemReset)}}
+        Reset
+      {{/rsa-form-button}}
+      {{#rsa-form-button isDisabled=(not isItemEditedValid) title=inValidReason class="update" defaultAction=(action "saveItem")}}
+        Update {{itemType}}
+      {{/rsa-form-button}}
+    {{else}}
+      {{#rsa-form-button class="close" defaultAction=(action "detailsDone")}}
+        Close
+      {{/rsa-form-button}}
+      {{#rsa-form-button class="select" defaultAction=(action itemSelection originalItem)}}
+        Select {{itemType}}
+      {{/rsa-form-button}}
+    {{/if}}
+  {{/if}}
+</div>

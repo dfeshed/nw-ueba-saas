@@ -1,0 +1,15 @@
+<header id="{{id}}">
+  <h3 class="title">{{title}}</h3>
+
+  {{#if subtitle}}
+    <p class="subtitle">{{subtitle}}</p>
+  {{/if}}
+
+  {{#if description}}
+    <p class="description">{{description}}</p>
+  {{/if}}
+</header>
+
+<vbox class="members">
+  {{yield}}
+</vbox>

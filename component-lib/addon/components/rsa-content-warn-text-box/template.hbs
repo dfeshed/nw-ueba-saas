@@ -1,0 +1,12 @@
+<div class="inner-div">
+  <div class="icon">
+    {{#if isAlert}}
+      {{rsa-icon name="report-problem-diamond"}}
+    {{else if isInfo}}
+      {{rsa-icon name="information-circle"}}
+    {{else}}
+      {{rsa-icon name="report-problem-triangle"}}
+    {{/if}}
+  </div>
+  <div class="message">{{value}}</div>
+</div>

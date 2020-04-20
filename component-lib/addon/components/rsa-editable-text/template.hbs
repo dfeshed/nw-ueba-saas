@@ -1,0 +1,11 @@
+{{#if editMode}}
+  <form onsubmit={{action "saveChanges"}}>
+    <div class="controls">
+      {{rsa-icon class="cancel" name="close" size="small" click=(action "cancelChanges")}}
+      {{rsa-icon class="save" name="check-2" size="small" click=(action "saveChanges")}}
+    </div>
+    {{rsa-form-input label="" value=value onKeyUp=(action "cancelChanges")}}
+  </form>
+{{else}}
+  {{value}} {{rsa-icon class="edit" name="pencil-1" size="small" click=(action "toggleEditMode")}}
+{{/if}}

@@ -1,0 +1,16 @@
+{{#rsa-data-table
+  items=hookList
+  selectedIndex=selectedIndex
+  lazy=true
+  columnsConfig=columnsConfig
+  onRowClick=(action "toggleSelectedRow")}}
+  {{#rsa-data-table/header as |column|}}
+    {{t column.title}}
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body noResultsMessage=(t "investigateHosts.process.imageHooks.message.noResultsMessage") as |item index column|}}
+    {{host-detail/utils/table-cell item=item column=column sid=sid}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}
+<box>
+  {{host-table-footer total=hookList.length index=hookList.length label="image hooks" selectedItems=-1 }}
+</box>

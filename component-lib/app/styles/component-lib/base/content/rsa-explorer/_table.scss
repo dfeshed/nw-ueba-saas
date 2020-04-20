@@ -1,0 +1,144 @@
+.rsa-explorer-table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .is-at-grouping-size {
+    .group-label {
+      left: 7px;
+
+      div {
+        top: rsa-whitespace(least);
+      }
+    }
+  }
+
+  .items-error {
+    font-style: italic;
+    font-size: 1.15rem;
+  }
+
+  a {
+    color: text-color(secondary, light);
+  }
+
+  .rsa-data-table-body-row.has-focus .rsa-data-table-body-cell a {
+    color: text-color(secondary, lightest);
+  }
+
+  .rsa-data-table-body-cell, .rsa-data-table-header-cell {
+    box-sizing: border-box;
+  }
+
+  .rsa-data-table,
+  .rsa-data-table-body,
+  .rsa-data-table-body-rows,
+  .rsa-data-table-body .no-results {
+    height: 100%;
+    font-size: 2rem;
+  }
+
+  .rsa-data-table-header {
+    @include border-bottom(1px, solid, primary, darker);
+
+    .rsa-data-table-header-cell {
+
+      &:first-child { // checkbox cell
+        padding: 0 0 0 rsa-whitespace(less);
+        min-width: 40px;
+        .rsa-form-checkbox-label {
+          font-size: 0.85rem;
+        }
+      }
+
+      .header-title {
+
+        &.sortable {
+          cursor: pointer;
+        }
+
+        &:hover .sort-indicator {
+          visibility: visible;
+        }
+
+        .sort-indicator {
+          visibility: hidden;
+          position: absolute;
+          right: 7px;
+
+          &.sorted {
+            visibility: visible;
+          }
+        }
+      }
+    }
+  }
+
+  .rsa-data-table-body-row {
+    cursor: pointer;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+
+    &.has-focus,
+    &.has-focus:hover {
+      background-color: background-color(secondary, dark);
+    }
+
+    &:hover:not(.has-focus) {
+      background-color: background-color(primary, darker);
+    }
+  }
+
+  .rsa-item-selected {
+    color: text-color(secondary, base);
+  }
+
+  .rsa-data-table-body-cell {
+    min-width: 40px;
+    position: relative;
+
+    &:first-child { // checkbox cell should never show ellipsis
+      text-overflow: clip;
+    }
+
+    .entity-priority-indicator {
+      display: inline-block;
+      width: 6px;
+      height: 60%;
+      background-color: background-color(neutral);
+      position: absolute;
+      top: rsa-whitespace(less);
+      bottom: 0;
+      left: rsa-whitespace(less);
+      border-radius: 4px;
+
+      &.priority-danger {
+        background-color: background-color(accentOne);
+      }
+
+      &.priority-high {
+        background-color: background-color(accentThree);
+      }
+
+      &.priority-medium {
+        background-color: background-color(accentFour);
+      }
+
+      &.priority-low {
+        background-color: background-color(accentTwo);
+      }
+    }
+    .entity-priority {
+      padding-left: rsa-whitespace();
+      text-transform: uppercase;
+    }
+  }
+
+  .rsa-data-table-body-cell .rsa-form-checkbox-label, .rsa-data-table-header-cell .rsa-form-checkbox-label {
+    min-width: 12px;
+  }
+}

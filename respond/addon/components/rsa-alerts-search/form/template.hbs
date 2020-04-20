@@ -1,0 +1,69 @@
+<h2 class="rsa-alerts-search-form__title title">
+  {{t "respond.incident.search.title"}}
+</h2>
+<p class="rsa-alerts-search-form__subtext">
+  {{t "respond.incident.search.subtext"}}
+</p>
+
+<div class="param">
+  <label class="param-label">{{t "respond.incident.search.types.label"}}:</label>
+  <div class="param-value">
+    {{#power-select
+      options=entityTypeOptions
+      selected=selectedEntityTypeOption
+      disabled=isSearchUnderway
+      searchEnabled=false
+      matchTriggerWidth=false
+      onchange=(action "changeEntityType") as |entityType|}}
+      {{t (concat "respond.incident.search.types." entityType.name) }}
+    {{/power-select}}
+  </div>
+</div>
+
+<div class="param">
+  <label class="param-label">{{t "respond.incident.search.text.label"}}:</label>
+  <div class="param-value">
+    {{input
+      class="rsa-alerts-search-form__text"
+      value=inputText
+      disabled=isSearchUnderway
+      size="24"
+      maxlength="255"
+      placeholder=(t (concat "respond.incident.search.text.placeholders." selectedEntityTypeOption.name))
+    }}
+  </div>
+</div>
+
+<div class="param">
+  <label class="param-label">{{t "respond.incident.search.timeframe.label"}}:</label>
+  <div class="param-value">
+    {{#power-select
+      options=timeFrameOptions
+      selected=selectedTimeFrameOption
+      disabled=isSearchUnderway
+      searchEnabled=false
+      matchTriggerWidth=false
+      onchange=onChangeTimeFrame as |time|}}
+      {{t (concat "respond.timeframeOptions." time.name) }}
+    {{/power-select}}
+  </div>
+</div>
+
+<footer class="rsa-alerts-search-form__footer">
+  {{#if isSearchUnderway}}
+    {{#rsa-form-button
+      class="rsa-alerts-search-form__cancel"
+      defaultAction=onCancel
+    }}
+      {{t "respond.incident.search.actions.cancel"}}
+    {{/rsa-form-button}}
+  {{else}}
+    {{#rsa-form-button
+      class="rsa-alerts-search-form__submit"
+      isDisabled=isSubmitDisabled
+      defaultAction=(action "search")
+    }}
+      {{t "respond.incident.search.actions.search"}}
+    {{/rsa-form-button}}
+  {{/if}}
+</footer>

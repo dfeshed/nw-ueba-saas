@@ -1,0 +1,64 @@
+.rsa-chart {
+  width: 100%;
+  height: 150px;
+}
+
+.rsa-chart-background {
+  fill: text-color(primary, darkest);
+}
+
+.rsa-line-series {
+  fill: none;
+  stroke-width: 2;
+  &.series-0 {
+    stroke: text-color(secondary);
+  }
+  &.series-1 {
+    stroke: text-color(secondary, darker);
+  }
+}
+
+.rsa-area-series {
+  /*fill-opacity: 0.25;*/
+  &.series-0 {
+    fill: text-color(secondary);
+  }
+  &.series-1 {
+    fill: text-color(secondary, darker);
+  }
+}
+
+.rsa-chart {
+  .domain {
+    stroke: text-color(neutral);
+    shape-rendering: crispEdges;
+  }
+
+  .tick {
+    line,
+    text {
+      shape-rendering: crispEdges;
+      text-rendering: geometricPrecision;
+      text-anchor: end;
+    }
+    line {
+      stroke: text-color(neutral);
+    }
+    text {
+      fill: text-color(neutral);
+    }
+  }
+}
+
+.points {
+  circle {
+    fill: text-color(primary, darkest);
+    stroke-width: 2px;
+  }
+  &.series-0 circle {
+    stroke: text-color(secondary);
+  }
+  &.series-1 circle {
+    stroke: text-color(secondary, darker);
+  }
+}

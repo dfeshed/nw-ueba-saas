@@ -1,0 +1,272 @@
+.rsa-form-button-wrapper {
+  @include rsa-font();
+  display: inline-block;
+  box-sizing: border-box;
+  position:relative;
+
+  &.is-active {
+    .rsa-form-button {
+      color: $formButtonHoverTypeColor;
+    }
+  }
+
+  .rsa-form-button {
+    @include border(1px, solid, primary, base, transparent);
+    padding: rsa-whitespace(less) rsa-whitespace();
+    color: $formButtonTypeColor;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 1rem;
+    white-space: nowrap;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    /* uncomment to show blue :focus border on all icon-only buttons */
+    /* &:focus {
+       border-color: $formButtonPrimaryBorderColor;
+    } */
+
+    &:active {
+      color: $formButtonHoverTypeColor;
+    }
+
+    i {
+      font-size: 1.4em;
+      margin-right: rsa-whitespace(less);
+      vertical-align: top;
+      line-height: 1rem;
+      position: relative;
+      top: 1px;
+
+      &.is-smaller { font-size: .8em; }
+      &.is-small { font-size: 1em; }
+      &.is-large { font-size: 2em; }
+      &.is-larger { font-size: 3em; }
+      &.is-largest { font-size: 5em; }
+    }
+
+    .rsa-icon-arrow-down-12 {
+      font-size: .9rem;
+      margin: 0 calc(#{rsa-whitespace(least)} * -1) 0 rsa-whitespace(least);
+    }
+  }
+
+  &.is-full-width {
+    display: block;
+    text-align: center;
+
+    .rsa-form-button {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  &:not(.is-icon-only) {
+    .rsa-form-button {
+      i:not(.rsa-icon-arrow-down-12) {
+        margin-left: calc(#{rsa-whitespace(least)} * -1);
+      }
+    }
+  }
+
+  &.is-standard:not(.is-disabled):not(.is-icon-only) {
+    .rsa-form-button {
+      border-color: $formButtonBorderColor;
+      &:focus {
+        border-color: $formButtonPrimaryBorderColor;
+      }
+    }
+
+    &:hover, &.is-active {
+      .rsa-form-button {
+        border-color: $formButtonHoverBorderColor;
+        &:focus {
+          border-color: $formButtonPrimaryBorderColor;
+        }
+      }
+    }
+
+    &:active, &.is-active {
+      background-color: $formButtonActiveBackgroundColor;
+    }
+  }
+
+  &.is-primary:not(.is-disabled):not(.is-icon-only) {
+    .rsa-form-button {
+      border-color: $formButtonPrimaryBorderColor;
+      background-color: $formButtonPrimaryBackgroundColor;
+      &:focus {
+        border-color: $formButtonBorderColor;
+      }
+    }
+
+    &:hover, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonPrimaryHoverBackgroundColor;
+        color: $formButtonPrimaryTypeColor;
+      }
+    }
+
+    &:active, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonPrimaryActiveBackgroundColor;
+      }
+    }
+  }
+
+  &.is-danger:not(.is-disabled):not(.is-icon-only) {
+    .rsa-form-button {
+      border-color: $formButtonDangerBorderColor;
+      background-color: $formButtonDangerBackgroundColor;
+      &:focus {
+        border-color: $formButtonBorderColor;
+      }
+    }
+
+    &:hover, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonDangerHoverBackgroundColor;
+        color: $formButtonDangerTypeColor;
+      }
+    }
+
+    &:active, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonDangerActiveBackgroundColor;
+      }
+    }
+  }
+
+  &.is-disabled {
+    .rsa-form-button {
+      color: $formButtonDisabledTypeColor;
+      cursor: default;
+    }
+  }
+
+  &.is-disabled:not(.is-icon-only) {
+    .rsa-form-button {
+      border-color: $formButtonDisabledBorderColor;
+      background: none;
+    }
+  }
+
+  &.is-icon-only {
+    padding: 0;
+
+    .rsa-form-button {
+      padding: rsa-whitespace(less);
+
+      i {
+        vertical-align: middle;
+        margin-right: 0;
+        margin-left: 0;
+      }
+
+      .rsa-icon-arrow-down-12 {
+        font-size: .75rem;
+        top: 2px;
+      }
+    }
+
+    &.is-standard {
+      .rsa-form-button {
+        color: $formButtonTypeColor;
+      }
+
+      &:hover:not(.is-active):not(.is-disabled) {
+        .rsa-form-button {
+          color: $formButtonIconHoverColor;
+        }
+      }
+    }
+
+    &.is-danger {
+      background: none;
+
+      .rsa-form-button {
+        color: $formButtonDangerBorderColor;
+      }
+
+      &:hover:not(.is-active):not(.is-disabled) {
+        .rsa-form-button {
+          color: $formButtonDangerIconHoverColor;
+        }
+      }
+    }
+
+    &.is-disabled {
+      .rsa-form-button {
+        color: $formButtonDisabledTypeColor;
+      }
+
+      &:hover {
+        .rsa-form-button {
+          color: $formButtonDisabledTypeColor;
+        }
+      }
+    }
+
+    &:active:not(.is-disabled), &.is-active {
+      background-color: $formButtonActiveBackgroundColor;
+    }
+  }
+}
+
+.rsa-button-group {
+  .rsa-form-button-wrapper, .rsa-content-tethered-panel {
+    margin-right: 1px;
+
+    &.is-standard {
+      margin-right: -1px;
+
+      &:hover {
+        @include rsa-layer(above);
+      }
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.rsa-icon-button-group {
+  .rsa-form-button-wrapper {
+    display: inline-block;
+    border-bottom: rsa-whitespace(least) solid transparent;
+    padding-top: rsa-whitespace(least);
+    padding-bottom: rsa-whitespace(least);
+    margin: 0 rsa-whitespace(least);
+
+    &.is-active {
+      border-bottom: rsa-whitespace(least) solid border-color(secondary);
+      background: none!important;
+
+      button {
+        color: text-color(primary, lightest)!important;
+      }
+    }
+
+    button {
+      padding: rsa-whitespace() rsa-whitespace(less) !important;
+      // color: text-color(primary, light)!important;
+    }
+  }
+}
+
+
+.rsa-split-dropdown {
+  .rsa-form-button {
+    padding: rsa-whitespace(less) 0;
+
+    .rsa-icon-arrow-down-12 {
+      width: 2rem;
+      margin: 0 auto;
+      position: relative;
+      top: 1px;
+    }
+  }
+}

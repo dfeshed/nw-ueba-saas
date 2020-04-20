@@ -1,0 +1,19 @@
+@import "process-analysis-container";
+@import "process-tree";
+@import "process-tree-legend";
+@import "process-property-panel";
+@import "process-details";
+@import "events-filter-panel";
+@import "risk-score";
+@import "filter-popup";
+@import "process-node-list";
+@import "query_container";
+@import "selected-process-info";
+
+.process-analysis {
+  .rsa-application-header{
+    display: none;
+  }
+}
+
+

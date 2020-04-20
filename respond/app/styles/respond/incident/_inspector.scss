@@ -1,0 +1,128 @@
+$incidentRiskScoreRadius: 1rem;
+$incidentInspectorResizerWidth: 5px;
+$incidentInspectorResizerBleed: ($incidentInspectorResizerWidth - 1px) / 2;
+
+.rsa-incident-inspector {
+  position: relative;
+
+  &__wrap {
+    position: absolute;
+    @include rsa-fill-abs(0, $incidentInspectorResizerBleed, 0, 0);
+    z-index: 1;
+  }
+
+  &__resizer {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    right: -1 * $incidentInspectorResizerBleed;
+    width: $incidentInspectorResizerWidth;
+    cursor: ew-resize;
+
+    &:hover {
+      background-color: background-color(secondary,base,nearly-opaque);
+    }
+  }
+
+  &__resize-cover {
+    display: none;
+  }
+
+  /* Styles for only while user is resizing the component (via drag). */
+  &.is-resizing {
+    .rsa-incident-inspector {
+      &__resizer {
+        background-color: background-color(secondary,base,nearly-opaque);
+      }
+      &__resize-cover {
+        /* Covers the entire screen with a transparent overlay whose cursor is a left-right resize arrow. */
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        cursor: ew-resize;
+        z-index: 1000;
+      }
+    }
+  }
+
+  &__header {
+    position: relative;
+    padding: rsa-whitespace();
+    text-align: center;
+    line-height: 1.35;
+
+    .id {
+      @include rsa-font(header,large);
+    }
+
+    .name {
+      @include rsa-font(light);
+      padding: 0 rsa-whitespace(more) 0 rsa-whitespace(more);
+    }
+
+    .back {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      padding: rsa-whitespace();
+    }
+
+    .rsa-loader {
+      margin-top: rsa-whitespace();
+    }
+
+    .risk-score {
+      margin-top: rsa-whitespace();
+
+      > label {
+        @include rsa-font(header,small);
+        color: text-color(primary);
+        display: block;
+        margin: 0 auto rsa-whitespace(less) auto;
+      }
+
+      > span {
+        position: relative;
+        width: 2 * $incidentRiskScoreRadius;
+        height: 2 * $incidentRiskScoreRadius;
+        line-height: 2 * $incidentRiskScoreRadius;
+        @include border(4px, double, primary);
+        border-radius: 2 * $incidentRiskScoreRadius;
+        text-align: center;
+        overflow: hidden;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  &__toolbar {
+    min-height: 25px;
+    @include border-bottom(1px, solid, primary, light, nearly-transparent);
+
+    .rsa-tab {
+      margin: 0 rsa-whitespace();
+    }
+  }
+  &__body {
+    position: relative;
+
+    .rsa-group-table,
+    .rsa-incident-overview,
+    .rsa-incident-storyline,
+    .rsa-incident-storyline .rsa-list {
+      @include rsa-fill-abs();
+    }
+
+    .rsa-incident-overview,
+    .rsa-incident-storyline .rsa-list {
+      overflow: auto;
+    }
+  }
+}

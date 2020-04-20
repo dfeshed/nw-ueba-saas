@@ -1,0 +1,27 @@
+{{#rsa-data-table lazy=true items=events columnsConfig=columnConfig}}
+  {{#rsa-data-table/header enableColumnSelector=true as |column|}}
+    <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title={{column.title}}>
+      {{column.title}}
+    </span>
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body-cell column=column}}
+      {{#if (eq column.type "DATE_TIME")}}
+        {{rsa-content-datetime timestamp=(get item column.field) displayMilliseconds=false}}
+      {{else if (get item column.linkField)}}
+        <a class="entity-details-container-body-indicator-details_events-table_href" onclick={{action "pivotToInvestigate" item column }} target="_blank" rel="noopener">{{get item column.field}}</a>  
+      {{else}}
+        {{get item column.field}}
+      {{/if}}  
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}
+{{#unless areAllEventsReceived}}
+  <div class="entity-details_loader">
+    {{#if (eq indicatorEventError true)}}
+      {{t "investigateUsers.alerts.indicator.eventsError"}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t "investigate.loading")}}
+    {{/if}}  
+  </div>
+{{/unless}}

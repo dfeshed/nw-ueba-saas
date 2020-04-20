@@ -1,0 +1,99 @@
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, find, findAll, waitUntil, settled } from '@ember/test-helpers';
+import hbs from 'htmlbars-inline-precompile';
+import { patchReducer } from '../../../../../helpers/vnext-patch';
+import { initialize } from 'ember-dependency-lookup/instance-initializers/dependency-lookup';
+import ReduxDataHelper from '../../../../../helpers/redux-data-helper';
+import engineResolverFor from 'ember-engines/test-support/engine-resolver-for';
+import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
+
+let setState;
+const timeout = 10000;
+
+module('Integration | Component | entity-details-container/body/alerts-container', function(hooks) {
+  setupRenderingTest(hooks, {
+    resolver: engineResolverFor('entity-details')
+  });
+
+  hooks.beforeEach(function() {
+    setState = (state) => {
+      patchReducer(this, state);
+    };
+    initialize(this.owner);
+    this.owner.inject('component', 'i18n', 'service:i18n');
+    this.owner.register('helper:mount', function() {});
+  });
+
+  test('it should render alert container with sorting options', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+
+    assert.equal(this.element.textContent.replace(/\s/g, '').indexOf('AlertsSortBy:Severity'), 0);
+    assert.equal(find('.ember-power-select-selected-item').innerText, 'SEVERITY');
+
+  });
+
+  test('it should show loader till alerts is not there', async function(assert) {
+    new ReduxDataHelper(setState).alerts([]).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+
+    assert.equal(findAll('.entity-details_loader').length, 1);
+
+  });
+
+  test('it should show error for some server problem', async function(assert) {
+    new ReduxDataHelper(setState).alerts([]).errorMessage('noAlertsData').build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+
+    // SHould have loader div but should display error text not rsa loader in case of error.
+    assert.equal(findAll('.entity-details_loader').length, 1);
+    assert.equal(findAll('.rsa-loader').length, 0);
+
+  });
+
+  test('it should be able to sort alets by name', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+    return waitUntil(() => document.querySelectorAll('.entity-details-container-body_alerts_list_content_alert_details_pill').length > 1, { timeout }).then(async() => {
+      await clickTrigger('.entity-details-container-body_alerts_list_header_sort');
+      assert.equal(findAll('.ember-power-select-option').length, 2);
+      await selectChoose('.ember-power-select-trigger', 'Date');
+      assert.equal(find('.ember-power-select-selected-item').innerText, 'DATE');
+      return settled();
+    });
+  });
+
+
+  test('it should not scroll if alert id is not selected', async function(assert) {
+    new ReduxDataHelper(setState).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+    return waitUntil(() => document.querySelectorAll('.entity-details-container-body_alerts_list_content_alert_details_pill').length > 1, { timeout }).then(async() => {
+      const containerDiv = find('.entity-details-container-body_alerts_list_content');
+      const selectedAlertPill = find('.entity-details-container-body_alerts_list_content_alert_details_pill.selectedAlert');
+      assert.ok(containerDiv);
+      assert.equal(containerDiv.scrollTop, 0);
+      assert.notOk(selectedAlertPill);
+      return settled();
+    });
+  });
+
+  test('it should scroll based on alert id', async function(assert) {
+    new ReduxDataHelper(setState).selectedAlertId('0e1cf5a7-9277-4d16-b268-6b405fc7108d').selectedIndicatorId(null).build();
+
+    await render(hbs`{{entity-details-container/body/alerts-container}}`);
+    return waitUntil(() => document.querySelectorAll('.entity-details-container-body_alerts_list_content_alert_details_pill').length > 1, { timeout }).then(async() => {
+      const containerDiv = find('.entity-details-container-body_alerts_list_content');
+      const selectedAlertPill = find('.entity-details-container-body_alerts_list_content_alert_details_pill.selectedAlert');
+      assert.ok(containerDiv);
+      assert.equal(containerDiv.scrollTop, 0);
+      assert.ok(selectedAlertPill);
+      return settled();
+    });
+  });
+});

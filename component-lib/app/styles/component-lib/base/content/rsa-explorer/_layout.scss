@@ -1,0 +1,137 @@
+$filterPanelMinWidth: 400px;
+$inspectorPanelWidth: 400px;
+$toolbarHeight: 40px;
+
+.rsa-explorer {
+  height: 100vh;
+  overflow: hidden;
+
+  .main-zone {
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
+
+  .toolbar-zone {
+    min-height: $toolbarHeight;
+    max-height: $toolbarHeight;
+  }
+
+  .filter-zone, .inspector-zone {
+    min-width: 0;
+    max-width: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: opacity-value(transparent);
+    @include rsa-vendor-prefix(transition-property, max-width, min-width, padding, opacity);
+    @include rsa-vendor-prefix(transition-duration, 0.3s, 0.3s, 0.3s, 0.1s);
+  }
+
+  &.show-filters {
+    .filter-zone {
+      @include border-right(1px, solid, primary, lightest, nearly-transparent);
+      max-width: 25%;
+      min-width: $filterPanelMinWidth;
+      opacity: opacity-value(opaque);
+
+      .close-filters.rsa-form-button-wrapper {
+        position: absolute;
+        right: rsa-whitespace(less);
+        top: rsa-whitespace(less);
+        font-size: 0.5rem;
+      }
+    }
+  }
+
+  &.show-inspector .inspector-zone {
+    @include border-left(1px, solid, primary, lightest, nearly-transparent);
+    max-width: $inspectorPanelWidth;
+    min-width: $inspectorPanelWidth;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden;
+    opacity: opacity-value(opaque);
+  }
+
+  .inspector-zone {
+    .close-inspector.rsa-form-button-wrapper {
+      position: absolute;
+      right: rsa-whitespace(less);
+      top: rsa-whitespace(less);
+      font-size: 0.5rem;
+    }
+  }
+
+  .items-zone {
+    @include rsa-vendor-prefix(transition-property, width);
+    @include rsa-vendor-prefix(transition-duration, 0.3s);
+
+    .items-body {
+      margin: 0 rsa-whitespace();
+      margin-bottom: 28px;
+    }
+    .items-footer {
+      background-color: background-color(primary, darkest);
+      max-height: 28px;
+      color: text-color(primary, lightest);
+      .selection-count {
+        padding-left: rsa-whitespace(less);
+      }
+      position: fixed;
+      bottom: 0px;
+      margin-bottom: -2px;
+      padding: rsa-whitespace();
+      padding-top: 4px;
+      text-align: center;
+      width: calc(100vw - #{$filterPanelMinWidth});
+    }
+  }
+
+  .main-zone.show-inspector .items-zone {
+    width: calc(100vw - #{$inspectorPanelWidth});
+    @include rsa-vendor-prefix(transition-property, width);
+    @include rsa-vendor-prefix(transition-duration, 0.3s);
+  }
+
+  &.show-filters {
+    .items-zone {
+      width: calc(100vw - #{$filterPanelMinWidth});
+    }
+    &.show-inspector .items-zone {
+      width: calc(100vw - #{$filterPanelMinWidth + $inspectorPanelWidth});
+    }
+  }
+
+  &.transaction-in-progress .transaction-overlay {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: background-color(neutral,dark,translucent);
+  }
+
+  .vertical-separator {
+    @include border-right(2px, solid, primary);
+    width: 3px;
+    height: 16px;
+    display: inline-block;
+    padding: 0 3px;
+  }
+}
+
+// Collapse the filter panel if both the filter panel and the inspector panel is open and the width of the screen is smaller
+@media screen and (max-width: 1536px){
+  .rsa-explorer.show-filters.show-inspector {
+    .filter-zone {
+      max-width: 0;
+      min-width: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+  // Don't show the toolbar button if clicking on it will not show the collapsed
+  .rsa-explorer.show-inspector {
+    .toolbar-zone {
+      .rsa-explorer-toolbar .more-filters-button {
+        display: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,62 @@
+$modalHeaderHeight: 52px;
+$footerHeight: 43px;
+
+.rsa-application-modal.scan-modal footer {
+  display: none;
+}
+.rsa-application-modal-content.confirmation-modal {
+  max-height: 195px;
+}
+.rsa-application-modal-content.confirmation-modal footer {
+  background-color: transparent;
+  padding-right: 1rem;
+  padding-bottom: 3rem;
+  .modal-footer-buttons {
+    .rsa-form-button-wrapper {
+      margin: 0 7px 0px 0px;
+    }  
+  }
+}
+.rsa-application-modal-content.scan-modal {
+  width: 36rem;
+  min-height: 155px;
+  height: auto;
+
+  .modal-content {
+    width: 100%;
+    height: calc(100% - (#{$modalHeaderHeight + $footerHeight}));
+    top: 0;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    overflow-y: auto;
+
+    p {
+      @include rsa-font(paragraph);
+      padding: rsa-whitespace();
+    }
+    .info-message {
+      margin-top: rsa-whitespace();
+    }
+  }
+
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: rsa-whitespace(less);
+    padding-right: 1rem;
+    padding-bottom: 3rem;
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 0 0 rsa-whitespace(less);
+      }
+    }
+  }
+}
+
+

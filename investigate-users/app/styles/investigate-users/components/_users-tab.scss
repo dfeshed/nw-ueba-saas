@@ -1,0 +1,383 @@
+.users-tab {
+  height: calc(100% - 25px);
+  display: flex;
+  flex-direction: row;
+
+  &_filter {
+    width: 25%;
+    border-right: 1px solid text-color(primary, dark);
+    border-top: 0;
+    height: 100%;
+
+    > div {
+      height: 100%;
+    }
+
+    &_options {
+      height: calc(100% - 110px);
+      overflow-y: auto;
+    }
+
+    &_user {
+      padding: rsa-whitespace(less);
+
+      &_row {
+        display: flex;
+        flex-direction: row;
+        @include rsa-font(default, small);
+        color: text-color(secondary, light);
+        padding: 1px 0;
+
+        .rsa-form-button-wrapper {
+          width: 100%;
+        }
+
+        .rsa-form-button {
+          padding: rsa-whitespace(least) rsa-whitespace(less);
+          color: text-color(secondary, light);
+        }
+
+        .rsa-form-button {
+          border: none;
+          text-align: start;
+        }
+
+        .rsa-form-button-clicked {
+          background-color: text-color(secondary, darkest);
+
+          > button {
+            color: text-color(primary, light);
+          }
+        }
+
+        .risky {
+          color: text-color(accentFour, light);
+        }
+
+        .admin {
+          color: text-color(primary, light);
+        }
+
+        .watched {
+          color: text-color(accentThree, light);
+        }
+
+        > div {
+          padding: rsa-whitespace(least);
+        }
+      }
+    }
+
+    &_favorites {
+      height: 65px;
+      color: text-color(primary, lighter);
+      @include rsa-font(default, medium);
+      padding: 0 rsa-whitespace(less);
+
+      &_title {
+        padding: rsa-whitespace();
+        @include rsa-font(default, large);
+      }
+      .ember-power-select-trigger {
+        overflow: hidden;
+      }
+
+      .ember-power-select-selected-item > span {
+        display: none;
+      }
+      &_delete {
+        position: absolute;
+        width:50px;
+        right: 5px;
+        > i {
+          padding: unset;
+        }
+      }
+
+      &_filter {
+        display: inline-flex;
+        justify-content: space-around;
+        padding-bottom: rsa-whitespace(least);
+
+        &_select {
+          width: calc(100% - 30px);
+        }
+
+        &_close {
+          width: 30px;
+        }
+      }
+
+      .rsa-form-button {
+        border: none;
+        text-align: start;
+        color: text-color(primary, light);
+        padding: none;
+        height: 35px;
+      }
+
+      .rsa-form-button-clicked {
+        background-color: text-color(secondary, darkest);
+      }
+    }
+
+    &_filter {
+      padding: rsa-whitespace(less);
+      color: text-color(primary, lightest);
+      @include rsa-font(default, medium);
+
+      &_title {
+        @include rsa-font(header, large);
+        padding: rsa-whitespace();
+        height: 35px;
+        color: text-color(primary, lightest);
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid text-color(primary, dark);
+        > i {
+          padding-right: rsa-whitespace(less);
+        }
+      }
+
+      &_list {
+        padding: rsa-whitespace(less);
+        display: flex;
+        overflow-y: auto;
+        flex-direction: column;
+        justify-content: space-evenly;
+      }
+
+      &_select {
+        padding: rsa-whitespace() 0;
+
+        .ember-power-select-multiple-option {
+          width: 5rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+
+    &_controls {
+      border-top: 1px solid text-color(primary);
+      padding: rsa-whitespace(less) rsa-whitespace();
+      justify-content: space-between;
+      display: flex;
+      bottom: 0;
+      height: 30px;
+      > div {
+        width: calc(50% - 5px);
+      }
+
+      &_save-as-favorites {
+        width: 300px;
+        padding: rsa-whitespace();
+
+        &_name {
+          padding: rsa-whitespace();
+          display: flex;
+          justify-content: space-between;
+
+          &_label {
+            padding: rsa-whitespace() 0;
+          }
+        }
+
+        &_save {
+          padding: rsa-whitespace();
+          justify-content: flex-end;
+          display: flex;
+
+          &_cancel {
+            padding-right: rsa-whitespace(less);
+          }
+        }
+      }
+    }
+  }
+
+  &_body {
+    width: 75%;
+    height: 100%;
+
+    &_header {
+      height: 90px;
+      border-bottom: 1px solid text-color(primary, dark);
+
+      &_bar {
+        display: flex;
+        padding: 0 rsa-whitespace(less);
+        @include rsa-font(header);
+        color: text-color(primary, lightest);
+        text-align: center;
+        justify-content: space-between;
+
+        &_count {
+          display: flex;
+          justify-content: center;
+
+          &_number {
+            width: 100px;
+            text-align: initial;
+            padding: rsa-whitespace()+rsa-whitespace(less) rsa-whitespace() 0 rsa-whitespace();
+          }
+
+          &_sort {
+            padding: rsa-whitespace(less) rsa-whitespace() 0 0;
+            color: text-color(primary, light);
+            display: flex;
+            width: 350px;
+
+            .label-text {
+              padding: rsa-whitespace() rsa-whitespace() 0 0;
+              @include rsa-font(header);
+            }
+
+            .ember-power-select-trigger {
+              @include rsa-font(default);
+              width: 220px;
+              background: transparent;
+              height: 2*rsa-whitespace();
+              top: rsa-whitespace(least);
+              left: rsa-whitespace(least);
+            }
+          }
+        }
+
+        &_control {
+          display: flex;
+          flex-direction: row;
+          width: 50%;
+          justify-content: flex-end;
+          padding: 0 2*rsa-whitespace(less);
+
+          > div {
+            padding: 0 rsa-whitespace(least);
+
+            > div {
+              padding-top: rsa-whitespace(less);
+              @include rsa-font(default, small);
+            }
+          }
+        }
+      }
+    }
+
+    &_list {
+      padding: rsa-whitespace() 0;
+      height: calc(100% - 120px);
+      overflow-y: auto;
+      @include rsa-font();
+
+      &_loader {
+        display: flex;
+        justify-content: center;
+        padding: rsa-whitespace();
+      }
+
+      &_name {
+        @include rsa-font(default);
+        color: text-color(secondary, light);
+      }
+
+      &_timeRange {
+        @include rsa-font(default);
+        color: text-color(primary);
+        padding: 0 rsa-whitespace(less);
+      }
+
+      &_watched {
+        color: text-color(accentOne, light);
+        margin: rsa-whitespace();
+      }
+
+      &_admin {
+        color: text-color(primary);
+      }
+
+      .rsa-data-table-body {
+        overflow: hidden;
+      }
+
+      .rsa-data-table-body-row:hover .rsa-data-table-body-cell {
+        background-color: background-color(primary, dark);
+      }
+
+      .rsa-data-table-body-cell {
+        display: flex;
+        align-items: center;
+        @include rsa-font();
+        max-width: unset;
+        padding: rsa-whitespace(less) rsa-whitespace();
+
+        .rsa-content-badge-score {
+          padding: rsa-whitespace(least);
+        }
+
+        .score {
+          @include rsa-font(default);
+        }
+      }
+
+      .rsa-data-table-body-cell *,
+      .rsa-data-table-header-cell * {
+        max-width: unset;
+      }
+
+      &_alerts {
+        color: text-color(secondary, light);
+
+        &_panel {
+          padding: rsa-whitespace(less);
+          @include rsa-font();
+
+          > ul > li {
+            display: flex;
+            padding: rsa-whitespace(least);
+            justify-content: space-between;
+
+            > div {
+              display: flex;
+              flex-direction: row;
+              margin: 0 rsa-whitespace(least);
+            }
+
+            .indicator {
+              width: rsa-whitespace(least);
+              border-radius: rsa-whitespace(least);
+              height: 15px;
+
+              &_name {
+                padding-left: rsa-whitespace(least);
+                @include rsa-font(default);
+              }
+            }
+
+            .link {
+              @include rsa-font(default);
+              color: text-color(secondary, light);
+              padding-left: rsa-whitespace(less);
+            }
+
+            .Critical {
+              background-color: text-color(accentOne, dark);
+            }
+
+            .High {
+              background-color: text-color(accentThree, dark);
+            }
+
+            .Medium {
+              background-color: text-color(accentFour, dark);
+            }
+
+            .Low {
+              background-color: text-color(accentTwo, dark);
+            }
+          }
+        }
+      }
+    }
+  }
+}

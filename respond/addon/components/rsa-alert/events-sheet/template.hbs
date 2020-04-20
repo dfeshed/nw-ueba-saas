@@ -1,0 +1,12 @@
+{{#rsa-events-sheet items=customizedItems totalCount=totalCount throttleInterval=0 as |sheet|}}
+  {{#sheet.tableHeader}}
+    <span class="event-count-and-label">
+      <span class="event-count">
+        {{items.length}}
+      </span>
+      <span class="event-label">
+        {{t "respond.eventDetails.events"}}
+      </span>
+    </span>
+  {{/sheet.tableHeader}}
+{{/rsa-events-sheet}}

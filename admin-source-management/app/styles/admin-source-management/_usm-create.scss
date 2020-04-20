@@ -1,0 +1,88 @@
+.usm-group, .usm-policy, .usm-source {
+
+  .form {
+    padding-right: rsa-whitespace(more);
+    padding-bottom: rsa-whitespace(more);
+    padding-left: rsa-whitespace(more);
+  }
+
+  .toolbar {
+    flex: none;
+    padding-top: rsa-whitespace();
+    padding-bottom: rsa-whitespace();
+    button {
+      margin-right: rsa-whitespace();
+    }
+  }
+
+  .control-label {
+    margin-top: rsa-whitespace(more);
+    @include rsa-font(header);
+  }
+
+  .control {
+    flex: none;
+    padding-top: rsa-whitespace(more);
+    > label {
+      width: 45%;
+      margin-bottom: rsa-whitespace(least);
+    }
+  }
+
+  .ip-range-to {
+    align-self: flex-start;
+    padding: rsa-whitespace(less);
+    padding-top: rsa-whitespace(more);
+  }
+
+  .ip-range-end > span {
+    visibility: hidden;
+  }
+
+  .apply-policy-optional {
+    @include rsa-font(regular , small, true)
+  }
+
+  /* TODO this may be a better option if we decide to keep everything wrapped in a <form>
+  .form > :last-child
+  */
+  .policy {
+    margin-bottom: rsa-whitespace(more);
+  }
+
+  .all-settings {
+    .label {
+      @include rsa-font(default, larger);
+      padding-top: rsa-whitespace(more);
+      padding-bottom: rsa-whitespace(more);
+      letter-spacing: .05rem;
+    }
+    .heading {
+      @include rsa-font(default, large);
+    }
+    .available-settings {
+      margin-right: rsa-whitespace(most);
+      .rsa-icon {
+        float: right;
+        margin-right: rsa-whitespace(most);
+        margin-left: rsa-whitespace();
+      }
+      .is-greyed-out {
+        color: text-color(primary);
+        pointer-events: none;
+      }
+    }
+    .available-settings .title {
+      @include rsa-font();
+      padding: rsa-whitespace() rsa-whitespace() 0 0;
+    }
+    .selected-settings .scan-options {
+      @include rsa-font(light,small);
+      text-transform: uppercase;
+      padding: rsa-whitespace() rsa-whitespace() 0 0;
+      .rsa-icon {
+        margin-right: rsa-whitespace();
+      }
+    }
+  }
+}

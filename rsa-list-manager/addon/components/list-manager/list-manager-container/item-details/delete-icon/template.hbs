@@ -1,0 +1,12 @@
+{{#if showDeleteIcon}}
+  {{!-- delete icon --}}
+  {{#rsa-form-button
+    class="list-delete-icon"
+    isDisabled=disabledDetails.disabled
+    defaultAction=(action "delete")
+    title=disabledDetails.message
+  }}
+    {{rsa-icon name="bin-1"}}
+  {{/rsa-form-button}}
+{{/if}}
+

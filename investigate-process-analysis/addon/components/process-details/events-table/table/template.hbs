@@ -1,0 +1,28 @@
+<h2 class="title-header">
+  {{#rsa-form-button class="filter-button" click=toggleFilterPanel }}
+    {{rsa-icon name="filter-2" size="small"}}
+    <span>{{t "investigateFiles.filter.filter"}}</span>
+  {{/rsa-form-button}}
+</h2>
+{{#rsa-data-table
+  items=eventsData
+  columnsConfig=config
+
+  lazy=true}}
+  {{#rsa-data-table/header enableColumnSelector=true as |column|}}
+    <span class="js-move-handle">
+      {{column.title}}
+    </span>
+    {{#if column.enableSort}}
+      {{rsa-icon
+        click=(action "sort" column)
+        name=(if column.isDescending "arrow-down-7" "arrow-up-7")
+        class="sort"}}
+    {{/if}}
+  {{/rsa-data-table/header}}
+
+  {{#rsa-data-table/body as |item index column|}}
+    {{process-details/events-table/table/body-cell item=item column=column}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}
+{{table-footer index=eventsFilteredCount total=eventsData.length selectedItems=-1}}

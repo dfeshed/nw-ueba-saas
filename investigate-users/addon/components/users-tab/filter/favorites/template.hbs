@@ -1,0 +1,26 @@
+<div class="users-tab_filter_filter_list">
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t "investigateUsers.users.filters.favorites"}}
+    </div>
+    {{#power-select
+      options=favorites
+      selected=selectedFavorite
+      searchEnabled=false
+      placeholder="Select"
+      onchange=(action "applyFilter") as |option|}}
+      {{option.filterName}}
+      {{#if (and option.id (not-eq option.id selectedFavorite.id))}}
+        <span class="users-tab_filter_favorites_delete" onmouseup={{action "stopPropagation"}} onmousedown={{action "stopPropagation"}}>
+          {{#rsa-form-button
+            style="danger"
+            isIconOnly=true
+            class=(if (eq selected favoriteFilter.id) "rsa-form-button-clicked")
+            click=(action "deleteFavorite" option.id)}}
+            {{rsa-icon name="bin-1" size="smaller"}}
+          {{/rsa-form-button}}
+        </span>
+      {{/if}}
+    {{/power-select}}
+  </label>
+</div>

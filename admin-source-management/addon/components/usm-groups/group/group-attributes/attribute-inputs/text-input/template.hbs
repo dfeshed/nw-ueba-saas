@@ -1,0 +1,19 @@
+{{rsa-form-input-oneway
+  class="operator-input"
+  placeholder=(t (concat "adminUsm.groupCriteria.placeholders." selectedAttribute "_" selectedOperator))
+  maxLength=1024
+  value=localValue
+  isError=(or validator.showError lockError)
+  errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
+  focusIn=(action "handleFocusIn")
+  onFocusOut=(action "handleInputChange" value="target.value")
+  spellcheck=false
+}}
+
+<div class="tooltip">
+  {{#rsa-text-with-tooltip value=(t (concat "adminUsm.groupCriteria.tooltips." selectedAttribute "_" selectedOperator))
+    style="standard"
+    alwaysShow=true}}
+    {{rsa-icon size="large" name="information-circle" displayOnTab=true}}
+  {{/rsa-text-with-tooltip}}
+</div>

@@ -1,0 +1,12 @@
+{{#each list as |buttonObj|}}
+  <li class="first-in-group" {{action buttonObj.action}}>
+    {{rsa-icon name=buttonObj.icon}}
+    {{buttonObj.label}}
+  </li>
+  {{#each buttonObj.nestedActions as |nestedActionObj|}}
+    <li {{action nestedActionObj.action}}>
+      {{rsa-icon name=nestedActionObj.icon}}
+      {{nestedActionObj.label}}
+    </li>
+  {{/each}}
+{{/each}}

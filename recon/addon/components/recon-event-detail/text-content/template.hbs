@@ -1,0 +1,88 @@
+{{#if isEndpointEvent}}
+  <div class="scroll-box">
+    {{recon-event-detail/endpoint}}
+    {{#if hasRenderIds}}
+      {{#each renderedText key="firstPacketId" as |text|}}
+        {{recon-event-detail/single-text
+          isLog=isLogEvent
+          isEndpoint=isEndpointEvent
+          isSticky=false
+          metaToHighlight=metaToHighlight
+          packet=text
+          showMoreFinished=(action "showMoreFinished")
+          updatePercentRendered=(action "updatePercentRendered")
+          showTruncatedMessage=showTruncatedMessage
+        }}
+      {{/each}}
+    {{/if}}
+  </div>
+{{else}}
+  {{#if hasRenderIds}}
+    {{#if stickyContent}}
+      <div class="recon-packet-stuck-header">
+        {{recon-event-detail/single-text
+          isLog=isLogEvent
+          isEndpoint=isEndpointEvent
+          isSticky=true
+          packet=stickyContent
+          renderedAll=hideStickyShowMore
+          stickyRenderedPercent=stickyRenderedPercent
+          showTruncatedMessage=showTruncatedMessage
+        }}
+      </div>
+    {{/if}}
+    <div class="scroll-box">
+      {{#if shouldDisplayNoContentMessage}}
+        {{rsa-panel-message
+          class="content-hidden-message"
+          message=(t "recon.textView.contentHiddenMessage")
+        }}
+      {{/if}}
+      {{!--
+        if we have content, but no visible text, show spinner,
+        working on chewing on data
+      --}}
+      {{#each renderedText key="firstPacketId" as |text|}}
+        {{recon-event-detail/single-text
+          isLog=isLogEvent
+          isEndpoint=isEndpointEvent
+          isSticky=false
+          metaToHighlight=metaToHighlight
+          packet=text
+          showMoreFinished=(action "showMoreFinished")
+          updatePercentRendered=(action "updatePercentRendered")
+          showTruncatedMessage=showTruncatedMessage
+        }}
+      {{/each}}
+      {{#if hasMoreToDisplay}}
+        <centered class="rendering-more">
+          {{rsa-loader size="large" label=(t "recon.textView.renderingMore")}}
+        </centered>
+      {{/if}}
+    </div>
+  {{else}}
+    {{!--
+      If no renderedText, but there is textContent, means either
+      they are hidden by the UI, or in the process of being rendered.
+      If no textContent, show error message
+    --}}
+    {{#if hasTextContent}}
+      {{!--
+        do not bother showing anything if all data hidden
+      --}}
+      {{#unless isAllDataHidden}}
+        <div class="recon-loader">
+          {{rsa-loader size="larger"}}
+        </div>
+      {{/unless}}
+    {{else}}
+      {{rsa-panel-message message=noResultsMessage}}
+    {{/if}}
+  {{/if}}
+{{/if}}
+{{recon-pager
+  eventIndex=eventIndex
+  eventTotal=eventTotal
+  isPacket=false
+  isText=true
+}}

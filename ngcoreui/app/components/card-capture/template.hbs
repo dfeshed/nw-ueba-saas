@@ -1,0 +1,58 @@
+<h1 class="large centered">
+  {{#if isLogDecoder}}
+    Log Capture
+  {{else}}
+    Packet Capture
+  {{/if}}
+</h1>
+{{#rsa-chart data=graphAdapter as |params|}}
+  {{rsa-line-series
+    data=params.data
+    dataIndex=0
+    xScale=params.xScale
+    yScale=params.yScale
+    height=params.graphHeight}}
+  {{rsa-y-axis scale=params.yScale tickCount=3}}
+{{/rsa-chart}}
+<h1 class="large centered">
+  {{#if isLogDecoder}}
+    {{ngcoreui-formatted-number size=valuesAdapter.capture_rate}} EPS
+  {{else}}
+    {{valuesAdapter.capture_rate}} Mbps
+  {{/if}}
+</h1>
+{{#dashboard-properties-grid}}
+  {{#if isLogDecoder}}
+    {{dashboard-property-item propertyName="Events Captured" propertyValue=valuesAdapter.capture_received type="numeric"}}
+    {{dashboard-property-item propertyName="Events Dropped" propertyValue=valuesAdapter.capture_dropped type="numeric"}}
+  {{else}}
+    {{dashboard-property-item propertyName="Packets Captured" propertyValue=valuesAdapter.capture_received type="numeric"}}
+    {{dashboard-property-item propertyName="packets Dropped" propertyValue=valuesAdapter.capture_dropped type="numeric"}}
+  {{/if}}
+  {{dashboard-property-item propertyName="Capture Status" propertyValue=valuesAdapter.capture_status}}
+  {{dashboard-property-item propertyName="Capture Started" propertyValue=valuesAdapter.time_capture.started}}
+  {{dashboard-property-item propertyName="Capture Duration" propertyValue=valuesAdapter.time_capture.duration}}
+  <div class="property-item" title={{noPermissionReason}}>
+    {{#if (or (eq valuesAdapter.capture_status "started") (eq valuesAdapter.capture_status "stopping"))}}
+      <hbox class="rsa-button-with-confirmation">
+        {{#rsa-button-with-confirmation
+          style="danger"
+          title="Confirm Stop Capture"
+          confirmationMessage="Are you sure that you want to stop capture?"
+          confirmButtonLabel="Yes"
+          isDisabled=cannotStop
+          cancelButtonLabel="No"
+          onConfirm=(action "stopCapture")}}
+          Stop
+        {{/rsa-button-with-confirmation}}
+      </hbox>
+    {{else}}
+      {{#rsa-form-button
+        style="primary"
+        isDisabled=cannotStart
+        defaultAction=(action "startCapture")}}
+        Start
+      {{/rsa-form-button}}
+    {{/if}}
+  </div>
+{{/dashboard-properties-grid}}

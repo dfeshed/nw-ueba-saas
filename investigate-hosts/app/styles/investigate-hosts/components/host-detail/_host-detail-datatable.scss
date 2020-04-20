@@ -1,0 +1,39 @@
+.host-detail-wrapper {
+  height: calc(100vh - 215px);
+  .right-zone .host-properties-box .blue.rsa-content-accordion h3 {
+    color: text-color(secondary);
+  }
+  .rsa-data-table {
+    height: $tableHeight;
+    .rsa-form-checkbox-label .rsa-form-checkbox {
+      position: inherit;
+    }
+    .rsa-data-table-body-row.is-selected {
+      .content-context-menu {
+        background-color: background-color(secondary, dark);
+      }
+    }
+  }
+  .rsa-data-table-header {
+    padding-right: 18px;
+  }
+  .rsa-data-table-body-cell.score {
+    padding: 3px 7px 0 7px;
+  }
+  .rsa-data-table-body-row.is-row-checked {
+    background-color: background-color(primary, darker);
+  }
+
+  .content-context-menu {
+    display: inherit;
+    .insights-host {
+      width: 8vw;
+      padding-top: 6px;
+      padding-left: 15px;
+    }
+  }
+}
+
+.license-banner.shown + .hosts-route box.host-detail-wrapper {
+  height: calc(100vh - 250px);
+}

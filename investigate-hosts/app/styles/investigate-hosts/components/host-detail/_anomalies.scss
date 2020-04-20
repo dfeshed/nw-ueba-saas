@@ -1,0 +1,24 @@
+.registry-discrepancies {
+  hbox {
+    max-height: 4.9rem;
+    padding-top: 0.28rem;
+    .close-filter{
+      padding-top: 1.2rem;
+      padding-left: 1rem;
+    }
+    .host-title-bar {
+      .is-active {
+        align-self: inherit;
+      }
+    }
+  }
+  .host-detail__datatable {
+    max-height: calc(100vh - 216px);
+    .rsa-data-table {
+      height: calc(100% - 63px);
+    }
+  }
+  .rsa-data-table-body {
+    height: 900px;
+  }
+}

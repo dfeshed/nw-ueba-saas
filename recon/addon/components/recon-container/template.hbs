@@ -1,0 +1,35 @@
+{{#if apiFatalErrorCode}}
+  <div class="fatal-error-icons">
+    {{rsa-icon
+    class="fatal-error-toggle-button"
+    click=(action "toggleReconExpanded")
+    name=toggleEventsClass
+    title=(t toggleEventsTitle)}}
+
+    {{rsa-icon
+    class="fatal-error-close-button"
+    click=(action "closeReconWhenFatalError")
+    name="close"
+    title=(t "recon.toggles.close")}}
+  </div>
+
+  {{rsa-panel-message message=errorMessage}}
+{{else}}
+  {{#if isReady}}
+    {{recon-event-header}}
+
+    <hbox xs="12" class="recon-event-wrapper">
+      {{recon-event-content}}
+
+      {{#if isMetaShown}}
+        <vbox xs="4" class="event-content-box">
+          {{recon-meta-content}}
+        </vbox>
+      {{/if}}
+    </hbox>
+  {{else}}
+    <div class="recon-loader">
+      {{rsa-loader size="larger"}}
+    </div>
+  {{/if}}
+{{/if}}

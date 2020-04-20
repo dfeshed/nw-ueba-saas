@@ -1,0 +1,34 @@
+<div class="totals">
+  {{#each resolvedData as |datum|}}
+    <span class="datum {{datum.cssClass}}">
+      <label class="rsa-form-checkbox-label {{if (contains datum.key visibleEntityTypes) "checked"}}">
+        {{rsa-form-checkbox
+          checked=(contains datum.key visibleEntityTypes)
+          change=(action "toggleEntityVisibility" datum.key)}}
+        <span>{{datum.value}}</span>
+      </label>
+      <label>{{t datum.i18nKey}}</label>
+    </span>
+  {{/each}}
+</div>
+{{#with resolvedSelection as |sel|}}
+  <div class="selection">
+    {{#if selectionCanBeRendered}}
+      {{t (concat "respond.entity.legend.selection." sel.type) count=sel.ids.length}}
+    {{else}}
+      {{t "respond.entity.legend.selectionNotShown"}}
+    {{/if}}
+  </div>
+{{/with}}
+{{#if hasExceededNodeLimit}}
+  <p class="has-exceeded-node-limit">
+    <span>
+      {{t "respond.entity.legend.hasExceededNodeLimit" limit=nodeLimit}}
+    </span>
+    {{#if showAllAction}}
+      <span class="show-all" {{action "safeCallback" showAllAction}}>
+        {{t "respond.entity.legend.showAll"}}
+      </span>
+    {{/if}}
+  </p>
+{{/if}}

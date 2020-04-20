@@ -1,0 +1,13 @@
+.widget-tool {
+  padding-bottom: rsa-whitespace(less);
+  .config-button {
+    position: absolute;
+    right: 0;
+  }
+  .config-line {
+    flex: 1 1 auto;
+    margin-left: 10px;
+    margin-right: 25px;
+    border-color: border-color(primary, dark);
+  }
+}

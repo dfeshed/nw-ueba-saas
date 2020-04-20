@@ -1,0 +1,90 @@
+.recon-meta-content {
+  margin-left: 1px; /* let a sliver of background shows thru as a border */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  overflow: auto;
+
+  .meta-heading {
+    @include rsa-font(header, small);
+    font-size: 0.85rem;
+    color: text-color(secondary);
+    padding: rsa-whitespace() rsa-whitespace() 1rem;
+  }
+
+  .meta-grouping {
+    padding-bottom: 7px;
+  }
+
+  .meta-grouping-label {
+    @include rsa-font(header, small);
+    color: text-color(primary);
+    padding: 0.75rem rsa-whitespace() 0 rsa-whitespace();
+  }
+
+  .meta-grouping-drop-down {
+    width: 150px;
+    padding-left: 13px;
+  }
+}
+
+.recon-meta-content-group {
+  .meta-content-section {
+    padding-left: rsa-whitespace();
+  }
+
+  .section-name {
+    @include rsa-font(bold);
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .divider {
+    @include border-top(1px, solid, primary, dark);
+    margin: rsa-whitespace(less) 0;
+  }
+}
+
+.recon-meta-content-item {
+  color: text-color(neutral);
+  @include rsa-word-wrap();
+  line-height: 1.10rem;
+  padding: 0 0 rsa-whitespace(less) 1.75rem;
+  i {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  &.should-show-binoculars {
+    padding: 0 0 rsa-whitespace(less) 0;
+  }
+  &.is-hovering {
+    background-color: background-color(primary, darkest);
+  }
+  &.is-selected {
+    background-color: background-color(secondary);
+    &, .meta-name {
+      color: text-color(primary, lightest);
+    }
+  }
+  .meta-name {
+    @include rsa-font(header, small);
+    color: text-color(primary, lighter);
+  }
+  .attachment-meta {
+    @include rsa-font(body, small);
+    color: #0288D1;
+  }
+  .meta-value {
+    @include rsa-font(body, small);
+  }
+  .has-context-data {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+  }
+  .binocular-icon {
+    padding: rsa-whitespace(less) rsa-whitespace(least) 0 0;
+  }
+}

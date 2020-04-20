@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+/* Imports all styles from component-lib addon. */
+@import 'component-lib/manifest';
+/* Import license styles */
+@import 'license/manifest';
+
+.ember-application > DIV:nth-child(4) {
+ height: 100%;
+    > grid {
+      height :100%;
+    }
+}
+
+page {
+  height: 100%;
+  min-width: 0;
+}

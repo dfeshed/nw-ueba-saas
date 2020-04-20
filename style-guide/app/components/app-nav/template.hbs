@@ -1,0 +1,23 @@
+{{#rsa-nav-link-list header="Resources and Tools"}}
+  {{#each guides as |guide|}}
+    <li>
+      <a href="{{guide.link}}" target="_blank">{{guide.name}}</a>
+    </li>
+  {{/each}}
+{{/rsa-nav-link-list}}
+
+{{#each navSections as |section|}}
+  {{#rsa-nav-link-list header=section.header}}
+    {{#each section.pages as |page|}}
+      <li>
+        {{#link-to (concat section.category '.' page.link)}}
+          {{page.name}}
+        {{/link-to}}
+      </li>
+    {{/each}}
+  {{/rsa-nav-link-list}}
+{{/each}}
+
+{{#link-to 'visual-evolution' class="visual-tour-link"}}
+  Take the Visual Tour
+{{/link-to}}

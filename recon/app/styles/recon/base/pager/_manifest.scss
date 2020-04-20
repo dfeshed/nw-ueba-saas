@@ -1,0 +1,117 @@
+.recon-pager {
+  @include rsa-font(body, small);
+  @include border-top(1px, solid, primary, dark);
+  background-color: background-color(primary, darkest, translucent);
+  position: absolute;
+  bottom: 9px;
+  width: 100%;
+  height: rsa-whitespace(more);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .event-info {
+    padding: rsa-whitespace(less);
+    margin-left: rsa-whitespace(less);
+  }
+
+  .packet-info {
+    .disclaimer {
+      color:text-color(accentThree);
+
+      .darker {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .lighter {
+    color: text-color(primary, lightest);
+  }
+
+  .packet-pagination,
+  .text-pagination {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-justify-content: flex-end;
+    justify-content: flex-end;
+    align-items: center;
+
+    .data-pagination {
+      display: flex;
+      align-items: center;
+      margin-left: rsa-whitespace(less);
+      margin-right: rsa-whitespace(less);
+      //icons
+      .rsa-icon {
+        &.active:not(.disabled) {
+          cursor: pointer;
+          color: text-color(primary, lightest);
+        }
+        &.disabled {
+          color: text-color(primary);
+          cursor: default;
+        }
+      }
+      .rsa-form-button {
+        position: relative;
+        top: -2px;
+      }
+      //jump to specific page text box
+      .page-text-box {
+        display: flex;
+        align-items: center;
+        color: text-color(primary, lightest);
+
+        .input-page-number {
+          margin-left: rsa-whitespace(less);
+          text-align: center;
+          width: 21px;
+          -moz-appearance:textfield;
+          background-color: background-color(primary,dark);
+        }
+        .readonly-page-number {
+          cursor: default;
+          margin-left: rsa-whitespace(less);
+          text-align: center;
+          width: 21px;
+        }
+        .input-page-number::-webkit-outer-spin-button,
+        .input-page-number::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        .input-span {
+          margin-right: rsa-whitespace(less);
+          margin-left: rsa-whitespace(less);
+        }
+        .last-page {
+          margin-right: rsa-whitespace(less);
+        }
+      }
+      //dropdown
+      .power-select-dropdown{
+        display: flex;
+        align-items: center;
+        margin-left: rsa-whitespace(more);
+        .ember-power-select-trigger {
+          border-bottom: 0;
+          font-weight: lighter;
+          margin-left: rsa-whitespace(less);
+          width: 2.85rem;
+          .ember-power-select-selected-item {
+          margin-right: 0;
+          }
+
+        }
+        .label-text {
+          color: text-color(primary, lightest);
+          margin-left: rsa-whitespace(less);
+        }
+      }
+    //end of data-pagination
+    }
+  }
+}

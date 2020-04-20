@@ -1,0 +1,105 @@
+.rsa-nav-tab-group {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.rsa-nav-tab {
+  margin: rsa-whitespace();
+  flex-grow: 1;
+  box-sizing: border-box;
+  border-bottom: 4px solid transparent;
+  white-space: nowrap;
+
+  .imagery {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: rsa-whitespace(less);
+    color: $navTabImageryTypeColor;
+  }
+
+  .label, a {
+    position: relative;
+    top: 2px;
+    text-decoration: none;
+    padding: rsa-whitespace(least) 0;
+    @include rsa-font(navigation);
+    text-align: center;
+    color: $navTabLabelTypeColor;
+  }
+
+  &.is-left-aligned-primary {
+    flex-grow: 0;
+
+    .imagery {
+      font-size: 1rem;
+      &::before {
+        content:"(";
+      }
+      &::after {
+        content:")";
+      }
+    }
+
+    .label, a {
+      text-transform: capitalize;
+      font-weight: 100;
+      font-size: 1.28rem;
+      letter-spacing: 0.05rem;
+    }
+  }
+
+  &.is-center-aligned-secondary {
+    text-align: center;
+    line-height: 3rem;
+
+    .imagery {
+      display: none;
+    }
+
+    .label, a {
+      @include rsa-font(navigation);
+      display: inline-block;
+      margin: 0;
+    }
+  }
+
+  &.is-left-aligned-secondary {
+    margin: -1px rsa-whitespace() 0;
+    flex-grow: 0;
+    text-align: center;
+    line-height: 2rem;
+
+    .imagery {
+      display: none;
+    }
+
+    .label, a {
+      @include rsa-font(navigation);
+      display: inline-block;
+      margin: 0;
+    }
+  }
+
+  &.is-active {
+    border-color: $navTabActiveBorderBottomColor;
+    align-self: center;
+    cursor: default;
+
+    .imagery,
+    .label,
+    .label a,
+    a {
+      color: $navTabActiveTypeColor;
+    }
+  }
+
+  &:hover {
+    .imagery,
+    .label,
+    .label a,
+    a {
+      color: $navTabHoverTypeColor;
+    }
+  }
+
+}

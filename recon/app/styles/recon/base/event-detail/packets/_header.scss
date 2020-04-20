@@ -1,0 +1,35 @@
+.rsa-packet__header {
+  color: $dark-fg-color;
+  padding: 0 rsa-whitespace();
+  min-height: 2rem;
+
+  .packet-details {
+    @include rsa-font(body, small);
+    text-transform: capitalize;
+    padding-bottom: rsa-whitespace();
+    .label {
+      @include rsa-font(header, small);
+      color: text-color(primary, lighter);
+      margin-right: rsa-whitespace(least);
+    }
+    .toggle-icon {
+      min-width: 20px;
+    }
+    .rsa-icon:hover {
+      cursor: pointer;
+    }
+    .text {
+      @include rsa-font(body);
+      margin-left: rsa-whitespace(least);
+    }
+  }
+
+  &.is-sticky {
+    .packet-details {
+      box {
+        white-space: nowrap;
+        margin-right: rsa-whitespace(less);
+      }
+    }
+  }
+}

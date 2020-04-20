@@ -1,0 +1,22 @@
+<box flexi-fill class="rsa-incident-journal__body">
+  <div class="list">
+    {{#if (eq infoStatus "wait")}}
+      <centered>
+        {{rsa-loader size="large" label=(t "respond.journal.loading")}}
+      </centered>
+    {{else}}
+      {{#if entries.length}}
+        {{#each entries as |entry|}}
+          {{rsa-incident/journal/entry incidentId=info.id entry=entry}}
+        {{/each}}
+      {{else}}
+        <centered><p>{{t "respond.journal.noEntries" incidentId=info.id}}</p></centered>
+      {{/if}}
+    {{/if}}
+  </div>
+</box>
+{{#if accessControl.respondCanManageJournal}}
+  <box class="rsa-incident-journal__create-entry">
+    {{rsa-incident/journal/new-entry incidentId=info.id}}
+  </box>
+{{/if}}

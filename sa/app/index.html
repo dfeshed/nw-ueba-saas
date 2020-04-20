@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="shortcut icon" href="{{rootURL}}assets/images/favicon-32x32.png">
+
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{content-for "head"}}
+
+    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/vendor.css">
+    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/sa.css">
+
+    {{content-for "head-footer"}}
+  </head>
+
+  <body class="dark-theme">
+    <div class="rsa-application-loading rsa-loader is-largest">
+      <div class="rsa-loader__wheel"></div>
+      <div class="rsa-loader__text"></div>
+    </div>
+
+    {{content-for "body"}}
+
+    <script src="{{rootURL}}assets/vendor.js"></script>
+    <script src="{{rootURL}}assets/sa.js"></script>
+
+    {{content-for "body-footer"}}
+  </body>
+</html>

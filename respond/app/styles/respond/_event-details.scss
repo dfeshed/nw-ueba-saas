@@ -1,0 +1,57 @@
+.rsa-event-details {
+  &-header {
+    .title {
+      @include rsa-font(header, large);
+    }
+    .subtitle {
+      padding: rsa-whitespace(less) 0;
+    }
+  }
+
+  &-body {
+
+    > .rsa-property-tree {
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+
+    .rsa-property-tree {
+      color: text-color(neutral);
+
+      .key {
+
+        &-name {
+          min-width: 120px;
+          padding-top: rsa-whitespace(least);
+          padding-bottom: rsa-whitespace(least);
+          padding-left: 0;
+          padding-right: rsa-whitespace();
+          color: text-color(primary,light);
+        }
+
+        &-value {
+          padding-right: rsa-whitespace();
+        }
+      }
+
+      > table > tr {
+        //background-color: background-color(primary,dark,nearly-transparent);
+
+        &:not(:last-of-type) {
+          @include border-bottom(10px, solid, primary, base, transparent);
+        }
+
+        > .key-name {
+          //padding-left: rsa-whitespace();
+        }
+
+        > td > .rsa-property-tree > table > tr {
+          @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
+        }
+      }
+
+      .has-context-data {
+        @include rsa-has-context-data();
+      }
+    }
+  }
+}

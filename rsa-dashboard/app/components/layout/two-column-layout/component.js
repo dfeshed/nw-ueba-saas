@@ -1,0 +1,1 @@
+export { default } from 'rsa-dashboard/components/layout/two-column-layout/component';

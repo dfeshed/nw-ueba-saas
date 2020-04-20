@@ -1,0 +1,168 @@
+.datetime-picker-icon {
+  position: absolute;
+  right: rsa-whitespace(less);
+  top: 1.75rem;
+  color: $formDateTimeIconColor;
+}
+
+.flatpickr-day.disabled,
+.flatpickr-day.disabled:hover,
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay,
+.flatpickr-day.notAllowed,
+.flatpickr-day.notAllowed.prevMonthDay,
+.flatpickr-day.notAllowed.nextMonthDay {
+  color: text-color(primary);
+
+  &:hover {
+    border-color: transparent;
+    background-color: background-color(primary, dark);
+  }
+}
+
+.flatpickr-calendar {
+  border-radius: 0;
+  background-color: background-color(primary, darkest);
+  box-shadow: 1px 1px background-color(neutral, dark);
+
+  input {
+    color: text-color(primary, lightest)
+  }
+
+  .numInputWrapper {
+    span {
+      opacity: 1;
+      border-color: transparent;
+    }
+  }
+}
+
+.rsa-form-input.is-disabled .datetime-picker-icon {
+  color: text-color(primary);
+}
+
+.flatpickr-months span.flatpickr-prev-month,
+.flatpickr-months span.flatpickr-next-month {
+  fill: text-color(primary, lightest);
+  &:hover svg {
+    fill: text-color(primary, light);
+  }
+}
+
+.flatpickr-current-month {
+  @include rsa-font(header);
+
+  color: text-color(primary, lightest);
+
+  .numInputWrapper {
+    width: 20%;
+
+    span {
+      right: auto;
+
+      &.arrowUp {
+        &:after {
+          border-bottom-color: border-color(primary, lightest);
+        }
+      }
+
+      &.arrowDown {
+        &:after {
+          border-top-color: border-color(primary, lightest);
+        }
+      }
+
+      &:after {
+        margin-left: rsa-whitespace(less);
+      }
+
+    }
+  }
+}
+
+.flatpickr-month,
+.flatpickr-time,
+span.flatpickr-weekday,
+.flatpickr-day,
+.flatpickr-time input,
+.flatpickr-time .flatpickr-am-pm {
+  color: text-color(primary, lightest);
+}
+
+.flatpickr-time .flatpickr-time-separator {
+  color: text-color(primary, light);
+}
+
+.flatpickr-day,
+.flatpickr-time .flatpickr-am-pm {
+  border-radius: 0;
+
+  &:hover {
+    border-color: transparent;
+    background-color: background-color(primary, dark);
+  }
+
+  &.today {
+    border-color: border-color(primary, light);
+
+    &:hover {
+      background-color: background-color(primary, dark);
+    }
+  }
+}
+
+.flatpickr-calendar.showTimeInput.hasTime .flatpickr-time {
+  border-color: border-color(primary, dark);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected.inRange,
+.flatpickr-day.startRange.inRange,
+.flatpickr-day.endRange.inRange,
+.flatpickr-day.selected:focus,
+.flatpickr-day.startRange:focus,
+.flatpickr-day.endRange:focus,
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover,
+.flatpickr-day.selected.prevMonthDay,
+.flatpickr-day.startRange.prevMonthDay,
+.flatpickr-day.endRange.prevMonthDay,
+.flatpickr-day.selected.nextMonthDay,
+.flatpickr-day.startRange.nextMonthDay,
+.flatpickr-day.endRange.nextMonthDay {
+  background-color: background-color(secondary);
+  color: text-color(primary, lightest);
+}
+
+.flatpickr-time input:hover,
+.flatpickr-time .flatpickr-am-pm:hover,
+.flatpickr-time input:focus,
+.flatpickr-time .flatpickr-am-pm:focus {
+  background-color: background-color(primary, dark);
+}
+
+.flatpickr-time .numInputWrapper span.arrowUp:after {
+  border-bottom-color: border-color(primary, lightest);
+}
+
+.flatpickr-time .numInputWrapper span.arrowDown,
+.flatpickr-time .numInputWrapper span.arrowUp {
+  &:hover {
+    background-color: background-color(primary, dark);
+  }
+}
+
+.flatpickr-time .numInputWrapper span.arrowDown:after {
+  border-top-color: border-color(primary, lightest);
+}
+
+.flatpickr-calendar.arrowBottom:before,
+.flatpickr-calendar.arrowTop:before,
+.flatpickr-calendar.arrowBottom:after,
+.flatpickr-calendar.arrowTop:after {
+  border-bottom-color: transparent;
+  border-top-color: transparent;
+}

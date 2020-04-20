@@ -1,0 +1,26 @@
+$respondBackgroundColor: background-color(custom, respond);
+
+@import "solarized";
+@import "mixins";
+@import 'respond-engine';
+@import "metadata";
+@import "alerts-search";
+@import "alerts-table";
+@import "event-details";
+@import "fast-force";
+@import "force-layout";
+@import "group-table/manifest";
+@import "items-sheet";
+@import "property-tree";
+@import "incident/manifest";
+@import "incidents/manifest";
+@import "alert/manifest";
+@import "alerts/_manifest";
+@import "tab";
+@import "confirmation-dialog";
+@import "navigation";
+@import "common/editable-field";
+@import "remediation/manifest";
+@import "resizer";
+@import "recon-respond-wrapper";
+@import "ueba-respond-wrapper";

@@ -1,0 +1,36 @@
+.sg-demo-opacity {
+  padding: rsa-whitespace(more);
+  box-sizing: border-box;
+  color: text-color(neutral, dark);
+
+  &.overlay {
+    position: absolute;
+    height: 50%;
+    top: 0;
+    left: 0;
+    right: 0;
+    @include rsa-layer(above);
+
+    &.transparent {
+      background-color: background-color(neutral, base, transparent);
+      color: text-color(neutral);
+    }
+
+    &.nearly-transparent {
+      background-color: background-color(neutral, base, nearly-transparent);
+      color: text-color(neutral);
+    }
+
+    &.translucent {
+      background-color: background-color(neutral, base, translucent);
+    }
+
+    &.nearly-opaque {
+      background-color: background-color(neutral, base, nearly-opaque);
+    }
+
+    &.opaque {
+      background-color: background-color(neutral, base, opaque);
+    }
+  }
+}

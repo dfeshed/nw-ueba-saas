@@ -1,0 +1,17 @@
+.rsa-content-definition {
+  display: inline-block;
+
+  .label {
+    @include rsa-font(header, small);
+    color: $contentDefinitionLabelColor;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: rsa-whitespace(less);
+  }
+
+  .value {
+    @include rsa-font(body);
+    text-transform: none;
+    color: $contentDefinitionValueColor;
+  }
+}

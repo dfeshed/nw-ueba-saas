@@ -1,0 +1,125 @@
+$headerHeight: 30px;
+
+.rsa-incident-journal {
+  height: calc(100% - #{$headerHeight});
+
+  &__header {
+
+    h2 {
+      padding: rsa-whitespace(less);
+      @include rsa-font(header,small);
+    }
+
+    .rsa-icon {
+      color: text-color(neutral);
+      padding: rsa-whitespace(less);
+      cursor: pointer;
+
+      &.active,
+      &:hover {
+        color: text-color(secondary,light);
+      }
+    }
+  }
+
+  &__body {
+    centered {
+      height: 100%;
+      font-style: italic;
+    }
+
+    .list {
+      @include rsa-fill-abs();
+      overflow: auto;
+      overflow-x: hidden;
+    }
+  }
+
+  &__create-entry {
+    @include rsa-font(body);
+    @include border-top(1px, solid, primary);
+    max-height: 225px;
+    padding: rsa-whitespace();
+
+    header {
+      padding-bottom: rsa-whitespace(less);
+    }
+
+    textarea {
+      @include rsa-font(body, small);
+      @include border(1px, solid, primary, light);
+      height: 100px;
+      width: 100%;
+      margin-bottom: rsa-whitespace(less);
+      background-color: transparent;
+      color: text-color(primary, lightest);
+      resize: none;
+    }
+  }
+
+  &-entry {
+    position: relative;
+    padding: rsa-whitespace(less);
+    @include border-bottom(1px, dashed, primary);
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+
+    &__header {
+      min-height: 15px;
+      white-space: nowrap;
+      @include rsa-font(navigation,small);
+      color: text-color(primary, light);
+
+      .delete {
+        position: absolute;
+        right: 0;
+        top: 0;
+        .rsa-form-button i {
+          font-size: 11px;
+        }
+      }
+    }
+
+    &__author {
+      color: text-color(primary, lighter);
+      padding-right: rsa-whitespace();
+    }
+
+    &__note {
+      @include rsa-font(paragraph);
+      color: text-color(neutral);
+
+      .editable-field.textarea {
+        width: auto;
+        min-height: 35px;
+
+        &.is-editing {
+          width: 100%;
+          min-height: 150px;
+        }
+      }
+    }
+
+    &__milestone {
+      line-height: 1.5rem;
+      text-transform: none;
+      letter-spacing: normal;
+    }
+
+    &-editor {
+      &__text {
+        box-sizing: border-box;
+        width: 100%;
+        height: 5rem;
+        @include border(1px, solid, primary);
+        background: background-color(neutral,base,translucent);
+        padding: rsa-whitespace(less) rsa-whitespace(least);
+        color: text-color(neutral);
+        font-size: 1rem;
+        margin-bottom: rsa-whitespace(less);
+      }
+    }
+  }
+}

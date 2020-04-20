@@ -1,0 +1,114 @@
+{{#if (eq addRelatedIndicatorsStatus "wait")}}
+  <centered class="rsa-incident-alerts-search__wait">
+    {{rsa-loader size="larger" label=(t "respond.incident.search.actions.addingAlert")}}
+  </centered>
+{{else if (eq addRelatedIndicatorsStatus "error")}}
+  <centered class="rsa-incident-alerts-search__error">
+    <vbox align="center">
+      <p>{{t "respond.incident.search.actions.unableToAddAlert"}}</p>
+      <p>{{t "respond.incident.search.actions.pleaseTryAgain"}}</p>
+      {{#rsa-form-button style="primary" defaultAction=(action "clearAddToIncidentStatus")}}
+        {{t "forms.ok"}}
+      {{/rsa-form-button}}
+    </vbox>
+  </centered>
+{{/if}}
+{{#rsa-alerts-search
+  class="rsa-incident-alerts-search"
+  as |search|
+}}
+  {{search.form
+    selectedTimeFrameName=defaultSearchTimeFrameName
+    selectedEntityTypeName=defaultSearchEntityType
+    isSearchUnderway=(eq searchStatus "streaming")
+    onChangeTimeFrame=(action "onChangeTimeFrame")
+    onChangeEntityType=(action "onChangeEntityType")
+    onSubmit=(action "onSubmit")
+    onCancel=(action "onCancel")
+  }}
+  {{#search.results
+    entity=searchEntity
+    timeFrameName=searchTimeFrameName
+    itemsStatus=searchStatus
+    items=searchResults
+    useLazyRendering=useLazyRendering
+    as |item|
+  }}
+    <hbox nowrap class="alert">
+
+      <vbox fit justify="center" align="center" class="connector">
+        <div class="severity">
+          {{item.alert.severity}}
+        </div>
+      </vbox>
+
+      <vbox fill class="content">
+        {{!Alert source + timestamp}}
+        <hbox nowrap>
+          <box fill class="p source">
+            <span>{{t (concat "respond.alert.source." item.alert.source)}}</span>
+          </box>
+          <box fit nowrap align="end" class="p time">
+            {{rsa-content-datetime
+              timestamp=item.timestamp
+              displayAsTimeAgo=false
+              displayDate=true
+              displayTime=true
+              displayMilliseconds=false
+            }}
+          </box>
+        </hbox>
+
+        {{!Alert name}}
+        <h3 class="alert-name" title={{item.alert.name}}>{{item.alert.name}}</h3>
+
+        {{!Alert events count and link}}
+        <hbox nowrap>
+          <box fill class="p event-count">
+            {{item.alert.numEvents}} {{t (if (eq 1 item.alert.numEvents) "respond.storyline.event" "respond.storyline.events")}}
+          </box>
+          <box fit align="end" class="p">
+            {{#link-to "alert" item.id target="_blank"}}{{t "respond.incident.search.results.openInNewWindow"}}{{/link-to}}
+          </box>
+        </hbox>
+
+        {{!Add To Incident Button}}
+        {{#if (eq item.incidentId incidentId)}}
+
+          {{!Alert is already part of this incident}}
+          <div class="incident-action part-of-this-incident">
+            {{#rsa-form-button isDisabled=true}}
+              {{t "respond.incident.search.partOfThisIncident"}}
+            {{/rsa-form-button}}
+          </div>
+
+        {{else if item.incidentId}}
+
+          {{!Alert is part of another incident}}
+          <p class="incident-action part-of-other-incident">
+            <label>{{t "respond.storyline.partOfIncident"}}:</label>
+            <span>
+              {{#link-to "incident" item.incidentId}}
+                {{item.incidentId}}
+              {{/link-to}}
+            </span>
+          </p>
+
+        {{else}}
+
+          {{!Alert is not part of any incident}}
+          <div class="incident-action not-part-of-incident">
+            {{#rsa-form-button style="primary" defaultAction=(action "addToIncident" item) isDisabled=(is-incident-closed incidentInfo.status)}}
+              {{t "respond.incident.search.actions.addToIncident"}}
+            {{/rsa-form-button}}
+            {{#if (is-incident-closed incidentInfo.status)}}
+              <div class="disabled-control-message">{{t "respond.incident.search.actions.closedIncident"}}</div>
+            {{/if}}
+          </div>
+
+        {{/if}}
+
+      </vbox>
+    </hbox>
+  {{/search.results}}
+{{/rsa-alerts-search}}

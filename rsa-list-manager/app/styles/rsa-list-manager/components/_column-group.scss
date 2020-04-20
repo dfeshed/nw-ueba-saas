@@ -1,0 +1,101 @@
+// ************************************************************************ //
+//                    specific to column group list manager                 //
+// ************************************************************************ //
+
+p.columns-filtered-message, p.no-columns-message, p.message.meta-filtered {
+  padding: rsa-whitespace(less);
+  font-size: 12px;
+  font-weight: lightest;
+  font-style: italic;
+  text-align: center;
+  color: text-color(primary, lighter);
+}
+.displayed-details, .add-details {
+  .rsa-icon-subtract-circle-1 {
+    color: text-color(accentOne, dark);
+  }
+  .column-list.value.readonly li {
+    line-height: 1.5rem;
+  }
+  .column-list.value.readonly li span {
+    width: 48%;         
+    display: inline-table;
+  }
+  .column-list.value.editable li {
+    display: flex;
+    transition: all .125s;
+    position: relative;
+    max-height: 1.5rem;
+    .rsa-form-button {
+      border: none;
+    }
+    span {
+      width: 42%;         
+      display: inline-table;
+      align-self: center;
+      font-size: inherit;
+    }
+    span.title {
+      vertical-align: middle;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
+    .thumb {
+      width: 20px;
+      height: 20px;
+      padding-left: 0.8rem;
+      cursor: move;
+      user-select: none;
+    }
+    .thumb i {
+      margin: 0 2px;
+      vertical-align: sub;
+    }
+    i {
+      margin-left: -1rem;
+      font-size: inherit;
+    }
+    &.is-dragging {
+      transition-duration: 0s;
+      background-color: background-color(primary, darker);
+      z-index: 30001;
+    }
+  }
+}
+.is-name-error .column-group-details {
+  max-height: 160px;
+}
+.column-group-details {
+  max-height: 190px;
+  &.readonly {
+    max-height: 230px;
+  }
+}
+.list-filter.column-group-column-filter {
+  padding-top: 0.5rem;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 2px;
+}
+.list-filter.column-group-column-filter .filter-group {
+  display: inline-flex;
+  width: 100%;
+  border-bottom: 1px solid border-color(primary,light);
+  padding-bottom: rsa-whitespace(less);
+  padding-top: rsa-whitespace(less);
+  i {
+    position: relative;
+    top: 1px;
+  }
+  .ember-power-select-search-input {
+    border: none;
+    font-weight: 300;
+  }
+  .clear-filter i {
+    margin-right: 0;
+    font-size: 11px;
+  }
+}

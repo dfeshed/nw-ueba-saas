@@ -1,0 +1,53 @@
+.host-process-details {
+  height: 100%;
+  .rsa-page-layout {
+    .process-content-box {
+        width: 100%;
+    }
+    .rsa-header {
+      @include border-bottom(1px, solid, primary);
+      margin-bottom: 0px;
+      border: none;
+      height: 99px;
+      background-color: text-color(primary, darkest);
+      border-bottom-color: text-color(primary, lightest);
+      .label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 230px;
+        display: inline-block;
+        height: 15px;
+      }
+      .rsa-nav-tab {
+        height: 53px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        width: 89px;
+        .label {
+          text-align: left;
+        }
+      }
+      .close-zone {
+        padding-top: 1.4rem;
+      }
+      .rsa-nav-tab-group {
+        height: 39px;
+        border-bottom: 1px solid text-color(primary, dark);
+      }
+
+    }
+    .process-content-box-wrapper {
+      width: 100%;
+      .header-data {
+        margin-bottom: 2rem;
+        margin-top: -0.8rem;
+      }
+    }
+    .process-content-box {
+      margin-top: 2rem;
+    }
+  }
+}
+.start-scan-modal {
+  z-index: 10000;
+}

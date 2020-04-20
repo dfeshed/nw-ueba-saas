@@ -1,0 +1,1 @@
+export { default } from 'springboard-widget-lib/components/table-widget';

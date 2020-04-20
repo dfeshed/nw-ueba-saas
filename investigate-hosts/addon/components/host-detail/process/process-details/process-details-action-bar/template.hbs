@@ -1,0 +1,18 @@
+<div class="action-bar">
+  {{#link-to "hosts.details.tab" "PROCESS" (query-params subTabName=null pid=null)}}
+    {{#rsa-form-button class="back-to-process" isDisabled=isDisabled}}
+      {{rsa-icon name="arrow-left-12"}}
+      {{t "investigateHosts.process.backToProcesses"}}
+    {{/rsa-form-button}}
+  {{/link-to}}
+  <label class="process-details-label">
+    {{t "investigateHosts.process.processDetails"}}
+  </label>
+</div>  
+<div class="process-details-close">
+  {{#link-to "hosts.details.tab" "PROCESS"}}
+    {{#rsa-form-button class="close-zone" isIconOnly=true }}
+      {{rsa-icon class="close-icon" name="close" title=(t "investigateHosts.context.button.close")}}
+    {{/rsa-form-button}}
+  {{/link-to}}
+</div>  

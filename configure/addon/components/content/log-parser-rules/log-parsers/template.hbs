@@ -1,0 +1,43 @@
+<h1> {{t "configure.logsParser.logParsers"}} </h1>
+{{content/log-parser-rules/log-parsers/toolbar}}
+<div class="parser-table-container">
+  <table class="parserTable">
+    <tbody>
+      {{#each logParsers as |logParser index|}}
+        <tr>
+          <td class="{{if (eq index 0) "firstItem"}} {{if (eq selectedLogParserIndex index) "active"}}"{{action "selectParser" index}}>
+            <div>
+              {{#if logParser.dirty}}
+                <p class="deploy-icon">{{rsa-icon name="synchronize-3"}}</p>
+              {{/if}}
+              <span class="parser-log-name">{{or logParser.displayName logParser.name}}</span>
+            </div>
+          </td>
+        </tr>
+      {{else}}
+        {{#if domIsReady}}
+          <div class="no-loaded-parsers">
+            <p>{{t "configure.logsParser.noLoadedParsersInfo"}}</p>
+          </div>
+        {{/if}}
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{#if showConfirmationDialog}}
+  {{#rsa-application-modal eventId="confirm-unsaved-changes" label=(t "configure.logsParser.confirmDiscardChanges") style="standard respond-confirmation-dialog"}}
+    <div class="modal-content">
+      <p>{{t "configure.logsParser.switchParserUnsavedChanges"}}</p>
+    </div>
+    <footer class="unsaved-changes-footer">
+      <hbox class="modal-footer-buttons">
+        {{#rsa-form-button class="cancel-button" defaultAction=(action "cancel")}}
+          {{t "forms.cancel"}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button style="primary" class="confirm-button" defaultAction=(action "confirm")}}
+          {{t "configure.logsParser.buttons.discardChanges"}}
+        {{/rsa-form-button}}
+      </hbox>
+    </footer>
+  {{/rsa-application-modal}}
+{{/if}}

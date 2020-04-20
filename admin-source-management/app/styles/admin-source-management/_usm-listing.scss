@@ -1,0 +1,68 @@
+.admin-usm-engine {
+
+  .usm-groups, .usm-policies, .usm-sources {
+    height: 100%;
+    overflow: auto;
+
+    .published-icon {
+      color: text-color(neutral);
+      position: absolute;
+      line-height: 24px;
+      margin-left: 15px;
+      margin-right: 0px;
+    }
+    .status-unpublished, .status-unpublished-edits, .status-noassociated-groups {
+      color: text-color(accentThree, dark);
+    }
+    .status-default-policy-associated-group {
+      color: text-color(primary, light);
+    }
+    .status-noassigned-policies {
+      color: text-color(primary);
+    }
+    .status-nosource-count {
+      color: text-color(primary);
+      display: inline;
+    }
+    .usm-groups-toolbar, .usm-policies-toolbar, .usm-sources-toolbar {
+      .action-control {
+        padding: rsa-whitespace(least);
+        display: inline-block;
+      }
+      .divider {
+        @include border-right(1px, solid, primary);
+        height: 2rem;
+        margin-top: rsa-whitespace(least);
+        margin-left: rsa-whitespace() - rsa-whitespace(least);
+        margin-right: rsa-whitespace() - rsa-whitespace(least);
+      }
+    }
+    .inline-csv-list {
+      li {
+        display: inline;
+        margin: 0;
+        padding: 0;
+      }
+      li:not(:last-child):after {
+        content: ", ";
+      }
+    }
+    .table-cell-text {
+      @include rsa-font(body, small);
+    }
+    .rsa-data-table-body-rows, .rsa-data-table-header {
+      .usm-groups-column-sourceCount {
+        display: flex;
+        .table-cell-text {
+          align-items: flex-start;
+        }
+      }
+    
+      .rsa-data-table-header-cell {
+        &:first-child {
+          text-overflow: clip;
+        }
+      }
+    }
+  }
+}

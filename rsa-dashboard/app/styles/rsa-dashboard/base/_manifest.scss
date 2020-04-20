@@ -1,0 +1,57 @@
+.rsa-dashboard {
+  height: calc(100vh - 92px);
+  .entity-info {
+    div {
+      line-height: 22px;
+      height: 22px;
+    }
+  }
+  .entity-info-title {
+    height: 18px;
+    .entity-name {
+      @include rsa-font(regular, large);
+      font-weight: 600;
+      color: text-color(secondary, light);
+      max-width: 300px;
+      width: auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
+    .os-type {
+      position: absolute;
+    }
+  }
+  .dashboard-divider {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    &::after {
+      background: background-color(primary);
+      width: 1.5px;
+      content: "";
+      display:inline-block;
+      position: absolute;
+      min-height: 14px;
+      margin-top: 3px;
+    }
+  }
+
+}
+
+.license-banner.shown + .rsa-dashboard {
+  // When license banner is shown, the absolute top position has to be adjusted
+  height: calc(100vh - 128px);
+}
+
+.more-action {
+  position: absolute;
+  right: 0px;
+  top: 22px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.widget-content {
+  height: 100%;
+}

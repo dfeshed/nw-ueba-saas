@@ -1,0 +1,34 @@
+<grid>
+  <hbox class="dropdowns">
+    {{#if isPacketView}}
+      {{recon-event-actionbar/export-packet}}
+      <hbox justify="end">
+        {{recon-event-actionbar/common-file-patterns class="option-toggle"}}
+        {{recon-event-actionbar/stylize-bytes class="option-toggle"}}
+        {{recon-event-actionbar/payload-only class="option-toggle"}}
+      </hbox>
+    {{/if}}
+
+    {{#if (or isFileView isEmailView)}}
+      {{recon-event-actionbar/export-files}}
+    {{/if}}
+
+    {{#if isTextView}}
+      {{#if (or isLogEvent isEndpointEvent)}}
+        <hbox justify="start">
+          {{recon-event-actionbar/export-logs}}
+          {{#if isEndpointEvent}}
+            {{recon-event-actionbar/pivot-endpoint}}
+            {{recon-event-actionbar/pivot-to-process-analysis}}
+            {{recon-event-actionbar/pivot-to-host-details}}
+          {{/if}}
+        </hbox>
+      {{else}}
+        {{recon-event-actionbar/export-packet}}
+        {{#if isHttpEvent}}
+          {{recon-event-actionbar/decode-text}}
+        {{/if}}
+      {{/if}}
+    {{/if}}
+  </hbox>
+</grid>

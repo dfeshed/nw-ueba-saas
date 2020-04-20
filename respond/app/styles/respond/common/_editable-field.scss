@@ -1,0 +1,201 @@
+$editButtonWidth: 33px;
+$actionButtonWidth: 25px;
+$actionButtonHeight: 25px;
+$inputHeight: 33px;
+
+.editable-field {
+  display: inline-block;
+  position: relative;
+  font-size: 0; // fixes the gap adjacent inline-element
+  width: auto;
+  max-width: calc(100% - #{$editButtonWidth});
+
+  &__value {
+    height: 100%;
+    width: 100%;
+    min-height: 34px;
+    min-width: 100px;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: rsa-whitespace(less);
+    @include border(1px, solid, primary, base, transparent);
+    @include rsa-font(body);
+
+    &.placeholder {
+      font-style: italic;
+    }
+  }
+
+  &.input {
+    .editable-field__value {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  span.edit-field {
+    position: absolute;
+    .rsa-form-button-wrapper {
+      line-height: inherit;
+      padding: rsa-whitespace(less);
+      @include border(1px, solid, primary, base, transparent);
+      visibility: visible;
+
+      .rsa-form-button {
+        padding: 0;
+        i {
+          font-size: 0.75rem;
+          color: text-color(primary, base, somewhat-opaque);
+        }
+      }
+    }
+  }
+
+  &.textarea {
+    width: auto;
+    min-height: 150px;
+    .editable-field__value {
+      padding-right: $editButtonWidth;
+      white-space: pre-wrap;
+      @include rsa-word-wrap();
+    }
+    span.edit-field {
+      right: 0;
+    }
+  }
+
+  &:hover {
+    .editable-field__value {
+      cursor: pointer;
+      border-color: border-color(primary);
+      border-right-color: transparent;
+    }
+
+    &.textarea:hover {
+      .editable-field__value {
+        border-right-color: border-color(primary);
+      }
+    }
+
+    span.edit-field {
+      height: 100%;
+
+      .rsa-form-button-wrapper {
+        cursor: pointer;
+        @include border(1px, solid, primary);
+        visibility: visible;
+        height: 100%;
+        background-color: background-color(primary, dark, somewhat-opaque);
+
+        .rsa-form-button i {
+          color: inherit;
+          font-size: 1rem;
+        }
+      }
+
+    }
+
+    &.textarea span.edit-field {
+      height: inherit;
+    }
+
+    &.is-disabled, &.is-disabled.textarea:hover {
+      .editable-field__value {
+        cursor: default;
+        border-color: transparent;
+      }
+      .rsa-form-button-wrapper {
+        display: none;
+      }
+
+    }
+  }
+
+  &.is-editing {
+    padding: 0;
+    border: none;
+    width: 100%;
+    max-width: 100%;
+
+    &.input {
+      height: $inputHeight;
+    }
+    &.textarea {
+      height: 100%;
+    }
+
+    input {
+      width: 100%;
+      height: 100%;
+      line-height: inherit;
+      padding: 0 rsa-whitespace(less);
+      @include border(1px, solid, secondary);
+      box-sizing: border-box;
+      @include rsa-font(body);
+    }
+
+    textarea {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-color: transparent;
+      color: inherit;
+      line-height: inherit;
+      padding: rsa-whitespace(less);
+      @include border(1px, solid, secondary);
+      box-sizing: border-box;
+      @include rsa-font(body);
+      outline: none;
+      resize: none;
+    }
+
+    .rsa-form-button-wrapper {
+      visibility: visible;
+      font-size: inherit;
+    }
+
+    span.action {
+      position: absolute;
+      @include rsa-layer(controls);
+      background-color: background-color(primary, darker, nearly-opaque);
+      @include border(1px, solid, secondary);
+
+      button {
+        padding: 0;
+        height: $actionButtonWidth;
+        width: $actionButtonWidth;
+
+        i {
+          font-size: $actionButtonWidth / 2;
+        }
+      }
+    }
+
+    span.confirm-changes {
+      right: $actionButtonWidth;
+      border-right: none;
+      border-top: none;
+      bottom: $actionButtonHeight * -1 - 1;
+      i {
+        color: text-color(primary);
+      }
+    }
+
+    span.cancel-changes {
+      right: 0;
+      border-top: none;
+      bottom: $actionButtonHeight * -1 - 1;
+      i {
+        font-size: 1rem;
+        color: text-color(accentOne);
+      }
+    }
+  }
+
+  &.has-changes {
+
+    span.confirm-changes .rsa-form-button-wrapper:not(.is-disabled) i {
+      color: text-color(accentTwo);
+    }
+  }
+}

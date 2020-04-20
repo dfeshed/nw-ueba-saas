@@ -1,0 +1,146 @@
+.file-actionbar {
+  padding: rsa-whitespace() 0 rsa-whitespace() 0;
+  .file-status-button {
+    padding: 0 rsa-whitespace(less) 0 rsa-whitespace();
+  }
+  .download-process-dump {
+    padding: 0 rsa-whitespace(less);
+  }
+
+  .rsa-form-button-wrapper.is-icon-only {
+    padding-left: rsa-whitespace();
+    .rsa-icon-binoculars {
+      padding-right: rsa-whitespace(less);
+    }
+  }
+  .file-status-more-actions {
+    margin-left: 1px;
+    height: fit-content;
+  }
+  .file-status-more-actions.disabled {
+    pointer-events: none;
+  }
+  .tab-label {
+    float: left;
+    padding: 0.5rem 0.5rem 1rem 1rem;
+    font-size: 1.28rem;
+    font-weight: 100;
+  }
+  .pivot-to-event-analysis {
+    height: fit-content;
+  }
+  .toggle-icon {
+    padding-top: 1rem;
+    padding-right: 23px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+}
+
+.file-action-selector-panel {
+  .rsa-dropdown-action-list {
+    li {
+      height: 18px;
+    }
+    .disabled, li.disabled:hover {
+      background: background-color(primary, darkest);
+      color: text-color(primary);
+      .rsa-content-tethered-panel-trigger {
+        color: text-color(primary);
+      }
+    }
+  }
+  .rsa-content-tethered-panel-trigger {
+    width: 100%;
+    padding: 2px 13px 9px 0px;
+
+    div {
+      width: 140px;
+      color: text-color(neutral);
+      .rsa-icon {
+        position: absolute;
+        right: 5px;
+      }
+    }
+
+  }
+}
+
+.saved-filter-list {
+  padding: rsa-whitespace();
+  .ember-power-select-option {
+    height: 32px;
+  }
+}
+
+.filter-wrapper {
+  height: calc(100% - 116px)
+}
+
+.save-filter.rsa-form-button-wrapper{
+  padding-left: rsa-whitespace();
+}
+
+.ember-power-select-option {
+  &[aria-current="true"] {
+    .delete-filter {
+      display: inline-block;
+    }
+  }
+}
+
+.delete-filter {
+  float: right;
+  right: 0.5rem;
+  display: none;
+  .rsa-icon-bin-1 {
+    font-size: 1rem !important;
+  }
+}
+
+.saved-filters-title {
+  @include rsa-font(header, small);
+  padding: 0 0 rsa-whitespace(less) 0;
+  color: text-color(primary, light);
+  letter-spacing: 1px;
+}
+
+.filter-list {
+  width: 367px;
+  padding-left: 2px;
+  overflow-y: auto;
+  .filter-list__item-label {
+    width: 150px;
+    display: inline-block;
+    line-height: 2rem;
+  }
+}
+
+.delete-filter {
+  i {
+    color: text-color(primary, lightest);
+  }
+}
+.actionSeperator {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+.saved-filter-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: 90%;
+  vertical-align: top;
+}
+
+.license-banner.show + .main-zone, .host-engine {
+  .rsa-data-filters {
+    .content-body {
+      height: calc(100vh - 296px);
+    }
+  }
+}
+
+

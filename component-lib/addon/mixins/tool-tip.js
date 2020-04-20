@@ -1,0 +1,125 @@
+import Mixin from '@ember/object/mixin';
+import { sendTetherEvent } from 'component-lib/utils/tooltip-trigger';
+import { run } from '@ember/runloop';
+import { inject as service } from '@ember/service';
+
+let mouseEnterFn, mouseLeaveFn;
+
+export default Mixin.create({
+  displayDelay: 500,
+  displayEvent: null,
+  hideDelay: 500,
+  target: null,
+  eventBus: service(),
+  /**
+   * Checks if text content are overflow or not. Checking the scrollWidth with offsetWidth
+   * @param target
+   * @returns {boolean}
+   * @private
+   */
+  _isTextOverFlow(target) {
+    return target.scrollWidth > target.offsetWidth;
+  },
+
+  /**
+   * Show the tool tip if text content are more
+   * @param e
+   * @public
+   */
+  handleMouseEnter(e) {
+    this.set('showToolTip', true);
+    if (this.get('alwaysShow') || this._isTextOverFlow(e.target)) {
+      if (this.get('hideEvent')) {
+        run.cancel(this.get('hideEvent'));
+        this.set('hideEvent', null);
+      }
+      const displayEvent = run.later(() => {
+        if (this.get('isDestroying') || this.get('isDestroyed') || !this.element) {
+          // The element has been destroyed since the time when the delay started
+          return;
+        }
+        this.set('target', this.element);
+        sendTetherEvent(
+          this.element,
+          this.get('panelId'),
+          this.get('eventBus'),
+          'display',
+          this.get('model')
+        );
+      }, this.get('displayDelay'));
+      this.set('displayEvent', displayEvent);
+    }
+  },
+
+  handleMouseLeave() {
+    if (this.get('displayEvent')) {
+      run.cancel(this.get('displayEvent'));
+      this.set('displayEvent', null);
+    }
+    const hideEvent = run.later(() => {
+      if (!this.get('isDestroying') && !this.get('isDestroyed') && this.target) {
+        sendTetherEvent(
+          this.target,
+          this.get('panelId'),
+          this.get('eventBus'),
+          'hide'
+        );
+        this.set('target', null);
+      }
+    }, this.get('hideDelay'));
+    this.set('hideEvent', hideEvent);
+  },
+
+  focusIn(e) {
+    this.handleMouseEnter(e);
+  },
+  focusOut() {
+    this.handleMouseLeave();
+  },
+  /**
+   * Register the window click event, on click set the show tooltip flag to false
+   * @public
+   */
+  didInsertElement() {
+    const windowClickFunct = this._handleWindowClick.bind(this);
+    window.addEventListener('click', windowClickFunct);
+    this.setProperties({ windowClickFunct });
+
+    mouseEnterFn = this.handleMouseEnter.bind(this);
+    mouseLeaveFn = this.handleMouseLeave.bind(this);
+
+    this.element.addEventListener('mouseover', mouseEnterFn);
+    this.element.addEventListener('mouseout', mouseLeaveFn);
+  },
+
+  /**
+   * Unbind the events
+   * @public
+   */
+  willDestroyElement() {
+    const { windowClickFunct } = this.getProperties('windowClickFunct');
+    window.removeEventListener('click', windowClickFunct);
+    this.element.removeEventListener('mouseover', mouseEnterFn);
+    this.element.removeEventListener('mouseout', mouseLeaveFn);
+    mouseEnterFn = null;
+    mouseLeaveFn = null;
+
+  },
+
+  /**
+   * If click event is outside tooltip reset the flag
+   * @param e
+   * @private
+   */
+  _handleWindowClick(e) {
+    const targetParent = e.target.parentElement;
+    let isClickInsideTooltip = false;
+    if (!targetParent || targetParent.classList.contains('tool-tip-value')) {
+      isClickInsideTooltip = true;
+    }
+    if (!isClickInsideTooltip) {
+      this.set('showToolTip', false);
+      this.set('target', null);
+    }
+  }
+});

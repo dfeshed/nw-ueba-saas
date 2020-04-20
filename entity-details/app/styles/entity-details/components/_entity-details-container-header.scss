@@ -1,0 +1,50 @@
+.entity-details-container-header {
+  min-height: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  float: left;
+  padding: rsa-whitespace(less);
+  border-bottom:  1px solid background-color(primary, dark);
+  &_leftArrow {
+    width: 50px;
+  }
+  &_name {
+    color: text-color(primary, lightest);
+    width: 150px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-weight: 300;
+    padding: 0 rsa-whitespace() 0 rsa-whitespace(less);
+    
+    border-right: 1px solid background-color(primary, dark);
+    &_title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      @include rsa-font(header, large);
+    }
+  }
+  &_score {
+    width: 70px;
+  }
+  &_watch {
+    padding: rsa-whitespace() 2*rsa-whitespace();
+  }
+  &_switch {
+    position: absolute;
+    right: 0;
+    padding: rsa-whitespace();
+  }
+}
+
+.rsa-content-badge-score .details .score {
+  @include rsa-font(header, large);
+  font-weight: 500;
+}
+
+.rsa-content-badge-score svg circle {
+  stroke-width: 3;
+}

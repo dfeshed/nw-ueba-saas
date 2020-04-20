@@ -1,0 +1,33 @@
+<hbox class="host-table__toolbar-buttons">
+  <h2 class="title-header">
+    {{#rsa-form-button class="close-zone" click=openFilterPanel }}
+      {{rsa-icon name="filter-2" size="small"}}
+      <span>{{t "investigateFiles.filter.filter"}}</span>
+    {{/rsa-form-button}}
+  </h2>
+  {{service-selector services=servers serviceId=serverId onServiceSelection=(action "handleServiceSelection")}}
+  <div class="action-divider"></div>
+  {{endpoint/pivot-to-event-analysis label="host" selections=selections pivotToInvestigate=pivotToInvestigate}}
+  {{#rsa-form-button class="start-scan-button" isDisabled=isScanStartButtonDisabled click=(action showScanModal "START_SCAN") title=(if isScanStartButtonDisabled actionsDisableMessage)}}
+    {{rsa-icon name="check-shield" size="small"}}
+    {{t "investigateHosts.hosts.button.initiateScan"}}
+  {{/rsa-form-button}}
+  {{#rsa-form-button class="stop-scan-button" isDisabled=isScanStopButtonDisabled click=(action showScanModal "STOP_SCAN") title=(if isScanStopButtonDisabled actionsDisableMessage)}}
+    {{rsa-icon name="close-shield" size="small"}}
+    {{t "investigateHosts.hosts.moreActions.cancelScan"}}
+  {{/rsa-form-button}}
+  {{host-list/host-table/action-bar/more-actions
+    deleteAction=showConfirmationModal
+    showRiskScoreModal=showRiskScoreModal
+    noHostsSelected=noHostsSelected
+    requestMFTDownload=requestMFTDownload
+    isMFTEnabled=isMFTEnabled
+    hostDetails=hostDetails
+    selectedHostList=selectedHostList
+    requestSystemDumpDownload=requestSystemDumpDownload
+    isAgentMigrated=isAgentMigrated
+    serverId=serverId
+    showIsolationModal=showIsolationModal
+  }}
+  {{host-list/host-table/action-bar/export-button}}
+</hbox>

@@ -1,0 +1,20 @@
+<h4 class="header">
+  {{#rsa-text-with-tooltip
+    value=tooltip
+    style="standard"
+    alwaysShow=true
+  }}
+    <span class="header-added">{{label}}</span>
+  {{/rsa-text-with-tooltip}}
+
+  <span class="remove-setting {{if (and isDefaultPolicy greyOutSetting) "is-greyed-out" "not-greyed-out"}}"
+    onkeyup={{action removeFromSelectedSettings selectedSettingId}} onclick={{action removeFromSelectedSettings selectedSettingId}}>
+    {{rsa-icon name="remove-circle-1" displayOnTab=true}}
+  </span>
+</h4>
+
+  {{component settingComponent
+    selectedSettingId=selectedSettingId
+    isDefaultPolicy=isDefaultPolicy
+    tooltip=tooltip
+  }}

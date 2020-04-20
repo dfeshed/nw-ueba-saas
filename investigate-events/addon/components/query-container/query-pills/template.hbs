@@ -1,0 +1,83 @@
+{{#each pillsData key="id" as | pillData index |}}
+  {{query-container/new-pill-trigger
+    canPerformTextSearch=canPerformTextSearch
+    hasTextPill=hasTextPill
+    pillsInsideParens=pillsInsideParens
+    metaOptions=metaOptions
+    languageAndAliasesForParser=languageAndAliasesForParser
+    sendMessage=(action "handleMessage")
+    newPillPosition=index
+    pillPlaceholder=pillPlaceholder
+    cursorPosition=cursorPosition
+    valueSuggestions=(readonly valueSuggestions)
+    isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
+  }}
+
+  {{#if (is-logical-operator pillData)}}
+    {{query-container/logical-operator
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action "handleMessage")
+    }}
+  {{else if (eq pillData.type COMPLEX_FILTER)}}
+    {{query-container/complex-pill
+      pillData=(readonly pillData)
+      sendMessage=(action "handleMessage")
+      position=index
+      isActive=pillData.isEditing
+    }}
+
+  {{else if (eq pillData.type TEXT_FILTER)}}
+    {{query-container/text-pill
+      isActive=pillData.isEditing
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action "handleMessage")
+    }}
+
+  {{else if (eq pillData.type CLOSE_PAREN)}}
+    {{query-container/close-paren
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action "handleMessage")
+    }}
+
+  {{else if (eq pillData.type OPEN_PAREN)}}
+    {{query-container/open-paren
+      pillData=(readonly pillData)
+      position=index
+      sendMessage=(action "handleMessage")
+    }}
+
+  {{else}}
+    {{query-container/query-pill
+      metaOptions=metaOptions
+      languageAndAliasesForParser=languageAndAliasesForParser
+      pillData=(readonly pillData)
+      sendMessage=(action "handleMessage")
+      position=index
+      pillPlaceholder=pillPlaceholder
+      isActive=pillData.isEditing
+      valueSuggestions=(readonly valueSuggestions)
+      isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
+    }}
+  {{/if}}
+
+{{/each}}
+
+{{query-container/query-pill
+  canPerformTextSearch=canPerformTextSearch
+  classNames="new-pill-template"
+  cleanupInputFields=cleanupInputFields
+  hasTextPill=hasTextPill
+  pillsInsideParens=pillsInsideParens
+  isMetaAutoFocused=takeFocus
+  metaOptions=metaOptions
+  languageAndAliasesForParser=languageAndAliasesForParser
+  position=lastIndex
+  isLastPill=true
+  pillPlaceholder=pillPlaceholder
+  sendMessage=(action "handleMessage")
+  valueSuggestions=(readonly valueSuggestions)
+  isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
+}}

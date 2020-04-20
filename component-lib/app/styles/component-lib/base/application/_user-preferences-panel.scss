@@ -1,0 +1,136 @@
+.rsa-application-user-preferences-panel {
+  transition: width .65s;
+  position: absolute;
+  top: 47px;
+  right: 0;
+  width: 0;
+  bottom: 0;
+  background-color: background-color(primary, darker);
+  @include border-top(1px, solid, secondary);
+  overflow: hidden;
+  @include rsa-layer(panels);
+
+  .mask {
+    transition: opacity .65s;
+    opacity: 0;
+    position: fixed;
+    background-color: background-color(primary, darkest);
+  }
+
+  &.is-expanded {
+    transition: width .65s;
+    width: 25vw;
+
+    .mask {
+      transition: opacity .65s;
+      opacity: $rsa-somewhat-opaque;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 25vw;
+    }
+  }
+
+  .rsa-form-radio-label {
+    line-height: 2rem;
+  }
+
+  .rsa-content-section-header {
+    min-width: calc(100vw / 4);
+    padding: rsa-whitespace();
+    box-sizing: border-box;
+    background-color: background-color(primary, darker);
+    color: text-color(neutral);
+
+    .controls {
+      right: rsa-whitespace(less);
+      .rsa-form-button-wrapper {
+        .rsa-form-button i{
+          color: text-color(neutral) !important;
+        }
+      }
+    }
+  }
+
+  form {
+    min-width: calc(100vw / 4);
+
+    p {
+      padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+      @include rsa-font(paragraph);
+      color: text-color(primary);
+    }
+
+    hbox {
+      padding: 0 rsa-whitespace() rsa-whitespace();
+      color: text-color(neutral);
+
+      .rsa-form-radio-group-label {
+        color: text-color(primary, lighter);
+      }
+
+      .rsa-form-radio-label {
+        color: text-color(neutral);
+      }
+
+      .power-select .label-text {
+        color: text-color(primary, lighter);
+      }
+
+      .ember-power-select-trigger .ember-power-select-selected-item {
+        color: text-color(neutral);
+      }
+
+    }
+
+    .change-password {
+      text-align: right;
+      text-decoration: none;
+      color: text-color(secondary);
+      margin-top: rsa-whitespace(more);
+    }
+  }
+
+  vbox {
+    &.col-xs-6 {
+      &:first-child {
+        padding-right: rsa-whitespace(less);
+      }
+      &:last-child {
+        padding-left: rsa-whitespace(less);
+      }
+    }
+  }
+
+  footer {
+    min-width: calc(100vw / 4);
+    border-top: 1px solid border-color(secondary);
+    background-color: background-color(primary, darker);
+    line-height: 4rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    p, a {
+      line-height: 2rem;
+      white-space: nowrap;
+      padding: 0 rsa-whitespace();
+    }
+
+    p {
+      color: text-color(primary);
+    }
+
+    a {
+      color: text-color(secondary);
+      display: block;
+      text-align: right;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+}

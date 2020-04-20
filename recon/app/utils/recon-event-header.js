@@ -1,0 +1,1 @@
+export { default } from 'recon/utils/recon-event-header';

@@ -1,0 +1,20 @@
+.recon-email-view {
+  margin: 0.7rem;
+  border-color: #424242;
+  border-width: 2px;
+  border-style: solid;
+
+  .recon-email-collapse-header {
+    background-color: background-color(primary, dark);
+    padding: rsa-whitespace(least) rsa-whitespace(less) 0 rsa-whitespace(least);
+    color: text-color(primary, lighter);
+
+    .rsa-icon:hover {
+      cursor: pointer;
+    }
+
+    .header-text {
+      @include rsa-font(body, small);
+    }
+  }
+}

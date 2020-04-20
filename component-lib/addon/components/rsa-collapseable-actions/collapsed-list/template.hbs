@@ -1,0 +1,6 @@
+{{#each list as |actionObj|}}
+  <li {{action actionObj.action}}>
+    {{rsa-icon name=actionObj.icon}}
+    {{actionObj.label}}
+  </li>
+{{/each}}

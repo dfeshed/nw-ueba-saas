@@ -1,0 +1,40 @@
+{{!--
+BEFORE EDITING THIS FILE
+If you add an item which is longer than the rest, remove the longest item,
+or otherwise make a change which would affect the width, make sure to change
+the following classes in app.scss: .navigation-sidebar-inner, .navigation-sidebar-outer,
+.navigation-sidebar-outer:hover.
+
+Absolute pixel values are defined there because simple CSS transitions do not allow
+transitioning to or from a width of auto. The inner class defines the expanded width,
+and the outer class defines the collapsed width.
+--}}
+
+<div class="navigation-sidebar-inner">
+  {{#link-to "index"}}<div class="nav-item"><span>{{rsa-icon name="home-1"}}</span> Dashboard</div>{{/link-to}}
+  {{#link-to "tree" "tree"}}<div class="nav-item"><span class="flipped">{{rsa-icon name="flowchart"}}</span> Tree View</div>{{/link-to}}
+  {{#link-to "logs"}}<div class="nav-item"><span>{{rsa-icon name="copy-1"}}</span> Logs</div>{{/link-to}}
+  <hr>
+  <a href="http://{{host}}/sys/caupload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="upload-2"}}</span> CA Upload</div></a>
+  <a href="http://{{host}}/sys/trustpeer" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="account-group-5"}}</span> Trusted Peer</div></a>
+  <a href="http://{{host}}/storedproc/upload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="cloud-upload"}}</span> SP Upload</div></a>
+  <a href="http://{{host}}/sdk/app/reports" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="notepad-2"}}</span> Reports</div></a>
+  <a href="http://{{host}}/sdk/app/sessions" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="settings-1"}}</span> Sessions</div></a>
+  <a href="http://{{host}}/sdk/app/stats" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="graph-line-2"}}</span> Stats</div></a>
+  <a href="http://{{host}}/sdk/content" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="pencil-write-2"}}</span> Content</div></a>
+  <a href="http://{{host}}/sdk/packets" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="server-network-5"}}</span> Packets</div></a>
+  <a href="http://{{host}}/logs/download" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="download-2"}}</span> Log Download</div></a>
+  {{#if (or isDecoder isLogDecoder)}}
+    <a href="http://{{host}}/decoder/agg" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="add-circle-1"}}</span> Aggregation</div></a>
+    <a href="http://{{host}}/decoder/import" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="network"}}</span> Packet Import</div></a>
+    <a href="http://{{host}}/decoder/parsers/upload" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="network-connecting"}}</span> Parser Upload</div></a>
+    {{#if isDecoder}}
+      <a href="http://{{host}}/sdk/app/packetdrops" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="move-down"}}</span> Packet Drops</div></a>
+      <a href="http://{{host}}/decoder/sslkeys" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="upload-2"}}</span> SSL Key Upload</div></a>
+    {{else}}
+      <a href="http://{{host}}/sdk/app/rtlogs" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="move-down"}}</span> RT Logs</div></a>
+    {{/if}}
+  {{else if isConcentrator}}
+    <a href="{{restPagesRoot}}/concentrator/agg" target="_blank" rel="noopener noreferrer"><div class="nav-item"><span>{{rsa-icon name="add-circle-1"}}</span> Aggregation</div></a>
+  {{/if}}
+</div>

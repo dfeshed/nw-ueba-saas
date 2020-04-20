@@ -1,0 +1,69 @@
+.recon-event-detail-files {
+  &.warning {
+    .rsa-data-table {
+      top: 5rem;
+    }
+  }
+
+  .recon-file-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .recon-file-link {
+    color: text-color(secondary);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .recon-file-linkfile {
+    overflow: hidden;
+    white-space: normal;
+  }
+
+  .rsa-data-table {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 38px;
+    &-body-row {
+      width: -webkit-fit-content;
+      width: -moz-fit-content;
+      width: fit-content;
+    }
+  }
+
+  .rsa-data-table .rsa-data-table-header {
+    background-color: background-color(primary, darker);
+  }
+
+  .rsa-form-checkbox {
+    margin-top: .1rem;
+    position: inherit;
+  }
+
+  .rsa-data-table-header-cell {
+    &:first-child {
+      text-overflow: clip;
+    }
+  }
+
+  .rsa-data-table-body-cell {
+    &:first-child {
+      text-overflow: clip;
+    }
+  }
+
+  .download-warning {
+    margin-top: 0.7rem;
+    margin-right: 16px;
+
+    div {
+      float: none;
+    }
+  }
+}

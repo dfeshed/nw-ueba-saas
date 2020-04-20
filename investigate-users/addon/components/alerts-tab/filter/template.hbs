@@ -1,0 +1,71 @@
+<div class="alerts-tab_filter_filters">
+  <div class="alerts-tab_filter_filters_title">
+    {{rsa-icon name="filter-2" style="filled"}} {{t "investigateUsers.alerts.filters.title"}}
+  </div>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t "investigateUsers.alerts.filters.entityType"}}
+    </div>
+    {{#power-select
+      options=entityFilter
+      selected=selectedEntities
+      searchEnabled=false
+      onchange=(action "updateEntityTypes") as |option|}}
+      {{#if option}}
+        <span title={{t (concat "investigateUsers.severity." option)}}>
+          <span title={{option}}>{{t (concat "investigateUsers.entityTypes." option)}}</span>
+        </span>
+      {{else}}
+        &nbsp;
+      {{/if}}
+    {{/power-select}}
+  </label>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t "investigateUsers.alerts.filters.severity"}}
+    </div>
+    {{#power-select-multiple
+      options=severityFilter
+      selected=selectedSeverity
+      searchEnabled=false
+      onchange=(action "updateSeverityFilter") as |option|}}
+      <span title={{t (concat "investigateUsers.severity." option)}}>{{t (concat "investigateUsers.severity." option)}}</span>
+    {{/power-select-multiple}}
+  </label>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t "investigateUsers.alerts.filters.feedback"}}
+    </div>
+    {{#power-select
+      options=feedbackFilter
+      selected=selectedFeedBack
+      searchEnabled=false
+      onchange=(action "updateFeedBackFilter") as |option|}}
+      <span title={{t (concat "investigateUsers.feedback." option)}}>{{t (concat "investigateUsers.feedback." option)}}</span>
+    {{/power-select}}
+  </label>
+  <label class="rsa-form-label power-select users-tab_filter_filter_select">
+    <div class="label-text">
+      {{t "investigateUsers.alerts.filters.indicators"}}
+    </div>
+    {{#power-select-multiple
+      options=existAnomalyTypes
+      selected=selectedAnomalyTypes
+      searchField="displayLabel"
+      onchange=(action "updateAnomalyFilter") as |option|}}
+      <span title={{option.displayLabel}}>{{option.displayLabel}}</span>
+    {{/power-select-multiple}}
+  </label>
+  <div>
+    <div class="label-text">
+      {{t "investigateUsers.alerts.filters.dateRange"}}
+    </div>
+    {{alert-date filterOptions=dateTimeFilterOptionsForAlerts onChange=(action "updateDateRangeFilter")}}
+  </div>
+
+</div>
+<div class="alerts-tab_filter_control">
+  {{#rsa-form-button isFullWidth=true click=(action "updateFilter" null)}}
+    {{t "investigateUsers.resetFilters"}}
+  {{/rsa-form-button}}
+</div>

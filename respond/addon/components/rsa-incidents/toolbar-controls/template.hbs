@@ -1,0 +1,65 @@
+{{#if accessControl.respondCanManageIncidents}}
+  <div class="action-control bulk-update-priority">
+    {{#power-select
+      options=priorityTypes
+      matchTriggerWidth=false
+      horizontalPosition="right"
+      disabled=(or hasNoSelections hasSelectedClosedIncidents)
+      searchEnabled=false
+      triggerComponent=(component "respond-common/button-trigger"
+        isDisabled=(or hasNoSelections hasSelectedClosedIncidents)
+        label=(t "respond.incidents.actions.changePriority"))
+      onchange=(action "updateIncidentPriority" itemsSelected) as |option|}}
+
+      {{t (concat "respond.priority." option)}}
+
+    {{/power-select}}
+
+  </div>
+  <div class="action-control bulk-update-status">
+    {{#power-select
+      options=statusTypes
+      disabled=hasNoSelections
+      matchTriggerWidth=false
+      horizontalPosition="right"
+      searchEnabled=false
+      triggerComponent=(component "respond-common/button-trigger"
+        isDisabled=hasNoSelections
+        label=(t "respond.incidents.actions.changeStatus"))
+      onchange=(action "updateIncidentStatus" itemsSelected) as |option|}}
+
+      {{t (concat "respond.status." option)}}
+
+    {{/power-select}}
+  </div>
+  <div class="action-control bulk-update-assignee">
+    {{#power-select
+      options=(readonly assigneeOptions)
+      disabled=(not canChangeAssignee)
+      matchTriggerWidth=false
+      horizontalPosition="right"
+      searchEnabled=false
+      triggerComponent=(component "respond-common/button-trigger"
+        isDisabled=(not canChangeAssignee)
+        label=(t "respond.incidents.actions.changeAssignee"))
+      onchange=(action "updateIncidentAssignee" itemsSelected) as |option|}}
+
+      {{#if (eq option.id "UNASSIGNED")}}
+        {{t "respond.assignee.none"}}
+      {{else}}
+        {{or option.name option.id}}
+      {{/if}}
+
+    {{/power-select}}
+  </div>
+{{/if}}
+{{#if accessControl.respondCanDeleteIncidents}}
+  <div class="action-control bulk-delete">
+    {{#rsa-form-button
+      style="danger"
+      isDisabled=hasNoSelections
+      defaultAction=(action "deleteIncident")}}
+      {{t "forms.delete"}}
+    {{/rsa-form-button}}
+  </div>
+{{/if}}

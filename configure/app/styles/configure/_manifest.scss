@@ -1,0 +1,38 @@
+$respondBackgroundColor: background-color(custom, respond);
+$navbarHeight: 49px;
+@import "mixins";
+@import "forms/manifest";
+@import "respond/manifest";
+@import "../logs/manifest";
+
+.configure-engine {
+  /* Common background for all sub-routes. */
+  background-color:$respondBackgroundColor;
+
+  > .rsa-nav-tab-group {
+    background-color: background-color(primary, darker);
+    @include border-bottom(1px, solid, secondary);
+
+    > .rsa-nav-tab {
+      cursor: pointer;
+    }
+  }
+
+  .error-page .bottom-links {
+    display: none;
+  }
+
+  .transaction-in-progress .transaction-overlay {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: background-color(neutral,dark,translucent);
+    centered {
+      height: 100%;
+    }
+  }
+}
+.iframed-into-classic {
+  .rsa-nav-tab-group {
+    display: none;
+  }
+}

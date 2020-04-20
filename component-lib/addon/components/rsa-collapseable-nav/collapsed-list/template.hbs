@@ -1,0 +1,7 @@
+{{#each decoratedContentSections as |section|}}
+  {{#unless section.isActive}}
+    <li onclick={{action "onTabClick" section.name}}>
+      {{section.label}}
+    </li>
+  {{/unless}}
+{{/each}}

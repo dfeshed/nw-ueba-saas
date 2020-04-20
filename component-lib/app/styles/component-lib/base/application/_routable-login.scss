@@ -1,0 +1,285 @@
+.rsa-login {
+  color: rgba(238,238,238, 1);
+  background-image: url('images/NW-Background-Blur.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display: flex;
+  flex-direction: column;
+
+  .form-error-message {
+    text-align: center;
+    color: rgba(250,250,250, 1);
+  }
+  .unsupported-bowser-warning {
+    @include rsa-font(regular, small);
+    @include border(1px, solid, accentOne);
+    padding: rsa-whitespace(less);
+    background-color:rgba(150, 99, 42, 1);
+    margin: rsa-whitespace();
+    width: 31rem;
+    color: rgba(189,189,189, 1);
+    line-height: 1.2rem;
+    &.with-eula {
+      display: none;
+    }
+  }
+
+  .eula-content {
+    margin-top: rsa-whitespace(more);
+    margin-bottom: rsa-whitespace(more);
+    border-color: rgba(117,117,117, 1);
+    border-width: 1px;
+    border-style: solid;
+    height: 45vh;
+    overflow: auto;
+    width: 36vw;
+    @include rsa-font(paragraph);
+    font-weight: 300;
+    background: rgba(22,22,22, 1);
+
+    div {
+      color: rgba(250,250,250, 1);
+    }
+
+    .rsa-application-loading.rsa-loader .rsa-loader__wheel {
+      border-color: rgba(33,33,33, 1);
+      border-top-color: rgba(3,169,244, 1);
+    }
+
+    .warning {
+      padding: rsa-whitespace();
+      background-color: rgba(22,22,22, 1);
+      @include rsa-font(header);
+      color: rgba(236,34,39, 1);
+      text-align: center;
+    }
+
+    .section {
+      padding: rsa-whitespace();
+    }
+
+    .subsection {
+      padding: rsa-whitespace(less);
+    }
+
+    .bolded {
+      font-weight: 800;
+    }
+
+    .header {
+      @include rsa-font(header, small);
+    }
+  }
+
+  .banner-content {
+    @extend .eula-content;
+    padding: 12px;
+    white-space: pre-wrap;
+    text-align: justify;
+  }
+
+  .login-wrapper {
+    padding: rsa-whitespace(more);
+    background: rgba(22,22,22, .6);
+    border-color: rgba(33,33,33, 1);
+    border-width: 1px;
+    border-style: solid;
+
+    .rsa-form-label {
+      color: rgba(238,238,238, 1);
+    }
+
+    &.has-error {
+      border-color: rgba(236,34,39, 1);
+      border-width: 0px;
+      border-style: solid;
+      animation: shake 0.65s cubic-bezier(.36,.07,.19,.97) both;
+
+      @keyframes shake {
+        10%, 90% {
+          transform: translate3d(-1px, 0, 0);
+        }
+
+        20%, 80% {
+          transform: translate3d(2px, 0, 0);
+        }
+
+        30%, 50%, 70% {
+          transform: translate3d(-4px, 0, 0);
+        }
+
+        40%, 60% {
+          transform: translate3d(4px, 0, 0);
+        }
+      }
+    }
+    &.unsupported-browser {
+      border-color: rgba(236,34,39, 1);
+      border-width: 1px;
+      border-style: solid;
+    }
+  }
+
+  header {
+    margin: calc(#{rsa-whitespace(more)} * -1);
+    padding: rsa-whitespace(more) rsa-whitespace(more) 0;
+
+    h3 {
+      padding: rsa-whitespace(base) 0 rsa-whitespace(base);
+      margin: calc(#{rsa-whitespace(more)} * -1) 0 calc(#{rsa-whitespace(more)} * -1);
+      line-height: 1.5rem;
+      color: rgba(189,189,189, 1);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 36vw;
+    }
+
+    .rsa-logo {
+      height: 12rem;
+      width: 28rem;
+      overflow: hidden;
+      white-space: nowrap;
+      vertical-align: middle;
+      text-align: left;
+      flex: none;
+      background-image: url('images/NW-Login-Header.png');
+      background-repeat: no-repeat;
+      background-size: 268px 127px;
+      background-position-x: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .rsa-eula-logo {
+      height: 4rem;
+      overflow: hidden;
+      white-space: nowrap;
+      flex: none;
+      background-image: url('images/NW-UI-Logo-white.png');
+      background-repeat: no-repeat;
+      background-size: 50%;
+    }
+
+    svg {
+      stroke: #be3a34;
+      width: $applicationLoginHeaderLogoWidth;
+      position: relative;
+      vertical-align: middle;
+      padding: rsa-whitespace(least) 0;
+    }
+
+    h2 {
+      padding: rsa-whitespace(least);
+      padding-left: rsa-whitespace(less);
+      margin-left: rsa-whitespace(less);
+      border-left: 1px solid rgba(238,238,238, 1);
+      vertical-align: middle;
+      @include rsa-font(header, large);
+      white-space: nowrap;
+      display: inline-block;
+    }
+  }
+
+  form {
+    .rsa-form-input {
+      &.is-error {
+        input {
+          background-color: rgba(236,34,39, .2);
+        }
+        .rsa-form-label {
+          color: rgba(236,34,39, 1);
+        }
+      }
+      input {
+        color: rgba(250,250,250, 1);
+        margin-bottom: rsa-whitespace();
+      }
+    }
+    .rsa-form-button-wrapper.is-primary:not(.is-disabled):not(.is-icon-only):hover .rsa-form-button {
+      color: rgba(250,250,250, 1);
+    }
+    .rsa-form-button-wrapper.is-disabled:not(.is-icon-only) .rsa-form-button {
+      color: rgba(117,117,117, 1);
+    }
+    .rsa-form-button {
+      &:not(.is-disabled) {
+        color: rgba(250,250,250, 1);
+      }
+    }
+  }
+
+  grid {
+    &:not(.display-policies) {
+      vbox:first-child {
+        display: none;
+      }
+      vbox:last-child {
+        max-width: 100%;
+      }
+    }
+  }
+
+
+  h4 {
+    @include rsa-font(header);
+  }
+
+  ul {
+    margin: rsa-whitespace() rsa-whitespace(most) 0 0;
+
+    li {
+      list-style: disc;
+      @include rsa-font(paragraph, small);
+      margin: 0 rsa-whitespace() rsa-whitespace();
+      color: rgba(189,189,189, 1);
+    }
+  }
+
+  .password-policies {
+    padding-top: rsa-whitespace(more);
+  }
+
+  .login, .change-password {
+    overflow: hidden;
+    padding-top: rsa-whitespace(more);
+
+    &:not(.change-password) {
+      width: 19rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .rsa-form-button {
+      margin-bottom: rsa-whitespace();
+    }
+
+    a {
+      text-decoration: underline;
+      color: rgba(117,117,117, 1);
+
+      &:hover {
+        cursor: pointer;
+        color: rgba(238,238,238, 1);
+      }
+    }
+
+    p {
+      margin-bottom: rsa-whitespace();
+    }
+
+    .version {
+      float: right;
+      color: rgba(189,189,189, 1);
+    }
+  }
+}

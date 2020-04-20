@@ -1,0 +1,40 @@
+.mft-list {
+  .mft-table-list {
+    .name {
+      i {
+        width: 2rem;
+        padding-top: 0.5rem;
+        &.rsa-icon-folder-2 {
+          color: text-color(accentFour, light);
+        }
+      }
+      .file-name-link {
+        width: 13vw;
+      }
+      a {
+        color: text-color(secondary, light);
+      }
+    }
+    .date-stomp {
+      i {
+        color: text-color(accentOne);
+        font-size: 1rem;
+        padding-left: 0.5rem;
+      }
+    }
+    .rsa-data-table-header-cell.is-sorted {
+      i.sort {
+        color: text-color(neutral);
+      }
+
+    }
+  }
+
+}
+.date-stomp-content-teathredpanel {
+  section {
+    max-width: fit-content;
+    min-width: fit-content;
+  }
+
+}

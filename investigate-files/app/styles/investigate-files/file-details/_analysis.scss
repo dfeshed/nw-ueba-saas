@@ -1,0 +1,25 @@
+.global-files.file-analysis-wrapper {
+  position: static;
+  max-height: calc(100vh - 217px);
+  .string-view {
+    .rsa-data-table {
+      height: calc(100vh - 318px);
+    }
+  }
+  .file-analysis-header {
+    .view-type {
+      height: 34px;
+      display: inline-block;
+      line-height: 2.5rem;
+    }
+  }
+  .right-zone .rsa-nav-tab{
+    line-height: 11rem;
+    height: 105px;
+  }
+  .fileNotDownloadedError {
+    @include rsa-font(regular, large);
+    margin: auto;
+    color: text-color(accentFour);
+  }
+}

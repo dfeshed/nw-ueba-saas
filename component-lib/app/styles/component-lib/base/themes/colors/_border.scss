@@ -1,0 +1,119 @@
+$border-colors: (
+
+  primary: (
+    darkest:  var(--border-color-primary-darkest),
+    darker:   var(--border-color-primary-darker),
+    dark:     var(--border-color-primary-dark),
+    base:     var(--border-color-primary-base),
+    light:    var(--border-color-primary-light),
+    lighter:  var(--border-color-primary-lighter),
+    lightest: var(--border-color-primary-lightest)
+  ),
+
+  secondary: (
+    darkest:  var(--border-color-secondary-darkest),
+    darker:   var(--border-color-secondary-darker),
+    dark:     var(--border-color-secondary-dark),
+    base:     var(--border-color-secondary-base),
+    light:    var(--border-color-secondary-light),
+    lighter:  var(--border-color-secondary-lighter),
+    lightest: var(--border-color-secondary-lightest)
+  ),
+
+  tertiary: (
+    darkest:  var(--border-color-tertiary-darkest),
+    darker:   var(--border-color-tertiary-darker),
+    dark:     var(--border-color-tertiary-dark),
+    base:     var(--border-color-tertiary-base),
+    light:    var(--border-color-tertiary-light),
+    lighter:  var(--border-color-tertiary-lighter),
+    lightest: var(--border-color-tertiary-lightest)
+  ),
+
+  accentOne: (
+    darkest:  var(--border-color-accent-one-darkest),
+    darker:   var(--border-color-accent-one-darker),
+    dark:     var(--border-color-accent-one-dark),
+    base:     var(--border-color-accent-one-base),
+    light:    var(--border-color-accent-one-light),
+    lighter:  var(--border-color-accent-one-lighter),
+    lightest: var(--border-color-accent-one-lightest)
+  ),
+
+  accentTwo: (
+    darkest:  var(--border-color-accent-two-darkest),
+    darker:   var(--border-color-accent-two-darker),
+    dark:     var(--border-color-accent-two-dark),
+    base:     var(--border-color-accent-two-base),
+    light:    var(--border-color-accent-two-light),
+    lighter:  var(--border-color-accent-two-lighter),
+    lightest: var(--border-color-accent-two-lightest)
+  ),
+
+  accentThree: (
+    darkest:  var(--border-color-accent-three-darkest),
+    darker:   var(--border-color-accent-three-darker),
+    dark:     var(--border-color-accent-three-dark),
+    base:     var(--border-color-accent-three-base),
+    light:    var(--border-color-accent-three-light),
+    lighter:  var(--border-color-accent-three-lighter),
+    lightest: var(--border-color-accent-three-lightest)
+  ),
+
+  accentFour: (
+    darkest:  var(--border-color-accent-four-darkest),
+    darker:   var(--border-color-accent-four-darker),
+    dark:     var(--border-color-accent-four-dark),
+    base:     var(--border-color-accent-four-base),
+    light:    var(--border-color-accent-four-light),
+    lighter:  var(--border-color-accent-four-lighter),
+    lightest: var(--border-color-accent-four-lightest)
+  ),
+
+  neutral: (
+    dark:     var(--border-color-neutral-dark),
+    base:     var(--border-color-neutral-base),
+  ),
+
+  navigation: (
+    menu:         var(--border-color-nav-menu),
+    menuDarkest:  var(--border-color-nav-menu-darkest)
+  )
+
+);
+
+@function border-color($colorName, $modifier:base, $opacity:opaque) {
+  $colorVar: map-get(map-get($border-colors, $colorName), $modifier);
+  $opacityVar: opacity-value($opacity);
+  @return rgbx($colorVar, $opacityVar);
+}
+
+@mixin border($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-width: $width;
+  border-style: $style;
+}
+
+@mixin border-top($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-top-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-top-width: $width;
+  border-top-style: $style;
+}
+
+@mixin border-bottom($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-bottom-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-bottom-width: $width;
+  border-bottom-style: $style;
+}
+
+@mixin border-left($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-left-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-left-width: $width;
+  border-left-style: $style;
+}
+
+@mixin border-right($width, $style, $colorName, $colorModifier:base, $colorOpacity:opaque) {
+  border-right-color: border-color($colorName, $colorModifier, $colorOpacity);
+  border-right-width: $width;
+  border-right-style: $style;
+}

@@ -1,0 +1,50 @@
+.rsa-content-warn-text-box {
+  @include rsa-font(paragraph);
+  position: relative;
+  width: 100%;
+  @include border(1px, solid, accentFour);
+  border-color: text-color(accentFour);
+  background-color: background-color(primary, darkest);
+  border-radius: 5px;
+  .inner-div {
+    box-sizing: border-box;
+    padding: rsa-whitespace(less);
+    width: 100%;
+    border-radius: 5px;
+    background-color: rgba(var(--background-color-accent-four-base), var(--opacity-nearly-transparent));
+  }
+  .rsa-icon {
+    color: text-color(accentFour);
+  }
+  .message {
+    white-space: pre-line;
+    padding-left: 25px;
+  }
+  .icon {
+    position: absolute;
+  }
+  div {
+    float: left;
+  }
+  &.is-showing {
+    display: block;
+  }
+  &.is-alert {
+    .rsa-icon {
+      color: text-color(accentOne, dark);
+    }
+    border-color: text-color(accentOne, dark);
+    .inner-div {
+      background-color: rgba(var(--background-color-accent-one-base), var(--opacity-nearly-transparent));
+    }
+  }
+  &.is-info {
+    .rsa-icon {
+      color: text-color(secondary) !important;
+    }
+    border-color: rgba(var(--border-color-secondary-base));
+    .inner-div {
+      background-color: rgba(var(--background-color-secondary-base), var(--opacity-nearly-transparent));
+    }
+  }
+}

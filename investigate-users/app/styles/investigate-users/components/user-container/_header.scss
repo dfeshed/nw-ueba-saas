@@ -1,0 +1,38 @@
+.user-header {
+  display: flex;
+  flex-direction: row;
+  padding: 0 1rem;
+  justify-content: space-between;
+  @include border-bottom(1px, solid, primary, dark);
+  margin-bottom: rsa-whitespace(less);
+  .rsa-nav-tab {
+    text-transform: capitalize;
+    font-size: .7rem;
+    position: relative;
+    top: 1px;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.is-active {
+      @include border-bottom(4px, solid, primary, lighter);
+    }
+  }
+
+  &_search {
+    width: 250px;
+    padding-top: rsa-whitespace(least);
+    .ember-power-select-trigger {
+      outline: none;
+      background: transparent;
+      border: 1px SOLID  background-color(primary)
+    }
+    .ember-power-select-status-icon {
+      display: none;
+    }
+    .ember-power-select-placeholder {
+      color: text-color(primary);
+    }
+  }
+}

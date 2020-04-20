@@ -1,0 +1,29 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="EXAMPLE"}}
+        {{#rsa-context-menu
+            contextItems=contextItems
+            contextDetails=scope
+            contextSelection="Right clicked item"}}
+          Right click here
+        {{/rsa-context-menu}}
+
+        {{!-- BEGIN-SNIPPET contextmenu
+          {{#rsa-context-menu
+            contextItems=contextItems
+            contextDetails=scope
+            contextSelection="Right clicked item"}}
+            Right click here
+          {{/rsa-context-menu}}
+        END-SNIPPET --}}
+        {{code-snippet name="contextmenu.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

@@ -1,0 +1,15 @@
+.springboard-content {
+  right: 0;
+  flex-direction: row;
+  padding: rsa-whitespace();
+
+  &__widget {
+    background-color: $springboard-color;
+    width: $springboard-widget-width;
+    flex: none;
+  }
+
+  &__widget:not(:first-child) {
+    margin-left: rsa-whitespace();
+  }
+}

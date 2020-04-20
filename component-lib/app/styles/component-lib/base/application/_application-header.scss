@@ -1,0 +1,118 @@
+.rsa-application-header {
+  height: 47px;
+  position: relative;
+  @include rsa-layer(controls);
+  @include border-bottom(1px, solid, primary, dark);
+  background-color: background-color(primary, darkest);
+
+  > a {
+    float: left;
+    position: relative;
+    top: 9px;
+    margin: 0 rsa-whitespace();
+    text-decoration: none;
+    color: text-color(primary, lighter);
+    line-height: 34px;
+    font-size: 1.2rem;
+    vertical-align: bottom;
+
+    &:hover {
+      color: text-color(primary, lightest);
+    }
+
+    &.active {
+      color: text-color(primary, lightest);
+      @include border-bottom(5px, solid, primary, lighter);
+    }
+  }
+
+  .global {
+    position: absolute;
+    right: 0;
+    top: 0;
+    line-height: 47px;
+    color: text-color(primary, lighter);
+
+    .rsa-form-button-wrapper {
+      border-bottom: 5px solid transparent;
+      text-align: center;
+      height: 43px;
+
+      &.user-preferences-trigger {
+        vertical-align: middle;
+        position: relative;
+        margin-right: 9px;
+
+        .rsa-form-button {
+          padding-left: 0;
+          margin-left: rsa-whitespace();
+          color: text-color(primary, lighter);
+        }
+
+        .username {
+          position: relative;
+          top: -2px;
+        }
+
+        .rsa-icon {
+          padding: rsa-whitespace(least) 0;
+          vertical-align: text-bottom;
+          position: relative;
+          top: 2px;
+        }
+
+        &:hover {
+          .rsa-form-button {
+            color: text-color(primary, lightest);
+          }
+        }
+      }
+
+      &.is-active {
+        @include border-bottom(4px, solid, secondary);
+
+        .rsa-form-button {
+          color: text-color(primary, lightest);
+        }
+      }
+
+      .rsa-form-button {
+        border-width: 0;
+      }
+    }
+
+    ul {
+      margin-right: rsa-whitespace();
+    }
+
+    .rsa-form-button-wrapper.global-contextual-help.is-icon-only.is-standard {
+      .rsa-form-button {
+        color: text-color(primary, lighter);
+      }
+
+      &:hover {
+        .rsa-form-button {
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+  }
+
+  .rsa-logo {
+    float: left;
+
+    &__svg {
+      position: relative;
+      top: 1px;
+      width: 64px;
+      height: 46px;
+      padding: 0 rsa-whitespace();
+
+      .rsa-logo__letter {
+        fill: text-color(primary, lightest);
+      }
+
+    }
+  }
+
+}

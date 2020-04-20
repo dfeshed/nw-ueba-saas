@@ -1,0 +1,10 @@
+<span class="rsa-form-input">
+  {{rsa-form-input-oneway
+    class="port-value"
+    value=portValue
+    maxLength=5
+    isError=isPortValid.showError
+    errorMessage=(t isPortValid.errorMessage)
+    onFocusOut=(action "handlePortValueChange" value="target.value")
+  }}
+</span>

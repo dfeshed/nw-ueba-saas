@@ -1,0 +1,121 @@
+<box class="process-tree-table-box">
+  {{#rsa-data-table
+    lazy=true
+    items=listOfFiles
+    columnsConfig=columns
+    usePreferredDisplayIndex=true
+    agentCountMapping=agentCountMapping
+    tabName=tabName
+    selectedIndex=selectedRowIndex
+    onColumnConfigChange=(action "onColumnConfigChange")
+    onRowClick=(action "onRowClick")}}
+    {{#host-detail/utils/file-context-table/header
+      translateTitles=true
+      enableColumnFilter=true
+      onToggleColumn=(action "onToggleColumn" "display")
+      enableColumnSelector=true as |column|}}
+      {{#if (eq column.dataType "checkbox")}}
+        <label class="rsa-form-checkbox-label  {{if isAllSelected "checked"}}">
+          {{rsa-form-checkbox checked=isAllSelected change=(action "toggleAllSelection" tabName listOfFiles)}}
+        </label>
+      {{else}}
+        <span class="js-move-handle">
+          {{t column.title}}
+        </span>
+      {{/if}}
+      {{#unless column.disableSort}}
+        {{rsa-icon
+          click=(action "sort" column)
+          name=(if column.isDescending "arrow-down-7" "arrow-up-7")
+          class="sort"}}
+      {{/unless}}
+    {{/host-detail/utils/file-context-table/header}}
+    {{#if isDataLoading}}
+      <centered>
+        {{rsa-loader size="larger"}}
+      </centered>
+    {{else}}
+      {{#host-detail/utils/file-context-table-body
+        closePropertyPanel=closePropertyPanel
+        rowComponentClass=(
+          component "endpoint/file-custom-row"
+          serviceList=serviceList
+          closePropertyPanel=closePropertyPanel
+          selections=fileContextSelections
+          showDownloadProcessDump=showDownloadProcessDump
+          beforeContextMenuShow=(action "beforeContextMenuShow")
+          editFileStatus=(action "showEditFileStatus")
+          pivotToInvestigate=(action "pivotToInvestigate")
+          isRemediationAllowed=isRemediationAllowed
+          restrictedFileList=restrictedFileList
+          fileDownloadButtonStatus=fileDownloadButtonStatus
+          downloadProcessDump=downloadProcessDump
+          downloadFiles=downloadFiles
+          saveLocalCopy=saveLocalCopy
+          serviceId=serviceId
+          timeRange=timeRange
+          analyzeFile=analyzeFile
+          isAgentMigrated=isAgentMigrated
+          retrieveRemediationStatus=(action "retrieveRemediationStatus" tabName)
+          onSaveFileStatus = (action "setFileContextFileStatus" tabName checksums fileContextSelections)
+        )
+        noResultsMessage=(t "investigateHosts.hosts.list.noResultsMessage") as |item index column|}}
+        {{#if column.componentClass}}
+          {{#rsa-data-table/body-cell item=item column=column}}
+            <label class="rsa-form-checkbox-label {{if (is-selected fileContextSelections item) "checked"}}">
+              {{rsa-form-checkbox checked=false change=(action "toggleRowSelection" tabName item)}}
+            </label>
+          {{/rsa-data-table/body-cell}}
+        {{else}}
+          {{#if (and isInsightsAgent (or (eq column.field "machineFileScore")(eq column.field "fileProperties.score")))}}
+            <div title={{t "investigateHosts.hosts.insightAgentTooltip"}} class="insights-host">N/A</div>
+          {{else}}
+            {{host-detail/utils/table-cell item=item column=column sid=sid}}
+          {{/if}}
+        {{/if}}
+      {{/host-detail/utils/file-context-table-body}}
+      {{#if isPaginated}}
+        {{rsa-data-table/load-more status=contextLoadMoreStatus}}
+      {{/if}}
+    {{/if}}
+  {{/rsa-data-table}}
+</box>
+<box class="files-footer" fit>
+  {{host-table-footer index=listOfFiles.length total=totalItems selectedItems=fileContextSelections.length label=(t (concat "investigateHosts.hosts.footerLabel." storeName))}}
+</box>
+{{#if showServiceModal}}
+  {{endpoint/pivot-to-investigate/modal
+    serviceList=serviceList
+    metaName="checksumSha256"
+    itemList=itemList
+    serviceId=serviceId
+    timeRange=timeRange
+    closeModal=(action "onCloseServiceModal")}}
+{{/if}}
+{{#if showFileStatusModal}}
+  {{endpoint/edit-file-status/modal
+    itemList=fileContextSelections
+    restrictedFileList=restrictedFileList
+    onSaveFileStatus=(action "setFileContextFileStatus" tabName selectedFileChecksums fileContextSelections)
+    retrieveRemediationStatus=(action "retrieveRemediationStatus" tabName)
+    data=fileStatus
+    isRemediationAllowed=isRemediationAllowed
+    isFloatingOrMemoryDll=isFloatingOrMemoryDll
+    closeModal=(action "onCloseEditFileStatus")}}
+{{/if}}
+{{#if showResetScoreModal}}
+  {{#rsa-application-modal
+    autoOpen=true
+    label=(t "investigateFiles.riskScore.label")
+    onClose=(action "onResetScoreModalClose")}}
+    <div class="modal-content reset-risk-score">
+      {{t "investigateFiles.riskScore.confirmMessage"}}
+      <div class="confirmationButtons">
+        {{#rsa-form-button class="closeReset" click=(action "onResetScoreModalClose") }}{{t "investigateFiles.riskScore.cancel"}}{{/rsa-form-button}}
+        {{#rsa-form-button class="resetButton" style="primary" click=(action "resetRiskScoreAction")}}
+          {{t "investigateFiles.riskScore.reset"}}
+        {{/rsa-form-button}}
+      </div>
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}

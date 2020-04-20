@@ -1,0 +1,1138 @@
+[class^="rsa-icon-"], [class*=" rsa-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'nw-icon-library-all-1';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.rsa-icon {
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  display: inline-block;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  &.is-smaller {
+    font-size: .6em;
+  }
+
+  &.is-small {
+    font-size: .8em;
+  }
+
+  &.is-large {
+    font-size: 1.5em;
+  }
+
+  &.is-larger {
+    font-size: 3em;
+  }
+
+  &.is-largest {
+    font-size: 5em;
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.rsa-icon-account-circle-1 {
+  &:before {
+    content: $rsa-icon-account-circle-1;
+  }
+}
+.rsa-icon-account-group-5 {
+  &:before {
+    content: $rsa-icon-account-group-5;
+  }
+}
+.rsa-icon-account-target {
+  &:before {
+    content: $rsa-icon-account-target;
+  }
+}
+.rsa-icon-add-1 {
+  &:before {
+    content: $rsa-icon-add-1;
+  }
+}
+.rsa-icon-add-circle-1 {
+  &:before {
+    content: $rsa-icon-add-circle-1;
+  }
+}
+.rsa-icon-alarm-check {
+  &:before {
+    content: $rsa-icon-alarm-check;
+  }
+}
+.rsa-icon-alarm-close {
+  &:before {
+    content: $rsa-icon-alarm-close;
+  }
+}
+.rsa-icon-alarm {
+  &:before {
+    content: $rsa-icon-alarm;
+  }
+}
+.rsa-icon-alarm-silent {
+  &:before {
+    content: $rsa-icon-alarm-silent;
+  }
+}
+.rsa-icon-alarm-sound {
+  &:before {
+    content: $rsa-icon-alarm-sound;
+  }
+}
+.rsa-icon-arrow-circle-down-1 {
+  &:before {
+    content: $rsa-icon-arrow-circle-down-1;
+  }
+}
+.rsa-icon-arrow-circle-down-2 {
+  &:before {
+    content: $rsa-icon-arrow-circle-down-2;
+  }
+}
+.rsa-icon-arrow-circle-down-6 {
+  &:before {
+    content: $rsa-icon-arrow-circle-down-6;
+  }
+}
+.rsa-icon-arrow-circle-left-1 {
+  &:before {
+    content: $rsa-icon-arrow-circle-left-1;
+  }
+}
+.rsa-icon-arrow-circle-left-2 {
+  &:before {
+    content: $rsa-icon-arrow-circle-left-2;
+  }
+}
+.rsa-icon-arrow-circle-left-6 {
+  &:before {
+    content: $rsa-icon-arrow-circle-left-6;
+  }
+}
+.rsa-icon-arrow-circle-right-1 {
+  &:before {
+    content: $rsa-icon-arrow-circle-right-1;
+  }
+}
+.rsa-icon-arrow-circle-right-2 {
+  &:before {
+    content: $rsa-icon-arrow-circle-right-2;
+  }
+}
+.rsa-icon-arrow-circle-right-6 {
+  &:before {
+    content: $rsa-icon-arrow-circle-right-6;
+  }
+}
+.rsa-icon-arrow-circle-up-1 {
+  &:before {
+    content: $rsa-icon-arrow-circle-up-1;
+  }
+}
+.rsa-icon-arrow-circle-up-2 {
+  &:before {
+    content: $rsa-icon-arrow-circle-up-2;
+  }
+}
+.rsa-icon-arrow-circle-up-6 {
+  &:before {
+    content: $rsa-icon-arrow-circle-up-6;
+  }
+}
+.rsa-icon-arrow-down-1 {
+  &:before {
+    content: $rsa-icon-arrow-down-1;
+  }
+}
+.rsa-icon-arrow-down-5 {
+  &:before {
+    content: $rsa-icon-arrow-down-5;
+  }
+}
+.rsa-icon-arrow-down-7 {
+  &:before {
+    content: $rsa-icon-arrow-down-7;
+  }
+}
+.rsa-icon-arrow-down-8 {
+  &:before {
+    content: $rsa-icon-arrow-down-8;
+  }
+}
+.rsa-icon-arrow-down-12 {
+  &:before {
+    content: $rsa-icon-arrow-down-12;
+  }
+}
+.rsa-icon-arrow-left-1 {
+  &:before {
+    content: $rsa-icon-arrow-left-1;
+  }
+}
+.rsa-icon-arrow-left-5 {
+  &:before {
+    content: $rsa-icon-arrow-left-5;
+  }
+}
+.rsa-icon-arrow-left-7 {
+  &:before {
+    content: $rsa-icon-arrow-left-7;
+  }
+}
+.rsa-icon-arrow-left-8 {
+  &:before {
+    content: $rsa-icon-arrow-left-8;
+  }
+}
+.rsa-icon-arrow-left-9 {
+  &:before {
+    content: $rsa-icon-arrow-left-9;
+  }
+}
+.rsa-icon-arrow-left-12 {
+  &:before {
+    content: $rsa-icon-arrow-left-12;
+  }
+}
+.rsa-icon-arrow-next {
+  &:before {
+    content: $rsa-icon-arrow-next;
+  }
+}
+.rsa-icon-arrow-previous {
+  &:before {
+    content: $rsa-icon-arrow-previous;
+  }
+}
+.rsa-icon-arrow-right-1 {
+  &:before {
+    content: $rsa-icon-arrow-right-1;
+  }
+}
+.rsa-icon-arrow-right-5 {
+  &:before {
+    content: $rsa-icon-arrow-right-5;
+  }
+}
+.rsa-icon-arrow-right-7 {
+  &:before {
+    content: $rsa-icon-arrow-right-7;
+  }
+}
+.rsa-icon-arrow-right-8 {
+  &:before {
+    content: $rsa-icon-arrow-right-8;
+  }
+}
+.rsa-icon-arrow-right-9 {
+  &:before {
+    content: $rsa-icon-arrow-right-9;
+  }
+}
+.rsa-icon-arrow-right-12 {
+  &:before {
+    content: $rsa-icon-arrow-right-12;
+  }
+}
+.rsa-icon-arrow-up-1 {
+  &:before {
+    content: $rsa-icon-arrow-up-1;
+  }
+}
+.rsa-icon-arrow-up-5 {
+  &:before {
+    content: $rsa-icon-arrow-up-5;
+  }
+}
+.rsa-icon-arrow-up-7 {
+  &:before {
+    content: $rsa-icon-arrow-up-7;
+  }
+}
+.rsa-icon-arrow-up-8 {
+  &:before {
+    content: $rsa-icon-arrow-up-8;
+  }
+}
+.rsa-icon-arrow-up-12 {
+  &:before {
+    content: $rsa-icon-arrow-up-12;
+  }
+}
+.rsa-icon-bin-1 {
+  &:before {
+    content: $rsa-icon-bin-1;
+  }
+}
+.rsa-icon-binoculars {
+  &:before {
+    content: $rsa-icon-binoculars;
+  }
+}
+.rsa-icon-bookmark-1 {
+  &:before {
+    content: $rsa-icon-bookmark-1;
+  }
+}
+.rsa-icon-bow-arrow {
+  &:before {
+    content: $rsa-icon-bow-arrow;
+  }
+}
+.rsa-icon-bubble-chat-3 {
+  &:before {
+    content: $rsa-icon-bubble-chat-3;
+  }
+}
+.rsa-icon-button-power-1 {
+  &:before {
+    content: $rsa-icon-button-power-1;
+  }
+}
+.rsa-icon-calendar-2 {
+  &:before {
+    content: $rsa-icon-calendar-2;
+  }
+}
+.rsa-icon-calendar-timeout {
+  &:before {
+    content: $rsa-icon-calendar-timeout;
+  }
+}
+.rsa-icon-chat-double-bubble-3 {
+  &:before {
+    content: $rsa-icon-chat-double-bubble-3;
+  }
+}
+.rsa-icon-check-1 {
+  &:before {
+    content: $rsa-icon-check-1;
+  }
+}
+.rsa-icon-check-2 {
+  &:before {
+    content: $rsa-icon-check-2;
+  }
+}
+.rsa-icon-check-box-1 {
+  &:before {
+    content: $rsa-icon-check-box-1;
+  }
+}
+.rsa-icon-check-box-unchecked-1 {
+  &:before {
+    content: $rsa-icon-check-box-unchecked-1;
+  }
+}
+.rsa-icon-check-circle-1 {
+  &:before {
+    content: $rsa-icon-check-circle-1;
+  }
+}
+.rsa-icon-check-circle-2 {
+  &:before {
+    content: $rsa-icon-check-circle-2;
+  }
+}
+.rsa-icon-checklist {
+  &:before {
+    content: $rsa-icon-checklist;
+  }
+}
+.rsa-icon-clock-2 {
+  &:before {
+    content: $rsa-icon-clock-2;
+  }
+}
+.rsa-icon-close {
+  &:before {
+    content: $rsa-icon-close;
+  }
+}
+.rsa-icon-cloud-download {
+  &:before {
+    content: $rsa-icon-cloud-download;
+  }
+}
+.rsa-icon-cloud {
+  &:before {
+    content: $rsa-icon-cloud;
+  }
+}
+.rsa-icon-cloud-sync-1 {
+  &:before {
+    content: $rsa-icon-cloud-sync-1;
+  }
+}
+.rsa-icon-cloud-upload {
+  &:before {
+    content: $rsa-icon-cloud-upload;
+  }
+}
+.rsa-icon-cog {
+  &:before {
+    content: $rsa-icon-cog;
+  }
+}
+.rsa-icon-computer-imac-2 {
+  &:before {
+    content: $rsa-icon-computer-imac-2;
+  }
+}
+.rsa-icon-computer-notebook-2 {
+  &:before {
+    content: $rsa-icon-computer-notebook-2;
+  }
+}
+.rsa-icon-computer-pc-3 {
+  &:before {
+    content: $rsa-icon-computer-pc-3;
+  }
+}
+.rsa-icon-copy-1 {
+  &:before {
+    content: $rsa-icon-copy-1;
+  }
+}
+.rsa-icon-delete-1 {
+  &:before {
+    content: $rsa-icon-delete-1;
+  }
+}
+.rsa-icon-delete-2 {
+  &:before {
+    content: $rsa-icon-delete-2;
+  }
+}
+.rsa-icon-download-2 {
+  &:before {
+    content: $rsa-icon-download-2;
+  }
+}
+.rsa-icon-expand-5 {
+  &:before {
+    content: $rsa-icon-expand-5;
+  }
+}
+.rsa-icon-expand-6 {
+  &:before {
+    content: $rsa-icon-expand-6;
+  }
+}
+.rsa-icon-expand-all-1 {
+  &:before {
+    content: $rsa-icon-expand-all-1;
+  }
+}
+.rsa-icon-expand-diagonal-4 {
+  &:before {
+    content: $rsa-icon-expand-diagonal-4;
+  }
+}
+.rsa-icon-expand-horizontal-4 {
+  &:before {
+    content: $rsa-icon-expand-horizontal-4;
+  }
+}
+.rsa-icon-expand-horizontal-6 {
+  &:before {
+    content: $rsa-icon-expand-horizontal-6;
+  }
+}
+.rsa-icon-expand-vertical-2 {
+  &:before {
+    content: $rsa-icon-expand-vertical-2;
+  }
+}
+.rsa-icon-expand-vertical-4 {
+  &:before {
+    content: $rsa-icon-expand-vertical-4;
+  }
+}
+.rsa-icon-expand-vertical-6 {
+  &:before {
+    content: $rsa-icon-expand-vertical-6;
+  }
+}
+.rsa-icon-file-checklist {
+  &:before {
+    content: $rsa-icon-file-checklist;
+  }
+}
+.rsa-icon-file-new-1 {
+  &:before {
+    content: $rsa-icon-file-new-1;
+  }
+}
+.rsa-icon-filter-2 {
+  &:before {
+    content: $rsa-icon-filter-2;
+  }
+}
+.rsa-icon-flag-square-2 {
+  &:before {
+    content: $rsa-icon-flag-square-2;
+  }
+}
+.rsa-icon-flag-square-3 {
+  &:before {
+    content: $rsa-icon-flag-square-3;
+  }
+}
+.rsa-icon-flag-triangle-1 {
+  &:before {
+    content: $rsa-icon-flag-triangle-1;
+  }
+}
+.rsa-icon-flow-chart-1 {
+  &:before {
+    content: $rsa-icon-flow-chart-1;
+  }
+}
+.rsa-icon-flow-chart-3 {
+  &:before {
+    content: $rsa-icon-flow-chart-3;
+  }
+}
+.rsa-icon-flowchart {
+  &:before {
+    content: $rsa-icon-flowchart;
+  }
+}
+.rsa-icon-folder-1 {
+  &:before {
+    content: $rsa-icon-folder-1;
+  }
+}
+.rsa-icon-folder-2 {
+  &:before {
+    content: $rsa-icon-folder-2;
+  }
+}
+.rsa-icon-graph-bar-1 {
+  &:before {
+    content: $rsa-icon-graph-bar-1;
+  }
+}
+.rsa-icon-graph-bar-2 {
+  &:before {
+    content: $rsa-icon-graph-bar-2;
+  }
+}
+.rsa-icon-graph-bar-line {
+  &:before {
+    content: $rsa-icon-graph-bar-line;
+  }
+}
+.rsa-icon-graph {
+  &:before {
+    content: $rsa-icon-graph;
+  }
+}
+.rsa-icon-graph-line-1 {
+  &:before {
+    content: $rsa-icon-graph-line-1;
+  }
+}
+.rsa-icon-graph-line-2 {
+  &:before {
+    content: $rsa-icon-graph-line-2;
+  }
+}
+.rsa-icon-graph-line-3 {
+  &:before {
+    content: $rsa-icon-graph-line-3;
+  }
+}
+.rsa-icon-graph-pie-2 {
+  &:before {
+    content: $rsa-icon-graph-pie-2;
+  }
+}
+.rsa-icon-headphone {
+  &:before {
+    content: $rsa-icon-headphone;
+  }
+}
+.rsa-icon-help-circle {
+  &:before {
+    content: $rsa-icon-help-circle;
+  }
+}
+.rsa-icon-hide {
+  &:before {
+    content: $rsa-icon-hide;
+  }
+}
+.rsa-icon-home-1 {
+  &:before {
+    content: $rsa-icon-home-1;
+  }
+}
+.rsa-icon-hourglass-1 {
+  &:before {
+    content: $rsa-icon-hourglass-1;
+  }
+}
+.rsa-icon-information-circle {
+  &:before {
+    content: $rsa-icon-information-circle;
+  }
+}
+.rsa-icon-layout-1 {
+  &:before {
+    content: $rsa-icon-layout-1;
+  }
+}
+.rsa-icon-layout-2 {
+  &:before {
+    content: $rsa-icon-layout-2;
+  }
+}
+.rsa-icon-layout-3 {
+  &:before {
+    content: $rsa-icon-layout-3;
+  }
+}
+.rsa-icon-layout-4 {
+  &:before {
+    content: $rsa-icon-layout-4;
+  }
+}
+.rsa-icon-layout-5 {
+  &:before {
+    content: $rsa-icon-layout-5;
+  }
+}
+.rsa-icon-layout-6 {
+  &:before {
+    content: $rsa-icon-layout-6;
+  }
+}
+.rsa-icon-layout-7 {
+  &:before {
+    content: $rsa-icon-layout-7;
+  }
+}
+.rsa-icon-layout-8 {
+  &:before {
+    content: $rsa-icon-layout-8;
+  }
+}
+.rsa-icon-layout-9 {
+  &:before {
+    content: $rsa-icon-layout-9;
+  }
+}
+.rsa-icon-layout-10 {
+  &:before {
+    content: $rsa-icon-layout-10;
+  }
+}
+.rsa-icon-layout-11 {
+  &:before {
+    content: $rsa-icon-layout-11;
+  }
+}
+.rsa-icon-layout-12 {
+  &:before {
+    content: $rsa-icon-layout-12;
+  }
+}
+.rsa-icon-layout-none {
+  &:before {
+    content: $rsa-icon-layout-none;
+  }
+}
+.rsa-icon-link-3 {
+  &:before {
+    content: $rsa-icon-link-3;
+  }
+}
+.rsa-icon-link-broken-1 {
+  &:before {
+    content: $rsa-icon-link-broken-1;
+  }
+}
+.rsa-icon-list-bullets-1 {
+  &:before {
+    content: $rsa-icon-list-bullets-1;
+  }
+}
+.rsa-icon-location-map {
+  &:before {
+    content: $rsa-icon-location-map;
+  }
+}
+.rsa-icon-lock-close-1 {
+  &:before {
+    content: $rsa-icon-lock-close-1;
+  }
+}
+.rsa-icon-lock-open-1 {
+  &:before {
+    content: $rsa-icon-lock-open-1;
+  }
+}
+.rsa-icon-map-target-1 {
+  &:before {
+    content: $rsa-icon-map-target-1;
+  }
+}
+.rsa-icon-map-target-2 {
+  &:before {
+    content: $rsa-icon-map-target-2;
+  }
+}
+.rsa-icon-map-target-none {
+  &:before {
+    content: $rsa-icon-map-target-none;
+  }
+}
+.rsa-icon-mobile-phone-portrait {
+  &:before {
+    content: $rsa-icon-mobile-phone-portrait;
+  }
+}
+.rsa-icon-move-down-1 {
+  &:before {
+    content: $rsa-icon-move-down-1;
+  }
+}
+.rsa-icon-move-down {
+  &:before {
+    content: $rsa-icon-move-down;
+  }
+}
+.rsa-icon-move-left-1 {
+  &:before {
+    content: $rsa-icon-move-left-1;
+  }
+}
+.rsa-icon-move-right-1 {
+  &:before {
+    content: $rsa-icon-move-right-1;
+  }
+}
+.rsa-icon-move-up-1 {
+  &:before {
+    content: $rsa-icon-move-up-1;
+  }
+}
+.rsa-icon-move-up {
+  &:before {
+    content: $rsa-icon-move-up;
+  }
+}
+.rsa-icon-navigation-drawer-1 {
+  &:before {
+    content: $rsa-icon-navigation-drawer-1;
+  }
+}
+.rsa-icon-navigation-show-more-1 {
+  &:before {
+    content: $rsa-icon-navigation-show-more-1;
+  }
+}
+.rsa-icon-navigation-show-more-2 {
+  &:before {
+    content: $rsa-icon-navigation-show-more-2;
+  }
+}
+.rsa-icon-network-computers-1 {
+  &:before {
+    content: $rsa-icon-network-computers-1;
+  }
+}
+.rsa-icon-network-computers-2 {
+  &:before {
+    content: $rsa-icon-network-computers-2;
+  }
+}
+.rsa-icon-network-connecting {
+  &:before {
+    content: $rsa-icon-network-connecting;
+  }
+}
+.rsa-icon-network-graph {
+  &:before {
+    content: $rsa-icon-network-graph;
+  }
+}
+.rsa-icon-network-live {
+  &:before {
+    content: $rsa-icon-network-live;
+  }
+}
+.rsa-icon-notepad-2 {
+  &:before {
+    content: $rsa-icon-notepad-2;
+  }
+}
+.rsa-icon-paperclip-1 {
+  &:before {
+    content: $rsa-icon-paperclip-1;
+  }
+}
+.rsa-icon-pause-button {
+  &:before {
+    content: $rsa-icon-pause-button;
+  }
+}
+.rsa-icon-pencil-1 {
+  &:before {
+    content: $rsa-icon-pencil-1;
+  }
+}
+.rsa-icon-pencil-write-2 {
+  &:before {
+    content: $rsa-icon-pencil-write-2;
+  }
+}
+.rsa-icon-play-button-2 {
+  &:before {
+    content: $rsa-icon-play-button-2;
+  }
+}
+.rsa-icon-radio-button-selected-1 {
+  &:before {
+    content: $rsa-icon-radio-button-selected-1;
+  }
+}
+.rsa-icon-radio-button-unselected-1 {
+  &:before {
+    content: $rsa-icon-radio-button-unselected-1;
+  }
+}
+.rsa-icon-rank-army-star-2 {
+  &:before {
+    content: $rsa-icon-rank-army-star-2;
+  }
+}
+.rsa-icon-remove-circle-1 {
+  &:before {
+    content: $rsa-icon-remove-circle-1;
+  }
+}
+.rsa-icon-report-problem-circle {
+  &:before {
+    content: $rsa-icon-report-problem-circle;
+  }
+}
+.rsa-icon-report-problem-diamond {
+  &:before {
+    content: $rsa-icon-report-problem-diamond;
+  }
+}
+.rsa-icon-report-problem-triangle {
+  &:before {
+    content: $rsa-icon-report-problem-triangle;
+  }
+}
+.rsa-icon-rss-feed {
+  &:before {
+    content: $rsa-icon-rss-feed;
+  }
+}
+.rsa-icon-search {
+  &:before {
+    content: $rsa-icon-search;
+  }
+}
+.rsa-icon-server-3 {
+  &:before {
+    content: $rsa-icon-server-3;
+  }
+}
+.rsa-icon-server-network-3 {
+  &:before {
+    content: $rsa-icon-server-network-3;
+  }
+}
+.rsa-icon-server-network-5 {
+  &:before {
+    content: $rsa-icon-server-network-5;
+  }
+}
+.rsa-icon-settings-1 {
+  &:before {
+    content: $rsa-icon-settings-1;
+  }
+}
+.rsa-icon-share {
+  &:before {
+    content: $rsa-icon-share;
+  }
+}
+.rsa-icon-shrink-diagonal-2 {
+  &:before {
+    content: $rsa-icon-shrink-diagonal-2;
+  }
+}
+.rsa-icon-shrink-horizontal-2 {
+  &:before {
+    content: $rsa-icon-shrink-horizontal-2;
+  }
+}
+.rsa-icon-signal-warning {
+  &:before {
+    content: $rsa-icon-signal-warning;
+  }
+}
+.rsa-icon-stop-button {
+  &:before {
+    content: $rsa-icon-stop-button;
+  }
+}
+.rsa-icon-stopwatch {
+  &:before {
+    content: $rsa-icon-stopwatch;
+  }
+}
+.rsa-icon-subtract-1 {
+  &:before {
+    content: $rsa-icon-subtract-1;
+  }
+}
+.rsa-icon-subtract-circle-1 {
+  &:before {
+    content: $rsa-icon-subtract-circle-1;
+  }
+}
+.rsa-icon-synchronize-1 {
+  &:before {
+    content: $rsa-icon-synchronize-1;
+  }
+}
+.rsa-icon-synchronize-3 {
+  &:before {
+    content: $rsa-icon-synchronize-3;
+  }
+}
+.rsa-icon-synchronize-4 {
+  &:before {
+    content: $rsa-icon-synchronize-4;
+  }
+}
+.rsa-icon-synchronize-time {
+  &:before {
+    content: $rsa-icon-synchronize-time;
+  }
+}
+.rsa-icon-synchronize-warning-1 {
+  &:before {
+    content: $rsa-icon-synchronize-warning-1;
+  }
+}
+.rsa-icon-tools-wrench-screwdriver {
+  &:before {
+    content: $rsa-icon-tools-wrench-screwdriver;
+  }
+}
+.rsa-icon-upload-2 {
+  &:before {
+    content: $rsa-icon-upload-2;
+  }
+}
+.rsa-icon-view-1 {
+  &:before {
+    content: $rsa-icon-view-1;
+  }
+}
+.rsa-icon-zoom-in {
+  &:before {
+    content: $rsa-icon-zoom-in;
+  }
+}
+.rsa-icon-zoom-out {
+  &:before {
+    content: $rsa-icon-zoom-out;
+  }
+}
+.rsa-icon-badge-2 {
+  &:before {
+    content: $rsa-icon-badge-2;
+  }
+}
+.rsa-icon-cursor-choose {
+  &:before {
+    content: $rsa-icon-cursor-choose;
+  }
+}
+.rsa-icon-file-zipped {
+  &:before {
+    content: $rsa-icon-file-zipped;
+  }
+}
+.rsa-icon-close-shield {
+  &:before {
+    content: $rsa-icon-close-shield;
+  }
+}
+.rsa-icon-check-shield {
+  &:before {
+    content: $rsa-icon-check-shield;
+  }
+}
+.rsa-icon-add-circle-alternate {
+  &:before {
+    content: $rsa-icon-add-circle-alternate;
+  }
+}
+.rsa-icon-cursor-select-circle-1 {
+  &:before {
+    content: $rsa-icon-cursor-select-circle-1;
+  }
+}
+.rsa-icon-cell-border-bottom {
+  &:before {
+    content: $rsa-icon-cell-border-bottom;
+  }
+}
+.rsa-icon-common-file-empty {
+  &:before {
+    content: $rsa-icon-common-file-empty;
+  }
+}
+.rsa-icon-network {
+  &:before {
+    content: $rsa-icon-network;
+  }
+}
+.rsa-icon-subtract-circle-bold-alternate {
+  &:before {
+    content: $rsa-icon-subtract-circle-bold-alternate;
+  }
+}
+.rsa-icon-cloud-wifi {
+  &:before {
+    content: $rsa-icon-cloud-wifi;
+  }
+}
+.rsa-icon-computer-disk-drive-1 {
+  &:before {
+    content: $rsa-icon-computer-disk-drive-1;
+  }
+}
+.rsa-icon-cog-2 {
+  &:before {
+    content: $rsa-icon-cog-2;
+  }
+}
+.rsa-icon-computer-bug-search {
+  &:before {
+    content: $rsa-icon-computer-bug-search;
+  }
+}
+.rsa-icon-database-search {
+  &:before {
+    content: $rsa-icon-database-search ;
+  }
+}
+.rsa-icon-design-tool-quill-1 {
+  &:before {
+    content: $rsa-icon-design-tool-quill-1;
+  }
+}
+.rsa-icon-file-code-search-1 {
+  &:before {
+    content: $rsa-icon-file-code-search-1;
+  }
+}
+.rsa-icon-file-code-search {
+  &:before {
+    content: $rsa-icon-file-code-search;
+  }
+}
+.rsa-icon-file-code-search {
+  &:before {
+    content: $rsa-icon-file-search;
+  }
+}
+.rsa-icon-iris-scan-search {
+  &:before {
+    content: $rsa-icon-iris-scan-search;
+  }
+}
+.rsa-icon-login-key {
+  &:before {
+    content: $rsa-icon-login-key;
+  }
+}
+.rsa-icon-monitor-find {
+  &:before {
+    content: $rsa-icon-monitor-find;
+  }
+}
+.rsa-icon-monitor-heart-beat-search {
+  &:before {
+    content: $rsa-icon-monitor-heart-beat-search;
+  }
+}
+.rsa-icon-network-search {
+  &:before {
+    content: $rsa-icon-network-search;
+  }
+}
+.rsa-icon-search-remove {
+  &:before {
+    content: $rsa-icon-search-remove;
+  }
+}
+.rsa-icon-search-text {
+  &:before {
+    content: $rsa-icon-search-text;
+  }
+}
+.rsa-icon-single-neutral-search {
+  &:before {
+    content: $rsa-icon-single-neutral-search;
+  }
+}
+.rsa-icon-data-transfer-circle {
+  &:before {
+    content: $rsa-icon-data-transfer-circle;
+  }
+}
+.rsa-icon-navigation-menu-2 {
+  &:before {
+    content: $rsa-icon-navigation-menu-2;
+  }
+}
+.rsa-icon-navigation-menu-1 {
+  &:before {
+    content: $rsa-icon-navigation-menu-1;
+  }
+}
+.rsa-icon-layers-stacked {
+  &:before {
+    content: $rsa-icon-layers-stacked;
+  }
+}
+.rsa-icon-floppy-disk {
+  &:before {
+    content: $rsa-icon-floppy-disk;
+  }
+}

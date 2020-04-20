@@ -1,0 +1,23 @@
+{{#if column}}
+  {{rsa-data-table/header-cell-resizer
+    side="left"
+    column=column
+    columnsConfigDidChange=(action "columnsConfigDidChange" target=table)
+    resizeAction=(action "resizeColumn" target=table)}}
+{{/if}}
+
+{{#if hasBlock}}
+  {{yield column index}}
+{{else}}
+  <h2 class="title" title={{displayTitle}}>
+    <span class="js-move-handle">{{displayTitle}}</span>
+  </h2>
+{{/if}}
+
+{{#if column}}
+  {{rsa-data-table/header-cell-resizer
+    side="right"
+    column=column
+    columnsConfigDidChange=(action "columnsConfigDidChange" target=table)
+    resizeAction=(action "resizeColumn" target=table)}}
+{{/if}}

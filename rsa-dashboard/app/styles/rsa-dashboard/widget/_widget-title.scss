@@ -1,0 +1,13 @@
+.widget-title {
+  padding: 31px rsa-whitespace() 32px 1.5rem;
+  height: 14px;
+  font-size: 14px;
+  line-height: 14px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  .view-all-host {
+    right: rsa-whitespace();
+    position: absolute;
+    top: 22px;
+  }
+}

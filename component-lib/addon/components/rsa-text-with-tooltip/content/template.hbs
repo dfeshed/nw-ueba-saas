@@ -1,0 +1,18 @@
+{{#if (eq format "DATE")}}
+  {{#if text}}
+    {{rsa-content-datetime timestamp=text}}
+  {{/if}}
+{{else if (eq format "SIZE")}}
+  {{rsa-content-memsize size=text}}
+{{else if (eq format "PREFORMAT")}}
+  <pre>{{text}}</pre>
+{{else}}
+  {{text}}
+{{/if}}
+{{#if copyText}}
+  {{rsa-text-with-tooltip/copy-content text=text}}
+{{/if}}
+
+{{#if showNote}}
+  {{rsa-text-with-tooltip/content-note}}
+{{/if}}

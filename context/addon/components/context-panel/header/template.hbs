@@ -1,0 +1,6 @@
+<hbox>
+  {{yield (hash
+    title=(component "context-panel/header/title" headerTitle=headerTitle errorMessage=errorMessage lookupKey=lookupKey)
+    icons=(component "context-panel/header/icons" restoreDefault=(action "restoreDefault") goToHelp=(action "goToHelp"))
+  )}}
+</hbox>

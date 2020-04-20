@@ -1,0 +1,56 @@
+<div class="parserWrapper">
+  {{#if isLoading}}
+    <div class="loading">
+      {{rsa-loader size="large" label=(t "configure.logsParser.wait")}}
+    </div>
+  {{else if isLoadingError}}
+    <div class="loading">
+      {{t "configure.logsParser.error.contentOffLine"}}
+    </div>
+  {{else}}
+    <table class="parserContainer">
+      <tbody>
+        <tr class="trTop">
+          <td rowspan="2" class="border leftArea">
+            {{content/log-parser-rules/log-parsers}}
+          </td>
+          <td class="centerArea">
+            <table class="matchingMapping">
+              <tbody>
+                <tr style="height: 100px;">
+                  <td>
+                    <h1>
+                      {{content/log-parser-rules/save-reset-rule}}
+                      <div class="parserRuleName">
+                        {{#if parserRuleName}}
+                          <div>{{parserRuleName}}</div>
+                        {{/if}}
+                      </div>
+                    </h1>
+                  </td>
+                </tr>
+                {{#if canShowSelectedParserRule}}
+                  {{content/log-parser-rules/parser-rule}}
+                {{/if}}
+              </tbody>
+            </table>
+          </td>
+          <td rowspan="2" class="border rightArea">
+            {{content/log-parser-rules/parser-rules-list}}
+          </td>
+        </tr>
+        <tr class="trMessage">
+          <td class="tdMessage">{{content/log-parser-rules/log-message maxlength=60000}}</td>
+        </tr>
+      </tbody>
+    </table>
+  {{/if}}
+</div>
+{{! Overlay to prevent interactions during transactions }}
+{{#if isTransactionUnderway}}
+  <div class="transaction-overlay">
+    <centered>
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}

@@ -1,0 +1,48 @@
+{{#if summary.score}}
+  {{rsa-risk-score score=summary.score size="large" radius=24}}
+{{else}}
+  {{rsa-risk-score score="0" size="large" radius=24}}
+{{/if}}
+<hbox class="title-bar__file-title" fit>
+  <div class="file-title-os-wrapper">
+    <div class="title-bar__file-name" title={{summary.filename}}>{{summary.filename}}</div>
+    <div class="osType"> {{summary.machineOsType}} </div>
+  </div>
+  <div class="file-header-actions">
+    {{endpoint/file-actionbar
+      showOnlyIcons=true
+      resetRiskScore = (action "resetRiskScoreAction")
+      serviceList=serviceList
+      metaName="checksumSha256"
+      itemList=selectedItemList
+      selectedFileCount=selectedDetailFile.length
+      pivotIconSize="medium"
+      downloadDisabledTooltip=(t "investigateShared.endpoint.fileActions.tooltips.files.downloadToServer")}}
+    {{host-detail/header/more-actions}}
+  </div>
+  <div class="divider"/>
+
+</hbox>
+{{file-details/header/summary}}
+
+<hbox class="header-top-right-elements">
+  {{#if displayCloseRightPanel}}
+    <hbox class="title-bar__fileProperties flexi-fit">
+      {{#rsa-form-button
+        title=(t "investigateHosts.hosts.button.rightPanel")
+        class="open-properties"
+        isActive=isFilePropertyPanelVisible
+        isIconOnly=true
+        defaultAction=(action "toggleFilePropertyPanel")
+      }}
+        {{rsa-icon name="layout-2" size="small"}}
+      {{/rsa-form-button}}
+    </hbox>
+  {{/if}}
+  <hbox class="title-bar__close flexi-fit">
+    {{#link-to "files.index" (query-params sid=null checksum=null tabName=null)}}
+      {{rsa-icon class="header-button" name="close" title=(t "investigateFiles.button.close")}}
+    {{/link-to}}
+  </hbox>
+
+</hbox>

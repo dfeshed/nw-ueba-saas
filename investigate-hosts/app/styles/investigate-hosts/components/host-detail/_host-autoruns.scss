@@ -1,0 +1,11 @@
+.host-autoruns {
+  .rsa-nav-tab {
+    cursor: pointer;
+    &.is-active {
+      cursor: default;
+    }
+  }
+  .rsa-data-table-header {
+    background-color: background-color(primary, darker);
+  }
+}

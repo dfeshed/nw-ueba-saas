@@ -1,0 +1,367 @@
+.ember-tether {
+  @include rsa-layer(above);
+  display: inline-block;
+}
+
+.rsa-content-tethered-panel {
+  position: absolute;
+}
+
+.panel-content {
+  background: background-color(primary, darkest);
+  color: text-color(primary, lightest);
+  text-align: left;
+  position: relative;
+  box-shadow: 1px 1px 2px background-color(primary, darkest, translucent);
+
+  .close-icon {
+    position: absolute;
+    top: rsa-whitespace(less);
+    right: rsa-whitespace(less);
+
+    i {
+      top: 0;
+      color: text-color(primary, lighter);
+
+      &:hover {
+        color: text-color(primary, lightest);
+        cursor: pointer;
+      }
+    }
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+
+    polygon {
+      fill: text-color(primary, darker);
+    }
+
+    line {
+      stroke-width: 1;
+
+      &.bottom {
+        stroke: text-color(primary, darker);
+      }
+    }
+  }
+
+  > header {
+    @include rsa-font(header);
+    padding: rsa-whitespace() rsa-whitespace(most) 0 rsa-whitespace();
+  }
+
+  > section {
+    padding: rsa-whitespace() rsa-whitespace(more) rsa-whitespace() rsa-whitespace();
+    @include rsa-font(paragraph, small);
+    color: text-color(primary, lighter);
+    max-width: 25rem;
+    min-width: 15rem;
+  }
+
+  > p {
+    max-width: 25rem;
+    min-width: 15rem;
+    @include rsa-font(paragraph, small);
+    padding: rsa-whitespace() rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
+  }
+
+  &.standard {
+    @include border(1px, solid, primary, lightest);
+
+    svg line {
+      stroke: text-color(primary, lightest);
+      stroke-width: 2;
+    }
+  }
+
+  &.primary,
+  &.highlighted {
+    @include border(1px, solid, secondary, dark);
+
+    header {
+      color: text-color(secondary);
+    }
+
+    svg line {
+      stroke: text-color(secondary, dark);
+    }
+  }
+
+  &.highlighted {
+    background-color: background-color(secondary, dark);
+    padding: rsa-whitespace(least) 0;
+
+    header {
+      color: text-color(primary, lightest);
+      @include rsa-font(header, small);
+      padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(least);
+    }
+
+    section {
+      padding: 0 rsa-whitespace() rsa-whitespace(least);
+      @include rsa-font(paragraph);
+    }
+
+    polygon {
+      stroke: text-color(secondary, dark);
+      fill: text-color(secondary, dark);
+    }
+  }
+
+  &.error {
+    @include border(1px, solid, accentOne);
+
+    header {
+      color: text-color(accentOne);
+    }
+
+    svg line {
+      stroke: text-color(accentOne);
+    }
+  }
+
+  &.top {
+    top: -1rem;
+
+    svg {
+      transform: rotate(0deg);
+      right: calc(50% - 7px);
+      bottom: -14px;
+    }
+
+    &-left {
+      top: -1rem;
+      left: calc(-50% + 1rem + 7px);
+
+      svg {
+        transform: rotate(0deg);
+        right: 1rem;
+        bottom: -14px;
+      }
+    }
+
+    &-right {
+      top: -1rem;
+      left: calc(50% - 1rem - 7px);
+
+      svg {
+        transform: rotate(0deg);
+        left: 1rem;
+        bottom: -14px;
+      }
+    }
+  }
+
+  &.bottom {
+    bottom: -1rem!important; // to override bottom:auto assigned in template
+
+    svg {
+      transform: rotate(180deg);
+      right: calc(50% - 7px);
+      top: -14px;
+    }
+
+    &-left {
+      bottom: -1rem!important; // to override bottom:auto assigned in template
+      left: calc(-50% + 1rem + 7px);
+
+      svg {
+        transform: rotate(180deg);
+        right: 1rem;
+        top: -14px;
+      }
+    }
+
+    &-right {
+      bottom: -1rem!important; // to override bottom:auto assigned in template
+      left: calc(50% - 1rem - 7px);
+
+      svg {
+        transform: rotate(180deg);
+        left: 1rem;
+        top: -14px;
+      }
+    }
+  }
+
+  &.left {
+    left: -1rem!important; // !important to override left:auto assigned in template
+
+    svg {
+      transform: rotate(270deg);
+      bottom: calc(50% - 7px);
+      right: -14px;
+    }
+
+    &-top {
+      left: -1rem!important;
+
+      svg {
+        transform: rotate(270deg);
+        right: -14px;
+        bottom: 1rem;
+      }
+    }
+
+    &-bottom {
+      left: -1rem!important;
+
+      svg {
+        transform: rotate(270deg);
+        right: -14px;
+        top: 1rem;
+      }
+    }
+  }
+
+
+  &.right {
+    left: 1rem!important; // to override left:auto assigned in template
+
+    svg {
+      transform: rotate(90deg);
+      bottom: calc(50% - 7px);
+      left: -14px;
+    }
+
+    &-top {
+      left: 1rem!important;
+
+      svg {
+        transform: rotate(90deg);
+        left: -14px;
+        bottom: 1rem;
+      }
+    }
+
+    &-bottom {
+      left: 1rem!important;
+
+      svg {
+        transform: rotate(90deg);
+        left: -14px;
+        top: 1rem;
+      }
+    }
+  }
+
+  &.is-popover {
+    svg {
+      display: none!important;
+    }
+
+    &.left {
+      left: 0!important;
+      top: 0!important;
+
+      &-top {
+        left: 0!important;
+      }
+
+      &-bottom {
+        left: 0!important;
+      }
+    }
+
+    &.right {
+      left: 0!important;
+      top: 0!important;
+
+      &-top {
+        left: 0!important;
+      }
+      &-bottom {
+        left: 0!important;
+      }
+    }
+
+    &.top {
+      top: 0!important;
+      left: 0!important;
+
+      &-left {
+        top: 0!important;
+      }
+
+      &-right {
+        top: 0!important;
+      }
+    }
+
+    &.bottom {
+      top: 0!important;
+      left: 0!important;
+
+      &-left {
+        top: 0!important;
+      }
+
+      &-right {
+        top: 0!important;
+      }
+    }
+  }
+
+  .rsa-dropdown-action-list {
+    li {
+      @include rsa-font(body);
+      padding: rsa-whitespace(less);
+
+      i {
+        position: relative;
+        top: 1px;
+      }
+    }
+  }
+
+  .rsa-dropdown-link-list {
+    li {
+      a {
+        @include rsa-font(body);
+        padding: rsa-whitespace(less) rsa-whitespace();
+        display: block;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .rsa-dropdown-link-list,
+  .rsa-dropdown-action-list {
+    li {
+      &:last-child {
+        border-bottom: none!important;
+      }
+
+      &:not(.disabled):hover {
+        color: text-color(primary, lightest);
+        background-color: background-color(secondary, darker);
+        cursor: pointer;
+      }
+
+      &.is-active {
+        background-color: background-color(secondary, dark);
+      }
+    }
+  }
+
+  &.primary {
+    .rsa-dropdown-link-list,
+    .rsa-dropdown-action-list {
+      li {
+        border-bottom: 1px solid border-color(secondary, dark);
+      }
+    }
+  }
+
+  .error {
+    .rsa-dropdown-link-list,
+    .rsa-dropdown-action-list {
+      li {
+        border-bottom: 1px solid border-color(accentOne, dark);
+      }
+    }
+  }
+}

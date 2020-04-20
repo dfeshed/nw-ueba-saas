@@ -1,0 +1,3 @@
+{{#each groups as |group|}}
+  <li class="rsa-list-button" {{action "safeCallback" selectAction group}}>{{group.name}}</li>
+{{/each}}

@@ -1,0 +1,82 @@
+{{#if isServicesRetrieveError}}
+  {{#rsa-panel-message message=(t "investigate.services.error.description")}}
+    {{#rsa-form-button defaultAction=(action "getServices")}}
+      <span>{{t "investigate.tryAgain"}}</span>
+    {{/rsa-form-button}}
+  {{/rsa-panel-message}}
+{{else}}
+  <header class="rsa-investigate-query__header">
+    {{query-container executeQuery=executeQuery}}
+
+    {{#if showFutureFeatures}}
+      {{!-- For now, hide the timeline until we"ve performed a search --}}
+      {{!-- Continue to evaluate if this is the UX we want --}}
+      {{#if atLeastOneQueryIssued}}
+        {{events-container/time-line}}
+      {{/if}}
+    {{/if}}
+  </header>
+
+  {{#if hasFatalSummaryError}}
+    <vbox>
+      {{#rsa-panel-message}}
+        <div class="summary-error">{{t "investigate.events.fatalSummaryError"}}</div>
+      {{/rsa-panel-message}}
+    </vbox>
+  {{else if (and noEvents eventResultsErrorMessage)}}
+    <div class="rsa-investigate-events-table__header">
+      <div class="rsa-investigate-events-table__header__controls">
+        {{events-table-container/header-container/column-groups}}
+      </div>
+    </div>
+
+    <vbox>
+      {{#rsa-panel-message}}
+        <div class="query-error">{{or eventResultsErrorMessage (t "investigate.events.error")}}</div>
+      {{/rsa-panel-message}}
+    </vbox>
+  {{else}}
+    {{#if (or atLeastOneQueryIssued hasIncommingQueryParams)}}
+      <section class={{queryBodyClass}}>
+        <section class="rsa-investigate-query__body-master">
+          {{#if showFutureFeatures}}
+            <aside class="rsa-investigate-query__body-master-aside">
+              {{meta-view
+                metaPanelSize=metaPanelSize
+                executeQuery=executeQuery
+              }}
+            </aside>
+          {{/if}}
+          <section class="rsa-investigate-query__body-master-main">
+            {{events-table-container
+              selectEvent=selectEvent
+              toggleReconSize=toggleReconSize
+              toggleSlaveFullScreen=toggleSlaveFullScreen
+              executeQuery=executeQuery
+            }}
+          </section>
+        </section>
+        <vbox class="rsa-investigate-query__body-slave">
+          {{#if (and queryNode.serviceId sessionId)}}
+            {{recon-container
+              aliases=(readonly aliases)
+              endpointId=(readonly queryNode.serviceId)
+              eventId=(readonly sessionId)
+              eventType=(readonly eventType)
+              index=(readonly selectedTableIndex)
+              language=(readonly language)
+              queryInputs=(readonly queryInputs)
+              size=(readonly reconSize)
+              total=(readonly totalCount)
+              closeAction=reconClose
+              expandAction=reconExpand
+              shrinkAction=reconShrink
+            }}
+          {{/if}}
+        </vbox>
+      </section>
+    {{else}}
+      {{events-container/query-tips}}
+    {{/if}}
+  {{/if}}
+{{/if}}

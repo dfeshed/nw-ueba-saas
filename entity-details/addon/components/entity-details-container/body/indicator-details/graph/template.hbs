@@ -1,0 +1,10 @@
+<div id="chartComponentPlaceholder" class="entity-details-container-body-indicator-details_graph_placeHolder"></div>
+{{#unless historicalDataForGraph}}
+  <div class="entity-details_loader">
+    {{#if (eq indicatorGraphError true)}}
+      {{t "investigateUsers.alerts.indicator.graphError"}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t "investigate.loading")}}
+    {{/if}}
+  </div>
+{{/unless}}

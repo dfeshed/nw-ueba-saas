@@ -1,0 +1,1 @@
+export { default } from 'component-lib/utils/copy-to-clipboard';

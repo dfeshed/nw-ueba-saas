@@ -1,0 +1,51 @@
+# IDE Files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode
+.vscodeignore
+jsconfig.json
+ember.d.ts
+
+# Build tools
+build/
+.gradle/
+target/
+
+# Sonar
+.sonar/
+.scannerwork/
+
+# Code coverage
+coverage/
+coverage_*/
+
+# compiled output
+dist/
+tmp/
+
+# dependencies
+node_modules/
+node_modules
+bower_components/
+bower_repository/
+
+# misc
+.sass-cache/
+connect.lock
+libpeerconnection.log
+npm-debug.log
+testem.log
+*.DS_Store
+*coverage.json
+lcov.dat
+typings/
+junit/
+
+style-guide/public/visual-evolution/images
+style-guide/public/visual-evolution/storage.json
+
+yarn-error.log
+
+scripts/node/application-deprecation-report.json

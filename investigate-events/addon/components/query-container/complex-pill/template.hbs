@@ -1,0 +1,23 @@
+{{#if isActive}}
+  <span class="shadow-text">{{text}}</span>
+  <input
+    autocomplete="off"
+    oninput={{action "handleInput"}}
+    onkeydown={{action "onKeyDown"}}
+    role="input"
+    type="text"
+    value={{text}}>
+{{else}}
+  <span class="text-wrapper">
+    {{pillData.complexFilterText}}
+  </span>
+
+  {{query-container/delete-pill
+    sendMessage=(action "handleMessage")
+  }}
+  {{#if isFocused}}
+    {{query-container/focus-holder
+      sendMessage=(action "handleMessage")
+    }}
+  {{/if}}
+{{/if}}

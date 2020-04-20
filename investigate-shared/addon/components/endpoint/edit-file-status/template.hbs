@@ -1,0 +1,16 @@
+{{endpoint/edit-file-status/button
+  showOnlyIcons=showOnlyIcons
+  isDisabled=isDisabled
+  retrieveRemediationStatus=retrieveRemediationStatus
+  defaultAction=(action "showEditFileStatusModal")}}
+
+{{#if showFileStatusModal}}
+  {{endpoint/edit-file-status/modal
+    restrictedFileList=restrictedFileList
+    onSaveFileStatus=onSaveFileStatus
+    isRemediationAllowed=isRemediationAllowed
+    isFloatingOrMemoryDll=isFloatingOrMemoryDll
+    itemList=itemList
+    data=fileStatusData
+    closeModal=(action "closeModal")}}
+{{/if}}

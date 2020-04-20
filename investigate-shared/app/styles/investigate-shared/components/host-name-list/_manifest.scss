@@ -1,0 +1,48 @@
+.host-name-list {
+  color: text-color(primary, lightest);
+  padding: rsa-whitespace();
+  overflow-y: auto;
+
+  &__title {
+    padding-bottom: rsa-whitespace();
+  }
+
+  &__items {
+    .host-name {
+      &__divider {
+        @include border-left(1px, solid, primary);
+        border-top: 0;
+        height: 2rem;
+        margin: .1rem 0 .25rem 0;
+      }
+
+      &__link {
+        display: inline-block;
+        width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: text-color(secondary);
+      }
+
+      .rsa-form-button {
+        .rsa-icon-expand-6, .rsa-icon-download-2 {
+          cursor: pointer;
+          padding-bottom: rsa-whitespace(less);
+        }
+      }
+    }
+  }
+
+  .loader_icon {
+    height: 70vh;
+  }
+
+  .info-icon{
+    vertical-align: middle;
+  }
+  .score-detail{
+    margin-right: rsa-whitespace(more);
+    vertical-align: middle;
+  }
+}

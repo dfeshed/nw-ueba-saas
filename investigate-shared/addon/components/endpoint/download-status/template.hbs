@@ -1,0 +1,25 @@
+{{#if (eq downloadState.status "Error")}}
+
+  {{#rsa-content-tethered-panel-trigger panel=panelId}}
+    {{rsa-icon class="rsa-icon-report-problem-triangle rsa-red-color"}}
+  {{/rsa-content-tethered-panel-trigger}}
+
+  {{#rsa-content-tethered-panel style="error" position="top" panelId=panelId}}
+    <section>{{downloadState.error}}</section>
+  {{/rsa-content-tethered-panel}}
+
+{{else if (eq downloadState.status "Downloaded")}}
+  {{rsa-icon name="check-2" class="rsa-green-color"}}
+{{else if (eq downloadState.status "Processing")}}
+  {{#rsa-content-tethered-panel-trigger panel="processing-panel"}}
+    {{rsa-loader}}
+  {{/rsa-content-tethered-panel-trigger}}
+
+  {{#rsa-content-tethered-panel position="top" panelId="processing-panel"}}
+    <section>{{t "investigateHosts.downloads.processingFile" type=downloadState.fileType}}</section>
+  {{/rsa-content-tethered-panel}}
+{{else}}
+
+  <span class="not-downloaded">--</span>
+
+{{/if}}

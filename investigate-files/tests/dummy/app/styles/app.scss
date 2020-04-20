@@ -1,0 +1,38 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside respond */
+@import 'component-lib/manifest';
+
+/* putting the engines styles */
+@import "investigate-files/manifest";
+
+@import "investigate-shared/manifest";
+
+/* Import respond-shared styles from addon */
+@import 'respond-shared/manifest';
+
+@import 'rsa-data-filters/manifest';
+
+// Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
+body.rsa-investigate-files-dummy {
+  color: text-color(primary, light);
+
+  .rsa-logo {
+    .rsa-logo__title {
+      color: text-color(accentTwo);
+      text-align: center;
+      font-size: 25px;
+    }
+  }
+
+  a:-webkit-any-link {
+    text-decoration: none;
+  }
+}
+
+.rsa-investigate-files-dummy {
+  .background-icon {
+    font-size: 15rem;
+    color: text-color(accentOne, dark);
+  }
+}

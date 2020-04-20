@@ -1,0 +1,1 @@
+export { default } from 'recon/reducers/index';

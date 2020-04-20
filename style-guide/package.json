@@ -1,0 +1,72 @@
+{
+  "name": "style-guide",
+  "version": "0.1.0",
+  "description": "Small description for style-guide goes here",
+  "license": "MIT",
+  "author": "",
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "repository": "",
+  "scripts": {
+    "build": "ember build",
+    "start": "ember server",
+    "test": "node ./scripts/test"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "7.4.4",
+    "@babel/plugin-proposal-do-expressions": "7.5.0",
+    "@babel/plugin-proposal-export-default-from": "7.5.2",
+    "@babel/plugin-proposal-export-namespace-from": "7.5.2",
+    "@babel/plugin-proposal-function-sent": "7.5.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "7.2.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "7.4.4",
+    "@babel/plugin-proposal-numeric-separator": "7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "7.2.0",
+    "@babel/plugin-proposal-partial-application": "7.4.4",
+    "@babel/plugin-proposal-pipeline-operator": "7.5.0",
+    "@babel/plugin-proposal-throw-expressions": "7.2.0",
+    "@babel/plugin-syntax-import-meta": "7.2.0",
+    "@html-next/flexi-config": "2.2.0",
+    "@html-next/flexi-default-styles": "2.2.0",
+    "@html-next/flexi-dsl": "2.2.0",
+    "@html-next/flexi-layouts": "2.2.2",
+    "babel-eslint": "10.0.3",
+    "ember-cli": "3.15.2",
+    "ember-cli-autoprefixer": "0.8.1",
+    "ember-cli-babel": "7.13.2",
+    "ember-cli-dependency-checker": "3.2.0",
+    "ember-cli-eslint": "5.1.0",
+    "ember-cli-htmlbars": "4.2.2",
+    "ember-cli-inject-live-reload": "2.0.1",
+    "ember-cli-sass": "10.0.0",
+    "ember-cli-swiper": "^0.6.1",
+    "ember-cli-uglify": "3.0.0",
+    "ember-code-snippet": "2.3.1",
+    "ember-decorators":"6.1.0",
+    "ember-exam": "1.0.0",
+    "ember-load": "0.0.17",
+    "ember-load-initializers": "2.1.1",
+    "ember-qunit": "4.6.0",
+    "ember-redux": "6.0.0",
+    "ember-resolver": "7.0.0",
+    "ember-source": "3.16.0",
+    "eslint-plugin-ember-suave": "^1.0.0",
+    "flexi": "2.0.1",
+    "highlightjs": "9.8.0",
+    "loader.js": "4.7.0",
+    "sass": "1.17.2"
+  },
+  "ember-addon": {
+    "paths": [
+      "../component-lib",
+      "../rsa-context-menu",
+      "../streaming-data"
+    ]
+  },
+  "engines": {
+    "node": "12.14.1"
+  },
+  "private": true
+}

@@ -1,0 +1,62 @@
+// sass-lint:disable no-universal-selectors
+
+.spec-member {
+  background-color: background-color(primary, darkest, translucent);
+  @include border(1px, solid, primary, darkest);
+  padding: rsa-whitespace();
+  color: text-color(primary, lighter);
+  margin-bottom: rsa-whitespace();
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  > header {
+    position: relative;
+    margin-top: calc(#{rsa-whitespace()} * -1);
+    margin-left: calc(#{rsa-whitespace()} * -1);
+    margin-right: calc(#{rsa-whitespace()} * -1);
+    margin-bottom: rsa-whitespace();
+    padding: rsa-whitespace(less) rsa-whitespace();
+    background-color: background-color(neutral, dark);
+    color: text-color(neutral);
+
+    > .title {
+      margin-bottom: rsa-whitespace(least);
+      @include rsa-font(header);
+    }
+
+    > .subtitle {
+      @include rsa-font(paragraph, small);
+      margin-bottom: rsa-whitespace();
+      color: text-color(primary, light);
+    }
+  }
+
+  > section {
+    position: relative;
+
+    p {
+      @include rsa-font(paragraph);
+      margin: rsa-whitespace() 0;
+    }
+
+    pre,
+    code {
+      width: 100%;
+      margin: rsa-whitespace() rsa-whitespace() rsa-whitespace() 0;
+      border-left: rsa-whitespace(least) solid border-color(primary);
+      padding-left: rsa-whitespace();
+      background-color: transparent;
+
+      * {
+        color: text-color(primary, lightest);
+        @include rsa-font-code();
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

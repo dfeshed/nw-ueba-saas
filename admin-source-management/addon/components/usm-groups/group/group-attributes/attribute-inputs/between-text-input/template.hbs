@@ -1,0 +1,36 @@
+<div {{action "saveChanges" on="onDeactivate"}}>
+  {{rsa-form-input-oneway
+    class=(concat "operator-input firstValueInput " validation)
+    placeholder=(t "adminUsm.groupCriteria.placeholders.beginning_IP")
+    maxLength=1024
+    value=firstValue
+    isError=(or firstValueValidator.showError firstlockError)
+    errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
+    focusIn=(action "firstValueFocusIn")
+    onFocusOut=(action "firstValueChange" value="target.value")
+    spellcheck=false
+  }}
+  <span>{{t "adminUsm.groupCriteria.and"}}</span>
+  {{#if (eq validation "validIPv6")}}
+    <br>
+  {{/if}}
+  {{rsa-form-input-oneway
+    class=(concat "operator-input secondValueInput " validation)
+    placeholder=(t "adminUsm.groupCriteria.placeholders.end_IP")
+    maxLength=1024
+    value=secondValue
+    isError=(or secondValueValidator.showError secondlockError)
+    errorMessage=(t (concat "adminUsm.groupCriteria.inputValidations." validation))
+    focusIn=(action "secondValueFocusIn")
+    onFocusOut=(action "secondValueChange" value="target.value")
+    spellcheck=false    
+  }}
+</div>
+
+<div class="tooltip">
+  {{#rsa-text-with-tooltip value=(t (concat "adminUsm.groupCriteria.tooltips." selectedAttribute "_" validation "_" selectedOperator))
+    style="standard"
+    alwaysShow=true}}
+    {{rsa-icon size="large" name="information-circle" displayOnTab=true}}
+  {{/rsa-text-with-tooltip}}
+</div>

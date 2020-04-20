@@ -1,0 +1,37 @@
+# IDE Files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode
+.vscodeignore
+jsconfig.json
+ember.d.ts
+
+# Build tools
+build/
+.gradle/
+.sonar/
+target/
+
+# compiled output
+dist/
+tmp/
+
+# dependencies
+node_modules/
+bower_components/
+bower_repository/
+
+# misc
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+npm-debug.log
+testem.log
+*.DS_Store
+*coverage.json
+lcov.dat
+typings/
+

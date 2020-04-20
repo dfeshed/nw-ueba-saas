@@ -1,0 +1,26 @@
+{{#if hasColumnGroups}}
+  {{events-table-container/header-container
+    toggleReconSize=toggleReconSize
+    toggleSlaveFullScreen=toggleSlaveFullScreen
+  }}
+  <section class="rsa-investigate-events-table__body">
+    {{progress-bar
+      percent=displayPercent
+      enabled=areEventsStreaming
+    }}
+    {{events-table-container/events-table selectEvent=selectEvent executeQuery=executeQuery}}
+  </section>
+
+  <footer class="scroll-message">
+    {{rsa-icon name="arrow-circle-down-1"}}
+    <span>{{t "investigate.events.scrollMessage"}}</span>
+  </footer>
+{{else}}
+  <centered>
+    {{#if isAtThreshold}}
+      {{rsa-loader size="largest" label=(t "investigate.loadingAtThreshold" threshold=threshold)}}
+    {{else}}
+      {{rsa-loader size="largest" label=(concat (t "investigate.loading") " ...")}}
+    {{/if}}
+  </centered>
+{{/if}}

@@ -1,0 +1,57 @@
+<div>
+  <div class="metadata">
+    <label>{{t "respond.alerts.list.incidentId"}}:</label>
+    <span>
+      {{#if info.incidentId}}
+        {{#link-to "incident" info.incidentId}}{{info.incidentId}}{{/link-to}}
+      {{else}}
+        {{t "respond.alerts.notAssociatedWithIncident"}}
+      {{/if}}
+    </span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t "respond.alerts.list.receivedTime"}}:</label>
+    <span>{{rsa-content-datetime timestamp=info.receivedTime displayTime=true displayMilliseconds=false}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t "respond.alerts.list.severity"}}:</label>
+    <span>{{info.alert.severity}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t "respond.alerts.list.source"}}:</label>
+    <span>{{t (concat "respond.alert.source." info.alert.source)}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t "respond.alerts.list.type"}}:</label>
+    <span>{{info.alert.type}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t "respond.alerts.list.numEvents"}}:</label>
+    <span>{{info.alert.numEvents}}</span>
+  </div>
+
+  <div class="metadata">
+    <label>{{t "respond.alerts.list.hostSummary"}}:</label>
+    <span>{{info.alert.host_summary}}</span>
+  </div>
+</div>
+<span class="metadata-separator"></span>
+{{#if (eq originalAlertStatus "wait")}}
+  {{rsa-loader size="large" label=(t "respond.alerts.originalAlertLoading")}}
+{{else if (eq originalAlertStatus "error")}}
+  <div class="error">
+    {{rsa-icon name="signal-warning" size="large"}}
+    <div>{{t "respond.alerts.originalAlertError"}}</div>
+  </div>
+{{else}}
+  <div class="text original-alert-details">
+    <label>{{t "respond.alerts.originalAlert"}}:</label>
+    <pre>{{formattedRawAlert}}</pre>
+  </div>
+{{/if}}
+

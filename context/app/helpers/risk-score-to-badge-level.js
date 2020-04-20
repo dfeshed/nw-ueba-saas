@@ -1,0 +1,1 @@
+export { default } from 'context/helpers/risk-score-to-badge-level';

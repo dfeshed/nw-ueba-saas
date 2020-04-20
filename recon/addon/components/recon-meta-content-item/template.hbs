@@ -1,0 +1,29 @@
+{{#if shouldShowBinoculars}}
+  <vbox class="binocular-icon"fit>
+    {{rsa-icon
+      size="large"
+      click=(action "clickBinoculars")
+      name="binoculars"}}
+  </vbox>
+{{/if}}
+<vbox>
+  <div class="meta-name">
+    {{name}}
+  </div>
+  <div class="meta-value">
+    {{#if (or (eq name "time") (eq name "event.time"))}}
+      {{rsa-content-datetime
+        displayMilliseconds=false
+        timestamp=value}}
+    {{else}}
+      {{#rsa-context-menu
+        contextSelection=contextSelection
+        contextDetails=contextMenuData}}
+        <span class="entity" data-entity-id={{value}} data-meta-key={{name}}>{{value}}</span>
+      {{/rsa-context-menu}}
+    {{/if}}
+  </div>
+</vbox>
+{{#if shouldShowHighlightScroller}}
+  {{recon-meta-content-item/meta-highlight-scroller totalCount=totalCount}}
+{{/if}}

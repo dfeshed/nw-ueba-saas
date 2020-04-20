@@ -1,0 +1,148 @@
+.machine-isolation{
+  sup {
+    color: red;
+  }
+  .comment-box-label {
+    margin: rsa-whitespace() 0;
+  }
+  .comment-wrapper {
+    .comment-box-label {
+      color: text-color(primary, light);
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+  }
+  .release-modal-content, .edit-modal-content, .isolation-modal-content{
+    padding: rsa-whitespace(more) rsa-whitespace();
+    overflow: auto;
+    max-height: 500px;
+    .isolate-description-text {
+      margin-bottom: rsa-whitespace();
+      line-height: 1.5rem;
+    }
+    .exclusion-list-wrapper {
+      margin: rsa-whitespace(more) 0;
+      .comment-box-label {
+        color: text-color(primary, light);
+        margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace() 0;
+        @include rsa-font(body, small);
+        line-height: 1.2rem;
+      }
+      .comment-box {
+        margin-left: 1.5rem;
+      }
+      .exclusion-list-error {
+        margin-top: rsa-whitespace(less);
+      }
+    }
+
+    textarea {
+      resize: none;
+      min-height: 6rem;
+    }
+  }
+  .edit-modal-content {
+    .exclusion-list-wrapper {
+      margin-top: 0px;
+      .comment-box {
+        margin-left: 0px;
+        .comment-box-description {
+          margin: 0 0 rsa-whitespace() 0;
+          @include rsa-font(body);
+          color: inherit;
+          line-height: 1.5rem;
+        }
+        .comment-box-label {
+          color: text-color(primary, light);
+          font-size: .7rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          margin-top: 0.5rem;
+        }
+      }
+    }
+  }
+  .release-modal-content {
+    >.comment-box-label {
+      margin: 0 0 rsa-whitespace() 0;
+      @include rsa-font(body);
+      color: inherit;
+      line-height: 1.5rem;
+      text-transform: unset;
+      letter-spacing: normal;
+    }
+    .comment-box {
+      margin-top: 1rem;
+    }
+  }
+}
+
+.isolation-pill {
+  display: inline-block;
+  border: 1px solid text-color(accentOne);
+  border-radius: 3px;
+  padding: 0px 3px;
+  @include rsa-font(default, small);
+  color: text-color(accentOne);
+  margin-left: rsa-whitespace(less);
+  line-height: 1rem;
+  font-size: 0.7rem;
+  background-color: text-color(primary, darker);
+  letter-spacing: 1px;
+}
+
+.machine-name-holder {
+  overflow: unset;
+  .host-name {
+    display: inline-block;
+    max-width: 64%;
+    line-height: 13px;
+    vertical-align: bottom;
+    a {
+      display: inline-block;
+      height: 17px;
+      line-height: 17px;
+    }
+  }
+  .isolation-pill {
+    height: 1rem;
+    vertical-align: text-bottom;
+  }
+}
+.manual-file-download_content {
+  margin: rsa-whitespace();
+  .rsa-form-label{
+    color: text-color(primary, lightest);
+  }
+  .manual-file-download_file-path {
+    margin-bottom: 2rem;
+  }
+  .file-size-count-config {
+    height: 120px;
+     .manual-file-download_file-count {
+      width: 172px;
+      height: 120px;
+      display: inline-block;
+      margin-right: 3rem;
+      float: left;
+    }
+    .manual-file-download_file-size {
+      width: 255px;
+      height: 120px;
+      display: inline-block;
+    }
+  }
+
+  .file-path-note {
+    color: text-color(primary, light);
+    margin: rsa-whitespace(less) rsa-whitespace() rsa-whitespace() 0;
+    @include rsa-font(body, small);
+    line-height: 1.2rem;
+  }
+}

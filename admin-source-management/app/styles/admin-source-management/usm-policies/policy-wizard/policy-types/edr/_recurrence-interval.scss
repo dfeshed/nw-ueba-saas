@@ -1,0 +1,24 @@
+.recurrence-interval {
+
+  .ember-power-select-trigger {
+    width: 3.5rem;
+  }
+  
+  .recurrence-run-interval, .recurrence-run-interval__week-options {
+    padding-left: rsa-whitespace();
+  }
+
+  .text {
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
+    text-align: right;
+  }
+
+  .recurrence-run-interval__list {
+    padding-right: 1rem;
+  }
+  
+  .recurrence-run-interval__week-options {
+    padding-top: rsa-whitespace();
+  }
+
+}

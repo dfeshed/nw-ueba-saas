@@ -1,0 +1,146 @@
+// sass-lint:disable no-color-hex
+
+/*
+ * @file Global list of named colors.
+ * These named colors can be used across RSA themes for consistency.
+ * Grey is the only color with 3 distinct modifiers.
+ * Other color's darkest and lightest modifiers have been mapped to darker and lighter for API consistency.
+ */
+
+$rsa-colors: (
+
+  white: #fff,
+  black: #000,
+
+  gray: (
+    darkest:  #161616,
+    darker:   #212121,
+    dark:     #424242,
+    base:     #757575,
+    light:    #BDBDBD,
+    lighter:  #EEEEEE,
+    lightest: #FAFAFA
+  ),
+
+  blue: (
+    darkest:  #01579B,
+    darker:   #01579B,
+    dark:     #0288D1,
+    base:     #03A9F4,
+    light:    #4FC3F7,
+    lighter:  #B3E5FC,
+    lightest: #B3E5FC
+  ),
+
+  green: (
+    darkest:  #33691E,
+    darker:   #33691E,
+    dark:     #689F38,
+    base:     #8BC34A,
+    light:    #AED581,
+    lighter:  #DCEDC8,
+    lightest: #DCEDC8
+  ),
+
+  red: (
+    darkest:  #A60808,
+    darker:   #A60808,
+    dark:     #C91818,
+    base:     #EC2227,
+    light:    #E65C5C,
+    lighter:  #FFCCD1,
+    lightest: #FFCCD1
+  ),
+
+  orange: (
+    darkest:  #BF360C,
+    darker:   #BF360C,
+    dark:     #E64A19,
+    base:     #FF5722,
+    light:    #FF8A65,
+    lighter:  #FFCCBC,
+    lightest: #FFCCBC
+  ),
+
+  amber: (
+    darkest:  #FF6F00,
+    darker:   #FF6F00,
+    dark:     #FFA000,
+    base:     #FFC107,
+    light:    #FFD54F,
+    lighter:  #FFECB3,
+    lightest: #FFECB3
+  ),
+
+  /* Semantic Color Map */
+
+  brand-primary: #EC2227,
+
+  status-warning: (
+    darkest:  #A60808,
+    darker:   #A60808,
+    dark:     #C91818,
+    base:     #EC2227,
+    light:    #E65C5C,
+    lighter:  #FFCCD1,
+    lightest: #FFCCD1
+  ),
+
+  status-success: (
+    darkest:  #33691E,
+    darker:   #33691E,
+    dark:     #689F38,
+    base:     #8BC34A,
+    light:    #AED581,
+    lighter:  #DCEDC8,
+    lightest: #DCEDC8
+  )
+);
+
+/* Public Mixins */
+
+/* rsa-color */
+
+/*
+ * Colors: [ black,
+ *           white,
+ *           grey,
+ *           blue,
+ *           green,
+ *           red,
+ *           orange,
+ *           amber,
+ *           brand-primary,
+ *           status-warning,
+ *           status-success ]
+ *
+ * Modifiers: [ darkest,
+ *              darker,
+ *              dark,
+ *              base,
+ *              light,
+ *              lighter,
+ *              lightest ]
+ *
+ * Opacity: [ $rsa-opaque,
+ *            $rsa-translucent,
+ *            $rsa-nearly-opaque,
+ *            $rsa-nearly-transparent ]
+ *
+ * Examples: color: rsa-color(blue)
+ *           color: rsa-color(amber, lighter)
+ *           background-color: rsa-color(status-success, base, $rsa-nearly-transparent)
+ *           background-color: rsa-color(gray, dark, $rsa-translucent)
+ */
+
+@function rsa-color($colorStr, $modifier:base, $opacity:1) {
+  @if ($colorStr == white) {
+    @return rgba(map-get($rsa-colors, white), $opacity);
+  } @else if ($colorStr == black) {
+    @return rgba(map-get($rsa-colors, black), $opacity);
+  } @else if ($colorStr == brand-primary) {
+    @return rgba(map-get($rsa-colors, brand-primary), $opacity);
+  } @else {
+    @return rgba(map-get(map-get($rsa-colors, $colorStr), $modifier), $opacity);
+  }
+}

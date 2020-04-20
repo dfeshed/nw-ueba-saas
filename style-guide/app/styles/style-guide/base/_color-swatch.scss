@@ -1,0 +1,76 @@
+.color-swatch {
+  display: block;
+  background-color: background-color(neutral);
+  @include border(1px, solid, neutral, dark);
+  margin-bottom: rsa-whitespace();
+  background-color: background-color(primary, darker, nearly-transparent);
+  color: text-color(primary, lighter);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    @include rsa-font(header, small);
+  }
+
+  .preview {
+    height: 5rem;
+  }
+
+  section {
+    background-color: background-color(neutral, dark);
+    padding: rsa-whitespace();
+  }
+}
+
+/*
+@todo
+Can we write a loop that generates mixins for every color above?
+For example, suppose all the colors above are collated into a list.
+Then for each list color, generate a mixin who name is variable
+("<colorname>-bg"), and it sets the background-color to that variable.
+Similarly, a correpsonding mixin "<colorname>-fg") sets color: that variable.
+*/
+
+.rsa-bg-white     { background-color: background-color(neutral); }
+
+.rsa-bg-black     { background-color: background-color(neutral, dark); }
+
+.rsa-bg-gray-darkest   { background-color: background-color(primary, darkest); }
+.rsa-bg-gray-darker   { background-color: background-color(primary, darker); }
+.rsa-bg-gray-dark   { background-color: background-color(primary, dark); }
+.rsa-bg-gray      { background-color: background-color(primary); }
+.rsa-bg-gray-light   { background-color: background-color(primary, light); }
+.rsa-bg-gray-lighter   { background-color: background-color(primary, lighter); }
+.rsa-bg-gray-lightest   { background-color: background-color(primary, lightest); }
+
+.rsa-bg-blue-darker   { background-color: background-color(secondary, darker); }
+.rsa-bg-blue-dark   { background-color: background-color(secondary, dark); }
+.rsa-bg-blue      { background-color: background-color(secondary); }
+.rsa-bg-blue-light   { background-color: background-color(secondary, light); }
+.rsa-bg-blue-lighter   { background-color: background-color(secondary, lighter); }
+
+.rsa-bg-green-darker  { background-color: background-color(accentTwo, darker); }
+.rsa-bg-green-dark  { background-color: background-color(accentTwo, dark); }
+.rsa-bg-green     { background-color: background-color(accentTwo); }
+.rsa-bg-green-light  { background-color: background-color(accentTwo, light); }
+.rsa-bg-green-lighter  { background-color: background-color(accentTwo, lighter); }
+
+.rsa-bg-red-darker    { background-color: background-color(accentOne, darker); }
+.rsa-bg-red-dark    { background-color: background-color(accentOne, dark); }
+.rsa-bg-red       { background-color: background-color(accentOne); }
+.rsa-bg-red-light    { background-color: background-color(accentOne, light); }
+.rsa-bg-red-lighter    { background-color: background-color(accentOne, lighter); }
+
+.rsa-bg-orange-darker { background-color: background-color(accentThree, darker); }
+.rsa-bg-orange-dark { background-color: background-color(accentThree, dark); }
+.rsa-bg-orange    { background-color: background-color(accentThree); }
+.rsa-bg-orange-light { background-color: background-color(accentThree, light); }
+.rsa-bg-orange-lighter { background-color: background-color(accentThree, lighter); }
+
+.rsa-bg-amber-darker  { background-color: background-color(accentFour, darker); }
+.rsa-bg-amber-dark  { background-color: background-color(accentFour, dark); }
+.rsa-bg-amber     { background-color: background-color(accentFour); }
+.rsa-bg-amber-light  { background-color: background-color(accentFour, light); }
+.rsa-bg-amber-lighter  { background-color: background-color(accentFour, lighter); }

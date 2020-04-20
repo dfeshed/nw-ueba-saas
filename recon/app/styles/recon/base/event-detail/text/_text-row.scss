@@ -1,0 +1,40 @@
+.rsa-text-entry {
+  padding: 0 rsa-whitespace();
+  min-height: 2rem;
+  color: text-color(primary, lightest);
+
+  .text-container {
+    line-height: 1.75rem;
+    overflow-x: hidden;
+    padding: 0 rsa-whitespace() rsa-whitespace(less) rsa-whitespace(more);
+    @include rsa-word-wrap();
+    @include rsa-font-monospace();
+  }
+
+  .load-more-text-entries {
+    width: 100%;
+    text-align: center;
+    padding-bottom: rsa-whitespace();
+  }
+
+  .highlighted-meta {
+    background-color: background-color(secondary);
+    color: text-color(neutral);
+  }
+  .text-truncated {
+    @include rsa-font(light, small);
+    font-weight: 500;
+    margin: rsa-whitespace(less) 0;
+    padding: rsa-whitespace(less);
+    display: flex;
+    flex-direction: row;
+    background-color: background-color(accentFour, dark, nearly-transparent);
+    color: text-color(primary, lightest);
+    border: 1px solid border-color(accentFour);
+    border-radius: 0.3rem;
+    .info-warning {
+      color: text-color(accentFour);
+      padding-right: rsa-whitespace(less);
+    }
+  }
+}

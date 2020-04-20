@@ -1,0 +1,466 @@
+$data-table-col-resize-handle-width: 9px !default;  /* should be small but not too small to grab */
+$data-table-max-z-index: 1000 !default; /* should be larger than the total # of columns in table */
+
+.rsa-data-table {
+  @include rsa-col(justify,fill);
+  overflow: hidden; /* Hides header cells that spill outside viewport */
+
+  &.enable-grouping {
+    .rsa-data-table-body-row {
+      &.is-at-grouping-size,
+      &.is-last {
+        .rsa-data-table-body-cell {
+          border-bottom: 1px solid border-color(primary, dark);
+        }
+      }
+    }
+  }
+
+  &:not(.enable-grouping) {
+    .rsa-data-table-body-row {
+      &.is-last {
+        border-bottom: 1px solid border-color(primary, dark);
+      }
+    }
+  }
+
+  &-header {
+    @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
+    @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
+    background-color: background-color(primary, darker, somewhat-opaque);
+
+    &__column-selector {
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-left: 1px solid border-color(neutral, dark);
+      z-index: 2;
+      background-color: $applicationBodyBackgroundColor;
+
+      i {
+        @include border(1px, solid, primary, dark);
+        padding: rsa-whitespace(less);
+      }
+    }
+
+    .rsa-form-checkbox-label {
+      &::before {
+        position: absolute;
+        right: 11px;
+      }
+    }
+  }
+
+  &-body {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    position: relative;
+    overflow: auto;
+
+    .no-results {
+      color: text-color(primary);
+      font-style: italic;
+      padding: rsa-whitespace();
+    }
+  }
+
+  &-body-rows {
+    position: relative;
+  }
+
+  &-body-row,
+  &-header-row {
+    white-space: nowrap;
+    position: relative;
+  }
+
+  &-header-row {
+    @include rsa-font(header, small);
+    text-transform: uppercase;
+    height: 30px;
+    color: text-color(primary, lightest);
+
+    &-empty {
+      height: 1px;
+    }
+
+    .rsa-data-table-header-cell {
+      position: relative;
+      @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
+      @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
+
+      &:hover .sort {
+        display: inline-block;
+      }
+
+      .is-sorted {
+        background-color: background-color(primary, darkest, translucent);
+
+        &.asc .sort {
+          transform: rotate(180deg);
+        }
+
+        .sort {
+          color: text-color(secondary);
+          display: inline-block;
+        }
+      }
+
+      .sort {
+        display: none;
+        position: absolute;
+        padding: rsa-whitespace(least);
+        right: rsa-whitespace(least);
+        top: rsa-whitespace(less);
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  &-body-row {
+    position: absolute;
+    left: rsa-whitespace(less);
+    right: rsa-whitespace(less);
+    @include rsa-font(paragraph, small);
+    color: text-color(primary, lightest);
+
+    &:hover {
+      .rsa-data-table-body-cell:not([data-visibility=false]) {
+        background-color: background-color(primary, darker);
+      }
+    }
+    &.has-focus,
+    &.is-selected,
+    &.has-focus:hover,
+    &.is-selected:hover {
+      border-color: transparent;
+
+      .rsa-form-checkbox-label {
+        &::before {
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+
+    &:hover,
+    &.is-selected,
+    &.is-selected:hover {
+      margin: 0 calc(#{rsa-whitespace(less)} * -1);
+      padding: 0 rsa-whitespace(less);
+    }
+
+    &:hover {
+      .rsa-data-table-body-cell {
+        background-color: background-color(primary, darker);
+      }
+    }
+
+    &.has-focus,
+    &.is-selected,
+    &.is-scroll-match,
+    &.has-focus:hover,
+    &.is-selected:hover {
+      .rsa-data-table-body-cell {
+        background-color: background-color(secondary, dark);
+      }
+    }
+
+    &:first-child {
+      border-top: 1px solid transparent;
+    }
+
+    .search-match-text {
+      background: background-color(secondary);
+      color: text-color(primary, lightest);
+    }
+
+    &.is-scroll-match,
+    &.is-selected {
+      .search-match-text {
+        background: background-color(primary, darkest);
+        color: text-color(primary, lightest);
+      }
+    }
+
+    &.is-child {
+      .rsa-data-table-body-cell.column-index-1 {
+        .content {
+          padding-left: rsa-whitespace(more)!important;
+        }
+      }
+    }
+  }
+
+  &.fit-to-width {
+    .rsa-data-table {
+      &-body-row,
+      &-header-row {
+        @include rsa-row(justify,fill);
+        width: 100%;
+      }
+    }
+  }
+
+  &:not(.fit-to-width) {
+    .rsa-data-table {
+      &-body-row,
+      &-header-row {
+        @include rsa-row(left,fill);
+      }
+    }
+  }
+
+  &-body-cell {
+    padding: rsa-whitespace(less);
+    align-items: flex-start;
+    background-color: background-color(primary, darkest);
+    border-top: 1px solid border-color(primary, dark);
+
+    br {
+      display: none;
+    }
+
+    &.is-error {
+      background-color: background-color(accentOne, base, nearly-transparent);
+    }
+  }
+
+  &-body-cell,
+  &-header-cell {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @include rsa-vendor-prefix(flex-shrink, 0);
+
+    /* By default cell widths are fixed and don't expand. */
+    @include rsa-vendor-prefix(flex-grow,0);
+
+    /* Except for cells which are marked as auto-width; those can expand. */
+    &.auto-width {
+      @include rsa-vendor-prefix(flex-grow,1);
+    }
+
+    // sass-lint:disable no-universal-selectors
+    * {
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+  }
+
+  &-header-cell {
+    /* enables re-ordering columns via drag, with animation. @see ember-sortable */
+    transition: transform 0.125s;
+    position: relative; /* enables absolute positioning for the .resize-handle children */
+    line-height: 30px;
+    padding: 0 rsa-whitespace(less);
+    border-right: 1px solid border-color(primary, dark);
+    margin-right: -1px;
+
+    &:first-child {
+      padding-left: calc(#{rsa-whitespace()} - 1px);
+    }
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &.is-dragging {
+      background-color: background-color(primary);
+      transition-duration: 0s;
+      z-index: $data-table-max-z-index;
+      .js-move-handle {
+        cursor: grabbing;
+      }
+    }
+
+    &.is-dropping {
+      z-index: $data-table-max-z-index;
+    }
+
+    .js-move-handle {
+      cursor: grab;
+    }
+
+    .title {
+      white-space: nowrap;
+      z-index: 1;
+    }
+
+    &-resizer {
+      z-index: 2;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: $data-table-col-resize-handle-width;
+      cursor: ew-resize;
+
+      :hover,
+      .is-dragging {
+        background-color: background-color(secondary);
+      }
+
+      &.left {
+        left: 0;
+        transform: translate(-50%,0);
+      }
+      &.right {
+        right: 0;
+        transform: translate(50%,0);
+      }
+    }
+  }
+
+  /* Hide the left resize handle for the first column. */
+  &-header-cell:first-of-type {
+    .rsa-data-table-header-cell-resizer.left {
+      display: none;
+    }
+  }
+
+  &-header-cell .hideSort{
+    visibility: hidden;
+  }
+
+  &-header-cell:hover .hideSort{
+    visibility: visible;
+  }
+
+  /* Color choices. */
+  &.dark {
+    .rsa-data-table {
+      &-body-row,
+      &-header-row {
+        border-bottom: 1px solid border-color(neutral,dark);
+      }
+    }
+  }
+
+  &.monochrome {
+    .rsa-data-table {
+      &-body-row {
+        border-bottom: 1px solid border-color(neutral,dark);
+      }
+      &-header-row {
+        background-color: background-color(neutral, dark);
+      }
+    }
+  }
+
+  &-load-more {
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: rsa-whitespace();
+    margin: 0 rsa-whitespace(less);
+    @include border-top(1px, solid, primary, dark);
+    @include rsa-layer(controls);
+
+    p {
+      margin: rsa-whitespace(less) 0 rsa-whitespace();
+    }
+
+    &.complete {
+      display: none;
+    }
+  }
+
+  .is-at-grouping-size {
+    .group-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% - 1px);
+      bottom: -27px;
+      @include rsa-font(header);
+      display: flex;
+      align-items: center;
+      cursor: default;
+      @include rsa-layer(overlay);
+      @include border-top(1px, solid, primary, dark);
+
+      .group-label-copy {
+        font-weight: bold;
+        letter-spacing: .5px;
+        margin-top: 2px;
+        padding: 3px rsa-whitespace(most) 4px rsa-whitespace();
+        color: text-color(primary, lighter);
+        text-transform: uppercase;
+        background: linear-gradient(90deg, background-color(primary, dark) 0%, background-color(primary, dark) 75%, background-color(primary, darkest) 100%);
+        cursor: default;
+
+        i {
+          margin-right: rsa-whitespace(least);
+        }
+      }
+    }
+
+    &:hover {
+      .group-label {
+        left: rsa-whitespace(less);
+      }
+    }
+
+    &.is-selected {
+      .group-label {
+        left: rsa-whitespace(less);
+      }
+    }
+  }
+
+  .rsa-content-badge-score {
+    padding: 0;
+  }
+
+  .rsa-form-checkbox-label {
+    letter-spacing: 0;
+  
+    &::before {
+      position: absolute;
+      right: 12px;
+      margin-right: 0;
+    }
+  }
+  
+  .rsa-form-checkbox-wrapper {
+    position: absolute;
+    right: 4px;
+    padding: 4px;
+  }
+
+  button.expand {
+    padding-left: rsa-whitespace(less);
+  }
+}
+
+.rsa-data-table-column-selector-panel > section {
+  max-height: 25rem;
+  overflow: auto;
+  max-width: 15rem;
+  padding-top: rsa-whitespace(less);
+
+  .rsa-form-label {
+    margin: 0;
+  }
+
+  input {
+    margin-bottom: rsa-whitespace();
+  }
+}
+
+.rsa-data-table-search-panel > section {
+  .rsa-form-label {
+    line-height: .8rem;
+  }
+
+  .search-controls {
+    position: absolute;
+    top: 3rem;
+    right: 2rem;
+  }
+}

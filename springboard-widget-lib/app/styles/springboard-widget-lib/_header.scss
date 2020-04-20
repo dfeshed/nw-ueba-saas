@@ -1,0 +1,26 @@
+.springboard-widget__header {
+  flex-direction: row;
+  height: 62px;
+  font-family: Lato, serif;
+  padding-top: rsa-whitespace();
+  padding-left: rsa-whitespace();
+}
+.springboard-widget__header-button {
+  margin-left: auto;
+  i {
+    font-size: 16px;
+    line-height: 20px;
+    color: text-color(primary, light);
+    cursor: pointer;
+  }
+}
+
+.springboard-widget__header-arrow {
+  padding: 0 rsa-whitespace();
+}
+
+.springboard-widget__header-title {
+  font-size: 20px;
+  font-weight: 300;
+  color: text-color(primary, lightest);
+}

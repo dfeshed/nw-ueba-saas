@@ -1,0 +1,17 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+  {{#spec-category}}
+    {{#spec-member}}
+      {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
+      {{!-- BEGIN-SNIPPET sectionheader1
+      {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
+      END-SNIPPET --}}
+      {{code-snippet name="sectionheader1.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</fill>
+</hbox>

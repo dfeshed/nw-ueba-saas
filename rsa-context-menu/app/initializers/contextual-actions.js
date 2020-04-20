@@ -1,0 +1,1 @@
+export { default, initialize } from 'rsa-context-menu/initializers/contextual-actions';

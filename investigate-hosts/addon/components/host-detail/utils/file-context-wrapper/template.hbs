@@ -1,0 +1,123 @@
+{{#rsa-page-layout showRightZone=false onClose=(action "onPropertyPanelClose")  as |layout|}}
+  {{#layout.left as |leftPanel|}}
+    {{leftPanel.header iconName="filter-2" title=(t "investigateHosts.downloads.filters.title")}}
+    {{endpoint/filters-wrapper
+            filterState=filter
+            filterType="FILECONTEXT"
+            filterTypes=modifiedFilterTypes
+            savedFilter=savedFilter
+            savedFilters=hostDetailFilters
+            selectedFilterId=selectedFilterId
+            showSavedFilters=false
+            showSaveFilterButton=false
+            showSaveAsFilterButton=false
+            resetFilters=(action "resetFilters")
+            applyFilters=(action "applyFilters")
+            closeEntityDetails=(action layout.close "right")}}
+  {{/layout.left}}
+  {{#layout.center}}
+    <box class="process-list-box scroll-box">
+
+      {{#if subTabs}}
+        <hbox class="sub-tabs">
+          {{#if isShowOpenFilterButton}}
+            {{#rsa-form-button
+              class=(concat "close-filter " tabName)
+              defaultAction=(action "openFilterPanel" (action layout.open "left"))
+            }}
+              {{rsa-icon name="filter-2" size="small"}}
+              <span>{{t "investigateFiles.filter.filter"}}</span>
+            {{/rsa-form-button}}
+          {{/if}}
+          {{#host-detail/utils/host-title-bar tabs=subTabs as |tab|}}
+            {{#link-to (query-params subTabName=tab.name)}}{{t tab.label}}{{/link-to}}
+          {{/host-detail/utils/host-title-bar}}
+        </hbox>
+      {{/if}}
+
+
+      {{endpoint/file-actionbar
+        onSaveFileStatus = (action "setFileContextFileStatus" tabName selectedFileChecksums fileContextSelections)
+        getSavedFileStatus = (action "getFileContextFileStatus" tabName)
+        retrieveRemediationStatus=(action "retrieveRemediationStatus" tabName)
+        metaName="checksumSha256"
+        showDownloadProcessDump=showDownloadProcessDump
+        hostName=hostName
+        isRemediationAllowed=isRemediationAllowed
+        itemList=fileContextSelections
+        fileStatusData=fileStatus
+        restrictedFileList=restrictedFileList
+        serviceId=serviceId
+        timeRange=timeRange
+        isFloatingOrMemoryDll=isFloatingOrMemoryDll
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+        downloadProcessDump=(action "onDownloadProcessDump")
+        downloadFiles=(action "onDownloadFilesToServer")
+        saveLocalCopy=(action "onSaveLocalCopy")
+        analyzeFile=(action "onAnalyzeFile")
+        isDisplayTabLabel=isDisplayTabLabel
+        tabLabel=(t (concat "investigateHosts.tabs." tabName))
+        isAgentMigrated=isAgentMigrated
+        downloadDisabledTooltip=(t "investigateShared.endpoint.fileActions.tooltips.files.downloadToServer")
+        openFilterPanel=(action "openFilterPanel" (action layout.open "left"))
+        showOpenFilterButton=isShowOpenFilterButton
+        isSubtabs=subTabs
+        isFileTab=isFileTab
+        listAllFiles=listAllFiles
+        filesToggle=(action "onFileToggle")
+        isSnapshotsAvailable=isSnapshotsAvailable
+      }}
+      {{host-detail/utils/file-context-table
+        isPaginated=isPaginated
+        storeName=storeName
+        tabName=tabName
+        columnsConfig=columnsConfig
+        fileDownloadButtonStatus=fileDownloadButtonStatus
+        showDownloadProcessDump=showDownloadProcessDump
+        isAgentMigrated=isAgentMigrated
+        openPropertyPanel=(action layout.open "right")
+        closePropertyPanel=(action layout.close "right")
+        closeFilterPanel=(action layout.close "left")
+        downloadProcessDump=(action "onDownloadProcessDump")
+        downloadFiles=(action "onDownloadFilesToServer")
+        saveLocalCopy=(action "onSaveLocalCopy")
+        analyzeFile=(action "onAnalyzeFile")}}
+    </box>
+  {{/layout.center}}
+  {{#layout.right as |right|}}
+    {{#if propertyConfig}}
+      {{#right.header}}
+        {{endpoint/entity-details
+          title=fileProperty.fileName
+          tabs= hostDetailPropertyTabs
+          setTabAction=(action "setHostDetailPropertyTab" )
+          closeAction=(action layout.close "right")
+        }}
+      {{/right.header}}
+      {{#if (eq activeHostDetailPropertyTab "RISK")}}
+        {{endpoint/risk-properties
+          defaultAction=(action "getUpdatedRiskScoreContext")
+          riskState=risk
+          agentId=agentId
+          riskType="HOST"
+          isInsightsAgent=isInsightsAgent
+        }}
+      {{else if (eq activeHostDetailPropertyTab "FILE_DETAILS")}}
+        <box class="host-properties-box scroll-box">
+          {{endpoint/file-property-panel
+            config=propertyConfig
+            hostName=hostName
+            localeNameSpace="investigateHosts.property.file"
+            data=fileProperty}}
+        </box>
+      {{else if (eq activeHostDetailPropertyTab "HOSTS")}}
+        {{endpoint/host-name-list
+          items=hostNameList
+          itemCount=selectedFileHostCount
+          onItemClick=(action "onHostNameClick")}}
+      {{/if}}
+    {{/if}}
+  {{/layout.right}}
+{{/rsa-page-layout}}
+
+

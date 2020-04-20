@@ -1,0 +1,102 @@
+{{#if selectedEventIds}}
+  <div class="add-to-incident-alert-summary">
+    {{rsa-form-input label=(t "respond.alerts.alertSummary") value=alertSummary}}
+    <span class="rsa-form-label">
+      <label>{{t "respond.alerts.severity"}}</label>
+    </span>
+
+    <span class={{if isAlertSeverityInvalid "alert-severity-invalid"}}>
+      {{input
+        type="number"
+        min=1
+        max=100
+        name="alertSeverity"
+        value=alertSeverity
+        key-up=(action "alertSeverityChanged")}}
+
+      {{#if isAlertSeverityInvalid}}
+        <span class="severity-error">
+          {{t "respond.alerts.alertSeverityError"}}
+        </span>
+      {{/if}}
+    </span>
+  </div>
+{{/if}}
+
+<div>
+  <label class="rsa-form-input">
+    <span class="rsa-form-label">{{t "respond.alerts.incidentSearch.searchInputLabel"}}</span>
+    {{input type="text" placeholder=(t "respond.alerts.incidentSearch.searchInputPlaceholder")
+            key-up=(action "handleSearchKeyup")}}
+  </label>
+</div>
+<div class={{if selectedEventIds "from-investigate" "from-respond"}}>
+  {{#rsa-data-table
+    items=(readonly incidentSearchResults)
+    lazy=(readonly useLazyRendering)
+    onRowClick=(action "selectIncident")
+    fitToWidth=false
+    fitToHeight=true
+    columnsConfig=(readonly columns)}}
+
+    {{#rsa-data-table/header translateTitles=true as |column|}}
+      <div {{action "sortIncident" column isSortDescending}}
+        class="header-title {{if (not column.disableSort) "sortable"}}" title={{t column.title}}>
+        {{t column.title}}
+        {{#unless column.disableSort}}
+          <span class="sort-indicator {{if (eq column.field sortBy) "sorted"}}">
+            {{rsa-icon size="small" name=(if isSortDescending "arrow-down-7" "arrow-up-7")}}
+          </span>
+        {{/unless}}
+      </div>
+    {{/rsa-data-table/header}}
+
+    {{#if (eq incidentSearchStatus "streaming")}}
+      <centered>
+        {{rsa-loader size="larger"}}
+      </centered>
+    {{else if (eq incidentSearchStatus "error")}}
+      <centered class="search-error">{{t "respond.alerts.incidentSearch.error"}}</centered>
+    {{else}}
+
+      {{#rsa-data-table/body
+        noResultsMessage=(t (if hasSearchQuery "respond.alerts.incidentSearch.noResults" "respond.alerts.incidentSearch.noQuery")) as |item index column|}}
+        {{#rsa-data-table/body-cell item=item column=column}}
+          {{#if (and (eq column.id "select") (eq item selectedIncident))}}
+
+            {{rsa-icon name="check-2" class="selected"}}
+
+          {{else if (eq column.dataType "date")}}
+            {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
+
+          {{ else if (eq column.field "id")}}
+            <span><a href="/respond/incident/{{item.id}}" target="_blank" rel="noopener noreferrer">{{item.id}}</a></span>
+
+          {{else if (eq column.field "assignee")}}
+            {{or item.assignee.name item.assignee.id}}
+
+          {{else}}
+            <div>{{get item column.field}}</div>
+
+          {{/if}}
+        {{/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/if}}
+  {{/rsa-data-table}}
+</div>
+
+<footer>
+  <hbox class="modal-footer-buttons">
+    {{#rsa-form-button defaultAction=(action "handleCancel") class="cancel"}}
+      {{t "forms.cancel"}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button
+      class="apply"
+      isDisabled=isInvalid
+      style="primary"
+      defaultAction=(action "handleSubmit")
+    }}
+      {{t "forms.ok"}}
+    {{/rsa-form-button}}
+  </hbox>
+</footer>

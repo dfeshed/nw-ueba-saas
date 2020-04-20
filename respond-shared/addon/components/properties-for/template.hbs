@@ -1,0 +1,18 @@
+{{#if (eq itemType "array")}}
+  {{#each members as |member|}}
+    {{properties-for/key-value member=member item=member.value itemPath=itemPath}}
+  {{/each}}
+{{else}}
+  {{#each keys as |key|}}
+    {{properties-for/key-value member=key item=key.value itemPath=key.fullPath}}
+  {{else}}
+    <div class="key-wrapper" test-id="keyValueRow">
+      <div class="key">
+        <dt test-id="keyName"></dt>
+        {{#let (component "properties-for/determine-value/na-element" tagName="") as |block|}}
+          {{properties-for/key-value/item-description class="no-value" block=block}}
+        {{/let}}
+      </div>
+    </div>
+  {{/each}}
+{{/if}}

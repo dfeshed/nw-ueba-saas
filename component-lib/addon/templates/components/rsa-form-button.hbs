@@ -1,0 +1,24 @@
+{{#if withDropdown}}
+  <button class="rsa-form-button" disabled={{isDisabled}}>
+    {{yield}}
+    {{rsa-icon name="arrow-down-12"}}
+  </button>
+{{else}}
+  {{#if isSubmit}}
+    <button type={{type}} disabled={{isDisabled}} class="rsa-form-button">
+      {{#if hasBlock}}
+        {{yield}}
+      {{else}}
+        {{text}}
+      {{/if}}
+    </button>
+  {{else}}
+    <button disabled={{isDisabled}} class="rsa-form-button" {{action "defaultAction" on="click"}}>
+      {{#if hasBlock}}
+        {{yield}}
+      {{else}}
+        {{text}}
+      {{/if}}
+    </button>
+  {{/if}}
+{{/if}}

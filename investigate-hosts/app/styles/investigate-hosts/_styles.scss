@@ -1,0 +1,106 @@
+$xs: 5px;
+$md: 10px;
+$lg: 15px;
+
+.rsa-m-xs {
+  margin: $xs;
+}
+
+.rsa-m-md {
+  margin: $md;
+}
+
+.rsa-m-lg {
+  margin: $lg;
+}
+
+.rsa-m-l-xs {
+  margin: $xs;
+}
+
+.rsa-m-l-md {
+  margin-left: $md;
+}
+
+.rsa-m--l-lg {
+  margin-left: $lg;
+}
+
+.rsa-m-b-xs {
+  margin-bottom: $xs;
+}
+
+.rsa-m-b-md {
+  margin-bottom: $md;
+}
+
+.rsa-m-b-lg {
+  margin-bottom: $lg;
+}
+
+.rsa-m-t-xs {
+  margin-top: $xs;
+}
+
+.rsa-m-t-md {
+  margin-top: $md;
+}
+
+.rsa-m-t-lg {
+  margin-top: $lg;
+}
+
+.rsa-m-r-xs {
+  margin-right: $xs;
+}
+
+.rsa-m-r-md {
+  margin-right: $md;
+}
+
+.rsa-m-r-lg {
+  margin-right: $lg;
+}
+
+.rsa-p-xs {
+  padding: $xs;
+}
+
+.rsa-p-md {
+  padding: $md;
+}
+
+.rsa-p-lg {
+  padding: $lg;
+}
+
+.align-right {
+  float: right;
+  &::after {
+    clear: both;
+  }
+}
+
+.rsa-red-color {
+  color: red;
+}
+
+.rsa-green-color {
+  color: #adff2f;
+}
+
+.rsa-white-color {
+  color: #fff;
+}
+
+.rsa-cursor-pointer {
+  cursor: pointer;
+}
+
+.rsa-b-b-1 {
+  border-bottom: 1px solid #757575;
+}
+
+.rsa-color-info {
+  color: #03a9f4;
+}

@@ -1,0 +1,36 @@
+<vbox fit class="recon-event-header">
+  {{recon-event-titlebar enable=(action "enableHighlightEntities")}}
+  {{recon-event-actionbar}}
+
+  {{#if (and headerError (not isLoading))}}
+    {{rsa-panel-message message=headerErrorMessage}}
+  {{else}}
+    {{#if isHeaderOpen}}
+      <div class="header-data" test-id="headerData">
+        {{#if displayedHeaderItems}}
+          <grid responsive>
+            {{#each displayedHeaderItems as |item|}}
+              {{recon-event-header-item
+                name=item.name
+                value=item.value
+                type=item.type
+                key=item.key
+                queryInputs=queryInputs
+                language=language
+                metaFormatMap=metaFormatMap
+                hasTooltip=item.hasTooltip
+              }}
+            {{/each}}
+          </grid>
+          {{#rsa-content-tethered-panel
+            displayCloseButton=false
+            panelId="eventHeaderTooltip"
+            position="top" as |hide model|
+          }}
+            <p>{{model}}</p>
+          {{/rsa-content-tethered-panel}}
+        {{/if}}
+      </div>
+    {{/if}}
+  {{/if}}
+</vbox>

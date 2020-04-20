@@ -1,0 +1,21 @@
+// Tweaks for sticky header in text view
+.recon-event-detail-text {
+  .is-sticky {
+    padding: 0.8rem 0 0.8rem rsa-whitespace();
+    position: relative;
+
+    &.response {
+      text-align: right;
+    }
+  }
+
+  .header-percent-complete {
+    position: absolute;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+    text-align: center;
+    color: text-color(primary, lighter);
+  }
+}
+

@@ -1,0 +1,10 @@
+{{#if isEditing}}
+  {{events-table-container/header-container/column-groups/column-group-details/column-group-form
+    columnGroup=displayedColumnGroup
+    editColumnGroup=editColumnGroup
+  }}
+{{else}}
+  {{events-table-container/header-container/column-groups/column-group-details/column-group-view
+    columnGroup=displayedColumnGroup
+  }}
+{{/if}}

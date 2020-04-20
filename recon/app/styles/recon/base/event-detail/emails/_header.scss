@@ -1,0 +1,45 @@
+.recon-email-header {
+  background-color: background-color(primary, dark);
+
+  .recon-email-header-item {
+    color: text-color(neutral);
+    @include rsa-word-wrap();
+    line-height: 1.71rem;
+    padding: 0 0 0 rsa-whitespace();
+
+    .meta-name {
+      @include rsa-font(header, small);
+      color: text-color(primary, lighter);
+      padding-right: rsa-whitespace();
+    }
+
+    .meta-value {
+      @include rsa-font(body, small);
+    }
+  }
+
+  .header-label {
+    direction:rtl;
+    float: left;
+    flex: 0.3;
+
+    .rsa-form-checkbox {
+      margin-top: 5px;
+    }
+  }
+
+  .header-value {
+    padding-right: 0.5rem;
+  }
+
+  .additional-header {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-right: 1rem;
+    color: #0288D1;
+  }
+}

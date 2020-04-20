@@ -1,0 +1,117 @@
+$metadataLabelWidth: 8rem;
+
+.rsa-explorer-inspector {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+
+  a {
+    color: text-color(secondary, light);
+  }
+
+  &__header {
+    position: relative;
+    padding: rsa-whitespace();
+    text-align: center;
+    line-height: 1.35;
+
+    .id {
+      @include rsa-font(header,large);
+    }
+
+    .name {
+      @include rsa-font(light);
+      padding: 0 rsa-whitespace(more);
+    }
+
+    .back {
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      padding: rsa-whitespace();
+    }
+
+    .rsa-loader {
+      margin-top: rsa-whitespace();
+    }
+  }
+
+  &__toolbar {
+    min-height: 25px;
+    @include border-bottom(1px, solid, primary, light, nearly-transparent);
+
+    .rsa-tab {
+      margin: 0 rsa-whitespace();
+    }
+  }
+  &__body {
+    overflow: auto;
+    position: relative;
+    padding: 0 rsa-whitespace();
+    height: 100%;
+    .rsa-data-table,
+    .rsa-explorer-inspector-overview {
+      @include rsa-fill-abs();
+    }
+
+    .rsa-explorer-inspector-overview {
+      overflow: auto;
+    }
+
+    .rsa-form-textarea {
+      @include rsa-font(body, small);
+    }
+
+    .metadata {
+      display: block;
+      padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace(less) (rsa-whitespace(less) + $metadataLabelWidth);
+      color: text-color(primary, light);
+      position: relative;
+
+      > label {
+        @include rsa-font(body, small);
+        text-transform: inherit;
+        letter-spacing: inherit;
+        display: inline-block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        margin: rsa-whitespace() rsa-whitespace(less);
+      }
+
+      > span {
+        display: inline-block;
+      }
+
+      > .edit-button {
+
+        .ember-power-select-trigger {
+          .rsa-form-button {
+            padding: 0.5rem 1rem;
+            font-size: inherit;
+            min-width: inherit;
+          }
+        }
+      }
+    }
+
+    .metadata-separator {
+      width: 100%;
+      @include border-top(1px, solid, primary, base, somewhat-opaque);
+      margin: rsa-whitespace() 0;
+    }
+
+    .text {
+      @include rsa-font(body, small);
+      padding: rsa-whitespace(less);
+      line-height: 1.2rem;
+      > label {
+        display: block;
+        padding-bottom: rsa-whitespace(less);
+        color: text-color(primary, light);
+      }
+    }
+  }
+}

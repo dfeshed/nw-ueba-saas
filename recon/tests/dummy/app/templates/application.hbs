@@ -1,0 +1,51 @@
+<ul class="rsa-flash-messages">
+  {{#each flashMessages.queue as |flash|}}
+    {{#flash-message tagName="li" flash=flash as |component flash|}}
+      <hbox align="stretch">
+        <centered xs="2">
+          {{#if (eq flash.type "success")}}
+            {{rsa-icon name="check-circle-2" style=flash.iconStyle size=flash.iconSize}}
+          {{else if (eq flash.type "warning")}}
+            {{rsa-icon name="report-problem-circle" style=flash.iconStyle size=flash.iconSize}}
+          {{else if (eq flash.type "error")}}
+            {{rsa-icon name="delete-1" size=flash.iconSize}}
+          {{else}}
+            {{rsa-icon name="information-circle" style=flash.iconStyle size=flash.iconSize}}
+          {{/if}}
+        </centered>
+        <vbox xs="9" justify="center" class="message">
+          {{flash.message}}
+        </vbox>
+        <vbox xs="1" justify="start" align="center">
+          {{rsa-icon name="close"}}
+        </vbox>
+      </hbox>
+    {{/flash-message}}
+  {{/each}}
+</ul>
+<page>
+  {{recon-container
+    endpointId="123456"
+    eventId="7"
+    eventMeta=model.meta
+    total=total
+    index=index
+    linkToFileAction=linkToFileAction
+  }}
+  {{context-menu}}
+  <article class="recon-dummy__main {{if (and entityId entityType) "has-entity-info"}}">
+    <section fill class="recon-dummy__main-body">
+      {{outlet}}
+    </section>
+    <aside fit class="recon-dummy__main-aside">
+      {{#if (and entityId entityType)}}
+        {{context-panel entityId=entityId entityType=entityType closePanel=(action "closeContextPanel")}}
+      {{/if}}
+    </aside>
+  </article>
+  <div id="modalDestination"></div>
+  {{context-tooltip clickDataAction=(action "openContextPanel") addToListAction=(action "openContextAddToList")}}
+  {{#if (or entityToAddToList entityId)}}
+    {{context-panel/add-to-list entity=entityToAddToList}}
+  {{/if}}
+</page>

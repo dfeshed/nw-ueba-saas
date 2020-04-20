@@ -1,0 +1,29 @@
+.meta-highlight-scroller {
+  position: absolute;
+  right: 0;
+  @include rsa-font(body, small);
+  background-color: background-color(secondary);
+  @include rsa-layer(panels);
+  padding: 4px 18px;
+  text-align: center;
+  bottom: -23px;
+  color: text-color(primary, lightest);
+  line-height: 1.28rem;
+
+  .results {
+    padding-right: 15px;
+  }
+
+  a {
+    cursor: pointer;
+  }
+
+  a.disabled {
+    pointer-events: none;
+    color: text-color(primary, light);
+  }
+
+  a:first-of-type {
+    padding-right: rsa-whitespace(less);
+  }
+}

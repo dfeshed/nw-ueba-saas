@@ -1,0 +1,74 @@
+<div class="item-name">
+  <div class="name">{{t "investigate.events.columnGroups.groupName"}}</div>
+  {{rsa-form-input
+    class="value"
+    type="text"
+    maxLength=255
+    isError=isNameError
+    errorMessage=nameInvalidMessage
+    onKeyUp=(action "handleNameChange")
+    value=columnGroupName
+    placeholder=(t "investigate.events.columnGroups.groupNamePlaceholder")
+  }}
+</div>
+
+{{events-table-container/header-container/column-groups/column-group-details/column-filter
+  filterTextUpdated=(action "updateColumnFilterText")
+  filterText=columnFilterText
+  shouldSelectTextForRemoval=shouldSelectFilterText
+}}
+
+<div class="column-group-details scroll-box">
+  <section class="displayed-details">
+    <div class="name">{{t "investigate.events.columnGroups.displayedMetaKeys" COLUMN_THRESHOLD=COLUMN_THRESHOLD}}</div>
+    {{#if filteredDisplayedColumns}}
+      {{#sortable-group tagName="ul" model=filteredDisplayedColumns class="column-list value editable" onChange=(action "reorderColumns") as |group|}}
+        {{#each group.model as |column|}}
+          {{#group.item class="editable" model=column as |columnItem|}}
+            {{#rsa-form-button class="remove-meta-key" defaultAction=(action "removeMetaFromColumns" column)}}
+              {{rsa-icon name="subtract-circle-1"}}
+            {{/rsa-form-button}}
+            <span class="field">{{column.field}}</span>
+            <span title={{column.title}} class="title">{{column.title}}</span>
+            {{#columnItem.handle class="thumb"}}
+              {{rsa-icon name="navigation-drawer-1"}}
+            {{/columnItem.handle}}
+          {{/group.item}}
+        {{/each}}
+      {{/sortable-group}}
+    {{else}}
+      {{!-- why are there no columns? Because filtered or because there just aren"t any --}}
+      {{#if areDisplayedColumnsFiltered}}
+        <p class="columns-filtered-message">{{t "investigate.events.columnGroups.allDisplayedFilteredAway"}}</p>
+      {{else}}
+        <p class="no-columns-message">{{t "investigate.events.columnGroups.noMetaKeysChosen"}}</p>
+      {{/if}}
+    {{/if}}
+  </section>
+  <section class="add-details">
+    <div class="name">{{t "investigate.events.columnGroups.availableMetaKeys"}}</div>
+    {{#if filteredAvailableMeta}}
+      <ul class="column-list value editable">
+        {{#each filteredAvailableMeta  as |meta|}}
+          <li class="editable">
+            {{#rsa-form-button
+               class="add-meta-key"
+               isDisabled=selectedMetaDetails.atThreshold
+               title=selectedMetaDetails.message
+               defaultAction=(action "addMetaToColumns" meta)}}
+              {{rsa-icon name="add-circle-1"}}
+            {{/rsa-form-button}}
+            <span class="field">{{meta.field}}</span>
+            <span title={{meta.title}} class="title">{{meta.title}}</span>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      {{#if areAvailableMetaFiltered}}
+        <p class="message meta-filtered">{{t "investigate.events.columnGroups.allAvailableFilteredAway"}}</p>
+      {{else}}
+        <p class="message all-meta-added">{{t "investigate.events.columnGroups.allMetaKeysAdded"}}</p>
+      {{/if}}
+    {{/if}}
+  </section>
+</div>

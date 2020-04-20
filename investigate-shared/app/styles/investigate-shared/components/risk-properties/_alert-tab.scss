@@ -1,0 +1,84 @@
+.risk-properties {
+  height: 100%;
+  .alert-heading {
+    margin-top: rsa-whitespace(less);
+    margin-left: rsa-whitespace(less);
+    @include rsa-font(header, small, bold);
+    color: text-color(neutral);
+    font-size: 12px;
+  }
+  .alert-count {
+    margin: rsa-whitespace(less);
+    font-size: 30px;
+    color: text-color(neutral);
+    text-align: center;
+  }
+  .tab-text {
+    font-size: 11px;
+    display: inline-block;
+    vertical-align: top;
+    padding-bottom: .35rem;
+    padding-top: .35rem;
+    padding-left: .15rem;
+  }
+
+  .risk-color-indicator {
+      display: inline-block;
+      width: 6px;
+      height: 20px;
+      background-color: background-color(neutral);
+      border-radius: 4px;
+
+      &.red {
+        background-color: background-color(accentOne);
+      }
+
+      &.orange {
+        background-color: background-color(accentThree);
+      }
+
+      &.yellow {
+        background-color: background-color(accentFour);
+      }
+    }
+
+  .rsa-nav-tab.is-center-aligned-primary {
+    padding: rsa-whitespace() 0;
+    margin: 0 rsa-whitespace();
+    padding-bottom: rsa-whitespace(least);
+    .label {
+      text-transform: none;
+      letter-spacing: .1em;
+    }
+  }
+
+  .severity-tab-disable {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .alert-error-message {
+    height: 40vh;
+  }
+  .insight-message {
+    width: 410px;
+    height: 100%;
+  }
+  .alerts-loading {
+    display: inline;
+  }
+}
+
+.host-overview,
+.file-overview {
+  .events-list {
+    top: 15px
+  }
+
+  .events-info-message {
+    @include rsa-font(regular);
+    padding-top: rsa-whitespace(less);
+    padding-left: rsa-whitespace();
+  }
+}
+

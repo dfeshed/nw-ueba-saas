@@ -1,0 +1,42 @@
+<div class="user-overview-tab_title">
+  <div class="user-overview-tab_title_title">
+    {{t "investigateUsers.overview.topAlerts"}}
+  </div>
+  <div class="user-overview-tab_alerts_entityType">
+    {{#power-select
+      options=entityFilter
+      selected=topAlertsEntity
+      searchEnabled=false
+      onchange=(action "updateEntityType") as |option|}}
+      {{#if option}}
+        <span title={{option}}>{{t (concat "investigateUsers.entityTypes." option)}}</span>
+      {{/if}}
+    {{/power-select}}
+  </div>
+  <div class="user-overview-tab_alerts_entityTimeframe">
+    {{#power-select
+      options=timeframesForDateTimeFilter
+      selected=topAlertsTimeFrame
+      searchEnabled=false
+      onchange=(action "updateTimeRange") as |option|}}
+      {{#if option}}
+        <span>{{t (concat "dataFilters.timeframeOptions." option.name)}}</span>
+      {{/if}}
+    {{/power-select}}
+  </div>
+</div>
+{{#if hasTopAlerts}}
+  <div class="user-overview-tab_alerts_alerts_container">
+    {{#each topAlerts as |alert|}}
+      {{overview-tab/alerts/pill alert=alert}}
+    {{/each}}
+  </div>
+{{else}}
+  <center class="center">
+    {{#if topAlertsError}}
+      {{t (concat "investigateUsers.errorMessages." topAlertsError)}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t "investigate.loading")}}
+    {{/if}}
+  </center>
+{{/if}}  

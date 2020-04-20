@@ -1,0 +1,61 @@
+{{#rsa-data-table
+  columnsConfig=certificatesColumns
+  items=certificatesItems
+  usePreferredDisplayIndex=true
+  onColumnConfigChange=(action "onColumnConfigChange")
+  onRowClick=(action "toggleSelectedRow")
+  onReorderColumns=(action "onReorderColumns")}}
+  {{#certificates-container/certificates-data-table/header
+    translateTitles=true
+    onToggleColumn=(action "onColumnConfigChange" "display")
+    enableColumnSelector=isCertificateView as |column|}}
+    {{#if (not-eq column.dataType "radio")}}
+      <span class="js-move-handle">
+        {{t column.title}}
+      </span>
+    {{/if}}
+    {{#unless column.disableSort}}
+      {{rsa-icon
+        size="small"
+        click=(action "sort" column)
+        name=(if column.isDescending "arrow-down-7" "arrow-up-7")
+        class="sort"}}
+    {{/unless}}
+  {{/certificates-container/certificates-data-table/header}}
+
+  {{#if areCertificatesLoading}}
+    <centered>
+      {{rsa-loader size="larger"}}
+    </centered>
+  {{else}}
+    {{#rsa-data-table/body
+      rowComponentClass=(
+        component "certificates-container/certificates-data-table/table-row"
+        selections=selections
+        pivotToInvestigate=pivotToInvestigate
+        beforeContextMenuShow=(action "beforeContextMenuShow")
+        editCertificateStatus=(action "showStatusWindow")
+        closeCertificateModal=(action "closeModal")
+      )
+      noResultsMessage=(t "configure.endpoint.certificates.noResultsMessage") as |item index column|}}
+      {{#rsa-data-table/body-cell column=column}}
+        {{#if (eq column.dataType "radio")}}
+          <label class="rsa-form-radio-label certificate-radio
+          {{if (is-selected selections item) "checked"}}">
+            {{radio-button
+              radioClass="certificate-row-radio"}}
+          </label>
+        {{else}}
+          {{get item column.field}}
+        {{/if}}
+      {{/rsa-data-table/body-cell}}
+    {{/rsa-data-table/body}}
+    {{rsa-data-table/load-more
+      status=loadMoreStatus
+      title=(t "investigateFiles.showNextRecords" count=nextLoadCount label="certificates")
+      click=(action "getPageOfCertificates")}}
+  {{/if}}
+{{/rsa-data-table}}
+{{#if showModal}}
+  {{certificates-container/certificate-status-modal closeCertificateModal=(action "closeModal")}}
+{{/if}}

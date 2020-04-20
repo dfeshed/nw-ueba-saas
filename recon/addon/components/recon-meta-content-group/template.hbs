@@ -1,0 +1,29 @@
+{{#each groupedMetaItems as |metaItem|}}
+  {{#if (eq groupType "alphabet")}}
+    <div class="meta-content-section">
+      <hbox fit class="section-name">{{metaItem.group}}</hbox>
+      {{#each metaItem.children as |item|}}
+        {{recon-meta-content-item
+          isTextView=isTextView
+          item=item
+          metaToHighlight=metaToHighlight
+          eventHasPayload=eventHasPayload
+          queryInputs=queryInputs
+          language=language
+          metaFormatMap=metaFormatMap
+          metaHighlightCount=metaHighlightCount}}
+      {{/each}}
+    </div>
+    <div class="divider"/>
+  {{else}}
+    {{recon-meta-content-item
+      isTextView=isTextView
+      item=metaItem
+      metaToHighlight=metaToHighlight
+      eventHasPayload=eventHasPayload
+      queryInputs=queryInputs
+      language=language
+      metaFormatMap=metaFormatMap
+      metaHighlightCount=metaHighlightCount}}
+  {{/if}}
+{{/each}}

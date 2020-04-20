@@ -1,0 +1,63 @@
+{{#if dropdownList.length}}
+  <div class="dropdowns">
+    {{#each dropdownList as |dropdownObj|}}
+      {{#rsa-content-tethered-panel-trigger class="dropdown" panel=dropdownPanelId}}
+        {{#rsa-form-button withDropdown=true}}
+          {{dropdownObj.label}}
+        {{/rsa-form-button}}
+      {{/rsa-content-tethered-panel-trigger}}
+
+      {{#rsa-content-tethered-panel displayCloseButton=false position="top" panelId=dropdownPanelId}}
+        {{rsa-collapseable-actions/collapsed-list list=dropdownObj.nestedActions}}
+      {{/rsa-content-tethered-panel}}
+    {{/each}}
+  </div>
+{{/if}}
+
+{{#if buttonList.length}}
+  <div class="buttons">
+    {{#each buttonList as |buttonObj|}}
+      {{#if (eq buttonObj.component "button")}}
+        {{#rsa-form-button title=(unless buttonObj.isPrimary buttonObj.label) defaultAction=buttonObj.action isDisabled=isDisabled}}
+          {{rsa-icon name=buttonObj.icon}}
+          {{#if buttonObj.isPrimary}}
+            {{buttonObj.label}}
+          {{/if}}
+        {{/rsa-form-button}}
+      {{/if}}
+
+      {{#if (eq buttonObj.component "button-group")}}
+        <hbox class="rsa-button-group">
+          {{#rsa-form-button defaultAction=buttonObj.action title=(unless buttonObj.isPrimary buttonObj.label)}}
+            {{rsa-icon name=buttonObj.icon}}
+            {{#if buttonObj.isPrimary}}
+              {{buttonObj.label}}
+            {{/if}}
+          {{/rsa-form-button}}
+
+          {{#rsa-content-tethered-panel-trigger panel=buttonGroupPanelId}}
+            {{#rsa-form-button class="rsa-split-dropdown"}}
+              {{rsa-icon name="arrow-down-12"}}
+            {{/rsa-form-button}}
+          {{/rsa-content-tethered-panel-trigger}}
+          {{#rsa-content-tethered-panel displayCloseButton=false position="top" panelId=buttonGroupPanelId}}
+            {{rsa-collapseable-actions/collapsed-list list=buttonObj.nestedActions}}
+          {{/rsa-content-tethered-panel}}
+        </hbox>
+      {{/if}}
+    {{/each}}
+  </div>
+{{/if}}
+
+{{#if toggleList.length}}
+  <div class="toggles">
+    {{#each toggleList as |toggleObj|}}
+      {{#x-toggle showLabels=true onLabel=toggleObj.label value=(readonly toggleObj.value) onToggle=(action toggleObj.action) as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel value=(readonly (not toggleObj.value))}}
+      {{/x-toggle}}
+    {{/each}}
+  </div>
+{{/if}}
+
+<span class="second-tier-trigger"></span>

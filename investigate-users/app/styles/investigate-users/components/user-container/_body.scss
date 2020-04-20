@@ -1,0 +1,33 @@
+.user-body {
+  height: 100%;
+  background-color: background-color(primary, darkest);
+
+  &_aside {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    z-index: 2;
+    transition: width 500ms;
+    color: text-color(primary, lighter);
+    background-color: background-color(primary, darkest);
+
+    &_header {
+      display: flex;
+      justify-content: space-between;
+      padding: rsa-whitespace();
+      max-height: 40px;
+    }
+  }
+
+  &.has-entity-info {
+    .user-body {
+      &_aside {
+        width: 100%;
+        box-shadow: 0 0 rsa-whitespace() background-color(neutral, dark, nearly-opaque);
+      }
+    }
+  }
+}

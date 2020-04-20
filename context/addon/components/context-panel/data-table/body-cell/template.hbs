@@ -1,0 +1,29 @@
+{{#rsa-data-table/body-cell item=item index=index column=column}}
+  {{#if (eq column.dataType "riskscore")}}
+    <span title={{get item column.field}} class={{get (risk-score-to-badge-level (get item column.field) dataSourceGroup) "style"}}>
+      {{get item column.field}}
+    </span>
+  {{else if (eq column.dataType "riskRating")}}
+    <span class={{get column.class (get item  column.field)}}>
+      {{get item column.field}}
+    </span>
+  {{else if (eq column.dataType "datetime")}}
+    <span title={{dateTime}}>{{dateTime}}</span>
+  {{else if (eq column.dataType "link")}}
+    <div class="rsa-context-panel__context-data-table link">
+      <a href={{link}} target="_blank" rel="noopener noreferrer">
+        <span title={{get item column.field}}>{{get item column.field}}</span>
+      </a>
+    </div>
+  {{else if (eq column.field "alert.source")}}
+    {{t (concat "context.alerts.sourceName." (get item column.field)) }}
+  {{else if (and (eq column.field "assignee.name") (not (get item column.field)))}}
+    <span title={{get item "assignee.id"}}>
+      {{get item "assignee.id"}}
+    </span>
+  {{else}}
+    <span title={{get item column.field}}>
+      {{get item column.field}}
+    </span>
+  {{/if}}
+{{/rsa-data-table/body-cell}}

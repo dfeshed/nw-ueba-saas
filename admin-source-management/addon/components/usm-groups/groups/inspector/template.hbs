@@ -1,0 +1,90 @@
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>    
+  {{#if (or focusedGroup.assignedPolicies.edrPolicy focusedGroup.assignedPolicies.windowsLogPolicy focusedGroup.assignedPolicies.filePolicy)}}
+    <div class="heading">{{t "adminUsm.groups.list.assignedPolicies"}}</div>
+    {{#if focusedGroup.assignedPolicies.edrPolicy}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.groupWizard.edrSourceType"}}</hbox>
+        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.edrPolicy.name}}</hbox>
+      </hbox>
+    {{/if}}
+    {{#if focusedGroup.assignedPolicies.windowsLogPolicy}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.groupWizard.windowsLogSourceType"}}</hbox>
+        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.windowsLogPolicy.name}}</hbox>
+      </hbox>
+    {{/if}}
+    {{#if focusedGroup.assignedPolicies.filePolicy}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.groupWizard.fileLogSourceType"}}</hbox>
+        <hbox class="value col-xs-6 col-md-7">{{focusedGroup.assignedPolicies.filePolicy.name}}</hbox>
+      </hbox>
+    {{/if}}
+  {{/if}}
+  <div class="heading">{{t "adminUsm.groups.detail.sourceCount"}}</div>
+  <hbox fit class="col-xs-12">    
+    <hbox class="value">
+      <span class="count">{{srcCount}}</span>
+      {{#if srcCountTooltip}}
+        <span class="count-desc">({{srcCountTooltip}})</span>
+      {{/if}}
+    </hbox>
+  </hbox>
+  {{#if focusedGroup.groupCriteria.criteria}}
+    <div class="heading">{{t "adminUsm.groups.detail.definition"}}</div>
+    <hbox fit class="group-criteria">
+      {{t "adminUsm.groups.detail.andOrConditionsPart1"}}
+      <span class="conjunction">
+        {{t (concat "adminUsm.groupCriteria.andOrOperator." focusedGroup.groupCriteria.conjunction)}}
+      </span>
+      {{t "adminUsm.groups.detail.andOrConditionsPart2"}}
+    </hbox>
+    {{#each focusedGroupCriteria as |crit|}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-5">
+          {{t (concat "adminUsm.groupCriteria.attribute." crit.[0])}} {{t (concat "adminUsm.groupCriteria.operator." crit.[1])}}
+        </hbox>
+        <hbox class="value col-xs-6 col-md-7">{{crit.[2]}}</hbox>
+      </hbox>
+    {{/each}}
+  {{/if}}
+  <div class="heading">{{t "adminUsm.policies.detail.history"}}</div>
+  <hbox fit class="createdOn col-xs-12">
+    <hbox class="title col-xs-6 col-md-5">
+      {{t "adminUsm.policies.detail.createdOn"}}
+    </hbox>
+    <hbox class="value col-xs-6 col-md-7">      
+      {{moment-format focusedGroup.createdOn "YYYY-MM-DD hh:mm"}}
+    </hbox>
+  </hbox>
+  {{#if focusedGroup.createdBy}}
+    <hbox fit class="createdBy col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">
+        {{t "adminUsm.policies.detail.createdBy"}}
+      </hbox>          
+      <hbox class="value col-xs-6 col-md-7">{{focusedGroup.createdBy}}</hbox>
+    </hbox>
+  {{/if}}
+  {{#if (not-eq focusedGroup.lastModifiedOn 0)}}
+    <hbox fit class="lastModifiedOn col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.lastUpdatedOn"}}</hbox>          
+      <hbox class="value col-xs-6 col-md-7">
+        {{moment-format focusedGroup.lastModifiedOn "YYYY-MM-DD hh:mm"}}
+      </hbox>
+    </hbox>
+  {{/if}}
+  {{#if focusedGroup.lastModifiedBy}}
+    <hbox fit class="lastModifiedBy col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.lastUpdatedBy"}}</hbox>          
+      <hbox class="value col-xs-6 col-md-7">{{focusedGroup.lastModifiedBy}}</hbox>
+    </hbox>
+  {{/if}}
+  {{#if (not-eq focusedGroup.lastPublishedOn 0)}}
+    <hbox fit class="lastPublishedOn col-xs-12">
+      <hbox class="title col-xs-6 col-md-5">{{t "adminUsm.policies.detail.lastPublishedOn"}}</hbox>          
+      <hbox class="value col-xs-6 col-md-7">
+        {{moment-format focusedGroup.lastPublishedOn "YYYY-MM-DD hh:mm"}}
+      </hbox>
+    </hbox>
+  {{/if}}
+</vbox>
+<br>

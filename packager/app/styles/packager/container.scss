@@ -1,0 +1,45 @@
+$card-radius: 10px;
+$content-card-color: #bdbdbd;
+.packager-container.input-content {
+  width: 100vw;
+  max-height: 160vh;
+  padding: rsa-whitespace(less) rsa-whitespace();
+
+  .rsa-page-layout {
+    overflow: initial;
+    .right-zone {
+      border: none;
+    }
+  }
+  &__body {
+    height: 100%;
+  }
+  .export-files-iframe {
+    height: 0;
+    display: none;
+  }
+  overflow-x: auto;
+  overflow-y: auto;
+  .input-content__header {
+    color: text-color(neutral);
+    @include border-bottom(1px, solid, primary, lightest, nearly-transparent);
+    @include rsa-font(header, larger);
+    padding: rsa-whitespace(more) rsa-whitespace() rsa-whitespace() 0;
+    margin-left: rsa-whitespace();
+    padding-bottom: 1.5rem;
+  }
+  .reset-button {
+    padding: 0px;
+    width: auto;
+    border-top: 0px;
+  }
+}
+// Temp solution to integrate packager into SA
+.iframed-into-classic {
+  .rsa-application-header, .rsa-context-tree-table {
+    display: none;
+  }
+  .rsa-application-content {
+    height: 100vh;
+  }
+}

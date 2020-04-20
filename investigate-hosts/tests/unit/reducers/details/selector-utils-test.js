@@ -1,0 +1,123 @@
+import { module, test } from 'qunit';
+import { getProperties, getValues, secondsToMinutesConverter } from 'investigate-hosts/reducers/details/selector-utils';
+
+module('Unit | Utils | selector-utils');
+
+const dataSet = {
+  1: {
+    fileName: 'abc',
+    id: 1,
+    checksumSha256: '1'
+  },
+  10: {
+    fileName: 'xyz',
+    id: 10,
+    checksumSha256: '10'
+  },
+  3: {
+    fileName: 'xyz1',
+    id: 3,
+    checksumSha256: '3'
+  },
+  5: {
+    fileName: 'xy',
+    id: 5,
+    checksumSha256: '5'
+  }
+};
+
+test('should extracts the values for selected tab and sorts the data', function(assert) {
+  const tabName = 'AUTORUNS';
+  let sortConfig = {
+    autoruns: {
+      field: 'id',
+      isDescending: false
+    }
+  };
+  let result = getValues(undefined, tabName, dataSet, sortConfig);
+  assert.equal(result[0].id, 1, 'isDescending false');
+  sortConfig = {
+    autoruns: {
+      field: 'id',
+      isDescending: true
+    }
+  };
+  result = getValues(undefined, tabName, dataSet, sortConfig);
+  assert.equal(result[0].id, 10, 'isDescending true');
+});
+
+test('should filter the data for selected tab', function(assert) {
+  const selectedTab = {
+    tabName: 'AUTORUNS',
+    checksum: '10'
+  };
+  const sortConfig = {
+    autoruns: {
+      field: 'id',
+      isDescending: false
+    }
+  };
+  const result = getValues(selectedTab, 'AUTORUNS', dataSet, sortConfig);
+  assert.equal(result[0].id, 10, 'filter the data based on checksum');
+
+});
+test('should return the property', function(assert) {
+  const result = getProperties(5, null, dataSet);
+  assert.equal(result.id, 5);
+  const sortConfig = {
+    autoruns: {
+      field: 'id',
+      isDescending: false
+    }
+  };
+  const list = getValues(undefined, 'AUTORUNS', dataSet, sortConfig);
+  const newResult = getProperties(null, list, null);
+  assert.equal(newResult.id, 1);
+});
+
+test('should return the property based on dataSet type', function(assert) {
+  const dataSetArray = [
+    {
+      fileName: 'abc',
+      id: 1,
+      checksumSha256: '1'
+    },
+    {
+      fileName: 'xyz',
+      id: 10,
+      checksumSha256: '10'
+    },
+    {
+      fileName: 'xyz1',
+      id: 3,
+      checksumSha256: '3'
+    },
+    {
+      fileName: 'xy',
+      id: 5,
+      checksumSha256: '5'
+    }
+  ];
+  const result = getProperties(5, dataSet, dataSetArray);
+  assert.equal(result.id, 5);
+  const sortConfig = {
+    autoruns: {
+      field: 'id',
+      isDescending: false
+    }
+  };
+  const list = getValues(undefined, 'AUTORUNS', dataSet, sortConfig);
+  const newResult = getProperties(null, list, dataSetArray);
+  assert.equal(newResult.id, 1);
+});
+
+test('secondsToMinutesConverter', function(assert) {
+  const result1 = secondsToMinutesConverter(10);
+  assert.equal(result1, '10 seconds');
+  const result2 = secondsToMinutesConverter(125);
+  assert.equal(result2, '2 minutes 5 seconds');
+  const result3 = secondsToMinutesConverter(180);
+  assert.equal(result3, '3 minutes');
+  const result4 = secondsToMinutesConverter();
+  assert.equal(result4, '0 seconds');
+});

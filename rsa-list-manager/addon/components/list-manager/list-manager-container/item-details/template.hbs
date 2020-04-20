@@ -1,0 +1,53 @@
+<div class="details-view-body">
+  <div class="details-header">
+    <div class="title">
+      {{heading}}
+    </div>
+
+    <div class="details-header-icons">
+      {{!-- delete icon --}}
+      {{yield (hash
+          item=originalItem
+          delete=(component "list-manager/list-manager-container/item-details/delete-icon"
+            stateLocation=stateLocation
+          )
+        )
+      }}
+
+      {{!-- help icon --}}
+      {{#if hasContextualHelp}}
+        {{#rsa-form-button title="Help" class="list-help-icon" defaultAction=(action "goToHelp")}}
+          {{rsa-icon name="help-circle"}}
+        {{/rsa-form-button}}
+      {{/if}}
+    </div>
+
+  </div>
+  <div class="details-body">
+    {{yield (hash
+        item=originalItem
+        itemEdited=(action "itemEdited")
+      )
+    }}
+  </div>
+
+  {{!-- Overlay with spinner during delete to prevent interactions --}}
+  {{#if isItemsLoading}}
+    <div class="item-details-loading-overlay">
+      <centered>
+        {{rsa-loader size="largest"}}
+      </centered>
+    </div>
+  {{/if}}
+</div>
+
+{{list-manager/list-manager-container/item-details/details-footer
+  stateLocation=stateLocation
+  originalItem=originalItem
+  editedItem=editedItem
+  itemTransform=itemTransform
+  itemSelection=itemSelection
+  isValidItem=isValidItem
+  itemReset=(action "resetItem")
+  itemUpdate=itemUpdate
+}}

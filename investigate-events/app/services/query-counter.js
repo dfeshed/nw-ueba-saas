@@ -1,0 +1,1 @@
+export { default } from 'investigate-events/services/query-counter';

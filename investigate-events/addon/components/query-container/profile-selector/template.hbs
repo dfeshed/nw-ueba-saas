@@ -1,0 +1,42 @@
+{{#if renderProfiles}}
+  {{#list-manager
+    stateLocation=stateLocation
+    listName=listName
+    modelName=modelName
+    shouldSelectedItemPersist=false
+    list=profiles
+    isDisabled=isDisabled
+    itemSelection=(action "selectProfile")
+    helpId=helpId
+    as |manager|
+  }}
+
+    {{manager.filter}}
+
+    {{#manager.itemList as |list|}}
+      {{#list.item as |item|}}
+        {{query-container/profile-selector/profile-item profile=item}}
+      {{/list.item}}
+    {{/manager.itemList}}
+
+    {{#manager.details
+      itemTransform=(action "enrichProfile")
+      isValidItem=(action "validateEditedProfile")
+      as |details|}}
+      {{#if details.delete}}
+        {{details.delete}}
+      {{else}}
+        {{query-container/profile-selector/profile-details
+          profile=details.item
+          editProfile=details.itemEdited
+          profiles=profiles
+          columnGroups=columnGroups
+          selectedColumnGroupId=selectedColumnGroupId
+          metaGroups=metaGroups
+          pillsData=pillsData
+        }}
+      {{/if}}
+    {{/manager.details}}
+
+  {{/list-manager}}
+{{/if}}

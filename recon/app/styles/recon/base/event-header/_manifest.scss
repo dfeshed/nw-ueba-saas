@@ -1,0 +1,167 @@
+@import "./event-dropdowns";
+
+.recon-event-header {
+  background-color: background-color(primary, darkest);
+
+  .divider {
+    @include border-left(1px, solid, neutral);
+    height: 1.5rem;
+    margin: 5px;
+  }
+
+  .header-data {
+    @include border-top(1px, solid, primary, dark);
+    background-color: background-color(primary, darkest, transparent);
+    padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
+    .header-item {
+      padding: rsa-whitespace(less);
+      @include rsa-word-wrap();
+
+      .name {
+        @include rsa-font(header, small);
+        color: text-color(primary, lighter);
+        padding-bottom: rsa-whitespace(least);
+      }
+
+      .value {
+        @include rsa-font(body);
+        color: text-color(primary, lightest);
+      }
+      .has-context-data {
+        text-decoration: underline;
+        text-decoration-style: dashed;
+      }
+    }
+
+    .rsa-content-tethered-panel {
+      z-index: 2000
+    }
+  }
+
+  .recon-event-titlebar,
+  .recon-event-actionbar {
+    @include rsa-layer(controls);
+  }
+
+  .recon-event-titlebar {
+    padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+
+    .heading {
+      .heading-select {
+        margin-left: .8rem;
+      }
+
+      .ember-power-select-trigger {
+        @include rsa-font(header, large);
+        border: none;
+        font-weight: lighter;
+        width: 5rem;
+        .ember-power-select-status-icon {
+          width: 1rem;
+          &::after {
+            font-size: 1rem;
+            line-height: 1rem;
+          }
+        }
+        .rsa-icon {
+          font-size: 1rem;
+          top: 10px;
+        }
+      }
+
+      .rsa-nav-tab.is-left-aligned-primary,
+      .tview-heading {
+        margin: 0 .8rem 0;
+        padding: .5rem .1rem .36rem .1rem;
+        border-bottom-width: 3px;
+      }
+
+      .tview-heading {
+        border-bottom: 3px solid transparent;
+        border-color: border-color(secondary);
+        cursor:default;
+        .tview-label {
+          text-transform: capitalize;
+          color:text-color(primary, lightest);
+          font-weight: 100;
+          font-size: 1.28rem;
+          letter-spacing: 0.05rem;
+        }
+      }
+
+      .label {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .event-title {
+        @include rsa-font(header, large);
+        color: text-color(primary, lightest);
+        text-transform: capitalize;
+        padding: .5rem 0 .36rem;
+        border-bottom-width: 3px;
+        &.seperator {
+          padding: 0;
+          margin: 0.5rem .3rem 0.5rem 1.1rem;
+          @include border(0, solid, primary);
+          border-right-width: .1rem;
+        }
+      }
+    }
+
+    .header-toggle,
+    .header-button {
+      color: text-color(primary, light);
+      cursor: pointer;
+      margin: 0 rsa-whitespace(least);
+      padding: rsa-whitespace(less) rsa-whitespace(least);
+      &:hover {
+        color: text-color(primary, lightest);
+      }
+      &.active:not(.disabled) {
+        color: text-color(primary, lightest);
+      }
+      &.disabled {
+        color: text-color(primary, dark);
+        cursor: default;
+      }
+    }
+    .header-toggle {
+      &.active:not(.disabled) {
+        @include border-bottom(3px, solid, secondary);
+      }
+    }
+  }
+}
+
+.recon-event-titlebar {
+  .heading-select {
+    display: block;
+  }
+  .heading-tabs {
+    display: none;
+  }
+}
+
+.recon-is-full,
+.recon-is-expanded,
+.recon-is-standalone {
+  @media (min-width: 1000px) {
+    .heading-select {
+      display: none;
+    }
+    .heading-tabs {
+      display: inherit;
+    }
+  }
+
+  @media (max-width: 1000px) {
+    .heading-select {
+      display: block;
+    }
+    .heading-tabs {
+      display: none;
+    }
+  }
+}

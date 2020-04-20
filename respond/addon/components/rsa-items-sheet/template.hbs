@@ -1,0 +1,71 @@
+{{#if totalCount}}
+
+  {{#liquid-bind shouldShowDetails
+    use=(if shouldShowDetails "toLeft" "toRight")
+    as |currentShouldShowDetails|
+  }}
+    {{#if currentShouldShowDetails}}
+      <vbox class="rsa-items-sheet__details-view">
+        {{#with resolvedSelectedItem as |item|}}
+          <box fit class="rsa-items-sheet__details-view-header">
+            {{yield (hash
+              detailsHeader=(component detailsHeaderComponentClass model=item)
+            )}}
+            {{#if isNavEnabled}}
+              <nav>
+                {{#rsa-form-button
+                  defaultAction=(action "backToTable")}}
+                  {{t "respond.eventDetails.backToTable"}}
+                {{/rsa-form-button}}
+                {{#rsa-form-button
+                  isIconOnly=true
+                  isDisabled=(not isPreviousEnabled)
+                  defaultAction=(action "previous")
+                }}
+                  {{rsa-icon name="arrow-left-12" size="small"}}
+                {{/rsa-form-button}}
+                <span>{{selectedOrdinal}} of {{items.length}}</span>
+                {{#rsa-form-button
+                  isIconOnly=true
+                  isDisabled=(not isNextEnabled)
+                  defaultAction=(action "next")
+                }}
+                  {{rsa-icon name="arrow-right-12" size="small"}}
+                {{/rsa-form-button}}
+              </nav>
+            {{/if}}
+          </box>
+          <box fill class="rsa-items-sheet__details-view-body">
+            <div class="rsa-items-sheet__scroller">
+              {{yield (hash
+                detailsBody=(component detailsBodyComponentClass model=item)
+              )}}
+            </div>
+          </box>
+        {{/with}}
+      </vbox>
+    {{else}}
+      <vbox class="rsa-items-sheet__table-view">
+        <box fit class="rsa-items-sheet__table-view-header">
+          <h2>
+            {{yield (hash
+              tableHeader=(component tableHeaderComponentClass items=items)
+            )}}
+          </h2>
+        </box>
+        <box fill class="rsa-items-sheet__table-view-body">
+          <div class="rsa-items-sheet__scroller">
+            {{yield (hash
+              tableBody=(component tableBodyComponentClass
+              class="rsa-items-sheet__table"
+              items=items
+              selectedIndex=selectedIndex
+              onRowClick=(action "onTableRowClick")
+            ))}}
+          </div>
+        </box>
+      </vbox>
+    {{/if}}
+  {{/liquid-bind}}
+
+{{/if}}

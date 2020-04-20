@@ -1,0 +1,131 @@
+$base-color: white;
+
+.rsa-packet {
+
+  @include border-top(1px, solid, secondary);
+  min-width: 56rem;
+
+  &:first-of-type {
+    border-top: none;
+  }
+
+  &.is-continuation {
+    border-top: none;
+    .recon-request-response-header {
+      display: none;
+    }
+    .packet-details {
+      margin-top: 0;
+    }
+  }
+
+  &__body {
+    @include rsa-row(justify,fill);
+    background-color: background-color(primary, dark, transparent);
+    color: text-color(primary, lightest);
+    font-size: 0.85rem;
+    padding-bottom: 1.25rem;
+    min-width: 43.71rem;
+  }
+
+  &__offsets {
+    width: $packet-offsets-width;
+    @include rsa-vendor-prefix(flex-basis, $packet-offsets-width);
+    @include rsa-vendor-prefix(flex-shrink, 0);
+
+    &.hex {
+      td {
+        padding-left: 2.75rem;
+      }
+    }
+
+    &.ascii {
+      margin-left: rsa-whitespace();
+      td {
+        text-align: left;
+      }
+    }
+  }
+
+  &__hex {
+    @include rsa-vendor-prefix(flex-basis, 66%);
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-vendor-prefix(flex-grow, 1);
+    margin-right: rsa-whitespace();
+  }
+
+  &__ascii {
+    @include rsa-vendor-prefix(flex-basis, 33%);
+    @include rsa-vendor-prefix(flex-shrink, 1);
+  }
+
+  &.has-styled-bytes {
+    .byte-cell {
+      .shade-1 {
+        color: text-color(primary, lightest, shadeOne);
+      }
+      .shade-2 {
+        color: text-color(primary, lightest, shadeTwo);
+      }
+      .shade-3 {
+        color: text-color(primary, lightest, shadeThree);
+      }
+      .shade-4 {
+        color: text-color(primary, lightest, shadeFour);
+      }
+      .shade-5 {
+        color: text-color(primary, lightest, shadeFive);
+      }
+      .shade-6 {
+        color: text-color(primary, lightest, shadeSix);
+      }
+      .shade-7 {
+        color: text-color(primary, lightest, shadeSeven);
+      }
+      .shade-8 {
+        color: text-color(primary, lightest, shadeEight);
+      }
+      .shade-9 {
+        color: text-color(primary, lightest, shadeNine);
+      }
+      .shade-10 {
+        color: text-color(primary, lightest, shadeTen);
+      }
+      .shade-11 {
+        color: text-color(primary, lightest, shadeEleven);
+      }
+      .shade-12 {
+        color: text-color(primary, lightest, shadeTwelve);
+      }
+      .shade-13 {
+        color: text-color(primary, lightest, shadeThirteen);
+      }
+      .shade-14 {
+        color: text-color(primary, lightest, shadeFourteen);
+      }
+      .shade-15 {
+        color: text-color(primary, lightest, shadeFifteen);
+      }
+      .shade-16 {
+        color: text-color(primary, lightest, shadeSixteen);
+      }
+    }
+  }
+
+  &.has-signatures-highlighted {
+    .byte-cell {
+      &.is-known {
+        background-color: background-color(custom, byteCell);
+        color: text-color(primary, lightest);
+        &[data-is-hover="true"] {
+          &.packet-field-value {
+            span {
+              background-color: background-color(accentThree, darkest);
+              color: text-color(primary, lightest);
+            }
+          }
+        }
+      }
+    }
+  }
+}

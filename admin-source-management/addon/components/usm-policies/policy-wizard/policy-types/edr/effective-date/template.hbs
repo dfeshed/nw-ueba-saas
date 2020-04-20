@@ -1,0 +1,9 @@
+<hbox class="date-time">
+  {{rsa-form-datetime
+    enableTime=false
+    value=(readonly startDate)
+    isError=startDateValidator.showError
+    errorMessage=(t startDateValidator.errorMessage)
+    onChange=(action "onDateChange")
+  }}
+</hbox>

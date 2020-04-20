@@ -1,0 +1,39 @@
+/* Layers */
+
+/*
+ * @file Global list of named layers.
+ * These named layers can be used across RSA themes for consistency.
+ */
+
+$rsa-layers: (
+  below: -1,
+  base: 100,
+  panels: 200,
+  controls: 300,
+  overlay: 400,
+  modals: 500,
+  tooltips: 600,
+  above: 1000
+);
+
+/* Public Mixins */
+
+/* rsa-layer */
+/* 
+ * Layers: [ below,
+ *          base,
+ *          panels,
+ *          controls,
+ *          overlay,
+ *          modals,
+ *          tooltips,
+ *          above ]
+ * 
+ * Examples: @include rsa-layer(above);
+ *           @include rsa-layer(panels);
+ */
+
+@mixin rsa-layer($layer:base) {
+  z-index: map-get($rsa-layers, $layer);
+}
+

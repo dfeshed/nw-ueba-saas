@@ -1,0 +1,53 @@
+<box class={{datatableWidth}}>
+  {{endpoint/file-actionbar
+    onSaveFileStatus = detailDisplayInputs.saveFileStatus
+    getSavedFileStatus = detailDisplayInputs.getSavedFileStatus
+    resetRiskScore = (action "resetRiskScoreAction")
+    serviceList=serviceList
+    metaName="checksumSha256"
+    itemList=detailDisplayInputs.selectedFiles
+    fileStatusData=detailDisplayInputs.fileStatusData
+    selectedFileCount=detailDisplayInputs.selectedFileCount
+    downloadDisabledTooltip=(t "investigateShared.endpoint.fileActions.tooltips.files.downloadToServer")}}
+
+  {{host-detail/utils/datatable
+    status=detailDisplayInputs.status
+    items=detailDisplayInputs.tableItems
+    type=detailDisplayInputs.type
+    columnsConfig=detailDisplayInputs.columnsConfig
+    selectRowAction=detailDisplayInputs.selectRowAction
+    isPaginated=detailDisplayInputs.isPaginated
+    totalItems=detailDisplayInputs.totalItems
+    loadMoreStatus=detailDisplayInputs.loadMoreStatus
+    customSort=detailDisplayInputs.customSort
+    selectedIndex=selectedIndex
+    getPagedItems=detailDisplayInputs.getPagedItems
+    isAllSelected=detailDisplayInputs.isAllSelected
+    toggleAllItemSelectionAction=detailDisplayInputs.toggleAllItemSelectionAction
+    toggleOneItemSelectionAction=detailDisplayInputs.toggleOneItemSelectionAction
+    onSaveFileStatus=detailDisplayInputs.saveFileStatus
+    serviceList=detailDisplayInputs.serviceList
+    showFileStatusModal=showFileStatusModal
+    selectedItemList=detailDisplayInputs.selectedFiles
+    onCloseEditFileStatus=(action "onCloseEditFileStatus")
+    statusData=detailsDispllayInputs.fileStatusData
+    fileStatusData=detailDisplayInputs.fileStatusData
+    rowComponentClass=(
+      component "endpoint/file-custom-row"
+      serviceList=detailDisplayInputs.serviceList
+      selections=detailDisplayInputs.selectedFiles
+      beforeContextMenuShow=(action "beforeContextMenuShow")
+      editFileStatus=(action "showEditFileStatus")
+      showPivotToInvestigate=detailDisplayInputs.showPivotToInvestigate
+      onSaveFileStatus = detailDisplayInputs.saveFileStatus
+    )}}
+</box>
+{{#if detailDisplayInputs.propertyConfig}}
+  <box xs="3">
+    {{endpoint/file-property-panel
+      title=detailDisplayInputs.propertyPanelTitle
+      localeNameSpace=detailDisplayInputs.localeNameSpace
+      config=detailDisplayInputs.propertyConfig
+      data=detailDisplayInputs.propertyData}}
+  </box>
+{{/if}}

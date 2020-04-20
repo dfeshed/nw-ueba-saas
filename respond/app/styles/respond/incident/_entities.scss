@@ -1,0 +1,219 @@
+$entityUserColor: $magenta;
+$entityHostColor: $violet;
+$entityIPColor: $green;
+$entityDomainColor: $yellow;
+$entityMACColor: $respondBackgroundColor;
+$entityFileNameColor: $cyan;
+$entityFileHashColor: $cyan;
+$fadeOutTransition: opacity 0.3s, visibility 0.3s;
+$fadeInTransition: opacity 0.3s, visibility 0s;
+
+.rsa-incident-entities {
+
+  &.ip-hidden {
+    .rsa-force-layout-node.ip, .rsa-force-layout-link.source-ip, .rsa-force-layout-link.target-ip {
+      opacity: 0;
+      visibility: hidden;
+      transition: $fadeOutTransition;
+    }
+  }
+
+  &.host-hidden {
+    .rsa-force-layout-node.host, .rsa-force-layout-link.source-host, .rsa-force-layout-link.target-host {
+      opacity: 0;
+      visibility: hidden;
+      transition: $fadeOutTransition;
+    }
+  }
+
+  &.domain-hidden {
+    .rsa-force-layout-node.domain, .rsa-force-layout-link.source-domain, .rsa-force-layout-link.target-domain {
+      opacity: 0;
+      visibility: hidden;
+      transition: $fadeOutTransition;
+    }
+  }
+
+  &.mac_address-hidden {
+    .rsa-force-layout-node.mac-address, .rsa-force-layout-link.source-mac-address, .rsa-force-layout-link.target-mac-address{
+      opacity: 0;
+      visibility: hidden;
+      transition: $fadeOutTransition;
+    }
+  }
+
+  &.user-hidden {
+    .rsa-force-layout-node.user, .rsa-force-layout-link.source-user, .rsa-force-layout-link.target-user{
+      opacity: 0;
+      visibility: hidden;
+      transition: $fadeOutTransition;
+    }
+  }
+
+  &.file_name-hidden {
+    .rsa-force-layout-node.file-name, .rsa-force-layout-link.source-file-name, .rsa-force-layout-link.target-file-name {
+      opacity: 0;
+      visibility: hidden;
+      transition: $fadeOutTransition;
+    }
+  }
+
+  &.file_hash-hidden {
+    .rsa-force-layout-node.file-hash, .rsa-force-layout-link.source-file-hash, .rsa-force-layout-link.target-file-hash{
+      opacity: 0;
+      visibility: hidden;
+      transition: $fadeOutTransition;
+    }
+  }
+
+  rect.grid {
+    pointer-events: none;
+  }
+
+  &-legend {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: rsa-whitespace();
+  }
+
+  .rsa-force-layout {
+
+    &-node {
+      opacity: 1;
+      transition: $fadeInTransition;
+
+      .circle {
+        stroke: text-color(primary,light,nearly-opaque);
+        fill: text-color(neutral,dark,nearly-opaque);
+      }
+      &.user .circle {
+        fill: $entityUserColor;
+      }
+      &.ip .circle {
+        fill: $entityIPColor;
+      }
+      &.host .circle {
+        fill: $entityHostColor;
+      }
+      &.domain .circle {
+        fill: $entityDomainColor;
+      }
+      &.mac-address .circle {
+        fill: $entityMACColor;
+      }
+      &.file-name .circle {
+        fill: $entityFileNameColor;
+      }
+      &.file-hash .circle {
+        fill: $entityFileHashColor;
+      }
+      .text {
+        fill: text-color(neutral);
+
+        &.has-context-data {
+          @include rsa-has-context-data(true);
+          transition: font-size 0.3s;
+
+          &:hover {
+            font-size: 100%;
+          }
+        }
+      }
+
+      &.is-hidden {
+        .circle {
+          stroke: text-color(primary,light,nearly-transparent);
+          fill: text-color(neutral,dark,transparent);
+        }
+        .text {
+          fill: text-color(primary,light,nearly-transparent);
+        }
+      }
+
+      &.is-selected {
+        .circle {
+          stroke: text-color(neutral);
+        }
+        .text {
+          fill: text-color(neutral);
+        }
+      }
+    }
+
+    &-link {
+      opacity: 1;
+      transition: opacity 0.3s;
+
+      .line {
+        stroke: text-color(primary,light,somewhat-opaque);
+      }
+      .text {
+        fill: text-color(primary,lightest);
+        text-shadow: 0 0 1pt text-color(primary, darkest);
+        transition: $fadeInTransition;
+      }
+      use {
+        fill: text-color(primary,light);
+      }
+
+      &.is-hidden {
+        use {
+          fill: text-color(primary,base,nearly-transparent);
+        }
+        .line {
+          stroke: text-color(primary,base,nearly-transparent);
+        }
+        .text {
+          fill: text-color(primary,base,nearly-transparent);
+          text-shadow: none;
+        }
+      }
+
+      &.is-selected {
+        .line {
+          stroke: text-color(neutral);
+        }
+        .text {
+          fill: text-color(neutral);
+        }
+      }
+    }
+  }
+
+
+  #force-layout__arrow {
+    fill: text-color(primary,light);
+
+    &--disabled {
+      fill: text-color(primary, darker);
+      stroke: text-color(primary, darker);
+    }
+
+    &--selected {
+      fill: text-color(neutral);
+    }
+  }
+  #force-layout__grid {
+    .grid-axis {
+      &.major {
+        stroke: text-color(primary, dark);
+        stroke-width: 1pt;
+      }
+      &.minor {
+        stroke: text-color(primary, darker);
+        stroke-width: 0.5pt;
+      }
+    }
+  }
+
+  &.hide-nodes .rsa-force-layout-node,
+  &.hide-links .rsa-force-layout-link {
+    opacity: 0;
+  }
+
+  &.hide-link-text .rsa-force-layout-link text {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

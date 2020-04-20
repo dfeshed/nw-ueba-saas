@@ -1,0 +1,30 @@
+<div class="alerts-tab_body_body-table_header">
+  <div class="severity">
+  </div>
+  <div class="alertName">
+    {{t "investigateUsers.alerts.alertName"}}
+  </div>
+  <div class="entityName">
+    {{t "investigateUsers.alerts.entityName"}}
+  </div>
+  <div class="startTime">
+    {{t "investigateUsers.alerts.startTime"}}
+  </div>
+  <div class="indicatorCount">
+    {{t "investigateUsers.alerts.indicatorCount"}}
+  </div>
+  <div class="status">
+    {{t "investigateUsers.alerts.feedback"}}
+  </div>
+</div>
+
+<div class="alerts-tab_body_body-table_body">
+  {{#each-in groupedAlertsByDay as |timestamp alerts|}}
+    {{alerts-tab/body/alerts-table/date-row timestamp=timestamp alerts=alerts}}
+  {{/each-in}}
+  {{#unless allAlertsReceived}}
+    <div class="alerts-tab_body_body-table_body_row_loader">
+      {{rsa-loader size="medium" label=(t "investigate.loading")}}
+    </div>
+  {{/unless}}
+</div>

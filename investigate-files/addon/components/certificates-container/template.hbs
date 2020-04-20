@@ -1,0 +1,56 @@
+{{#rsa-page-layout showRightZone=false as |layout|}}
+  {{#layout.left as |leftPanel|}}
+    {{leftPanel.header iconName="filter-2" title=(t "investigateFiles.filter.filter")}}
+    {{endpoint/filters-wrapper
+      filterState=filter
+      savedFilter=savedFilter
+      savedFilters=certificateFilters
+      selectedFilterId=selectedFilterId
+      filterType="CERTIFICATE"
+      filterTypes=filterTypes
+      resetFilters=(action "resetFilters")
+      applyFilters=(action "applyFilters" (action "getFirstPageOfCertificates"))
+      applySavedFilters=(action "applySavedFilters" (action "getFirstPageOfCertificates"))
+      deleteFilter=(action "deleteFilter")
+      createCustomSearch=(action "createCustomSearch")}}
+  {{/layout.left}}
+
+  {{#layout.center}}
+    <hbox class="certificates-action-bar flexi-fit">
+      <h2 class="title-header">
+        {{#rsa-form-button class="close-zone" click=(action layout.open "left")}}
+          {{rsa-icon name="filter-2" }}
+          {{t "investigateFiles.button.filters"}}
+        {{/rsa-form-button}}
+      </h2>
+      {{#link-to "files.index" (query-params sid=null checksum=null tabName=null)}}
+        {{#rsa-form-button class="back-to-file padding-right" click=(action "gotoFilesView" isCertificateView)}}
+          {{rsa-icon name="arrow-left-12"}}
+          {{t "investigateFiles.button.backToFiles"}}
+        {{/rsa-form-button}}
+      {{/link-to}}
+      <label class="certificate-label">
+        {{t "investigateFiles.certificatePageTitle"}}
+      </label>
+      {{certificates-container/certificate-status}}
+      {{endpoint/pivot-to-event-analysis label="certificate" selections=selections pivotToInvestigate=(action "pivotToInvestigate")}}
+      {{#link-to "files.index" (query-params sid=null checksum=null tabName=null)}}
+        {{#rsa-form-button class="close-certificate-view-button" click=(action "gotoFilesView" isCertificateView) isIconOnly=true}}
+          {{rsa-icon title=(t "investigateFiles.button.closeCertificateView") name="close"}}
+        {{/rsa-form-button}}
+      {{/link-to}}
+    </hbox>
+    {{#if selectedServiceData.isServiceOnline}}
+      <box class="certificates-body">
+        {{certificates-container/certificates-data-table pivotToInvestigate=(action "pivotToInvestigate")}}
+      </box>
+      <box class="certificates-footer">
+        {{certificates-container/certificates-pager}}
+      </box>
+    {{else}}
+      {{error-page
+        errorDescription=(t "investigateFiles.errorPage.serviceDownDescription" serviceType=selectedServiceData.name)
+        title=(t "investigateFiles.errorPage.serviceDown" serviceType=selectedServiceData.name)}}
+    {{/if}}
+  {{/layout.center}}
+{{/rsa-page-layout}}

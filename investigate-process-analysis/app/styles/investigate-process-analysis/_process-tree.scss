@@ -1,0 +1,216 @@
+$circle-border-color: #D8D8D8;
+
+.process-tree {
+  svg {
+    height: 100%;
+  }
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  position: relative;
+  #force-layout__grid {
+    .grid-axis {
+      &.major {
+        stroke: text-color(primary, dark);
+        stroke-width: 1pt;
+      }
+      &.minor {
+        stroke: text-color(primary, darker);
+        stroke-width: 0.5pt;
+      }
+    }
+  }
+
+  &.is-panning {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+
+
+  &[data-zoom="0.0"],
+  &[data-zoom="0.1"],
+  &[data-zoom="0.2"] {
+    .text {
+      font-size: 0;
+    }
+    .line {
+      stroke-width: 2pt;
+    }
+    #force-layout__grid {
+      .grid-axis {
+        &.minor {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &[data-zoom="0.3"],
+  &[data-zoom="0.4"],
+  &[data-zoom="0.5"] {
+    .rsa-force-layout-node .text {
+      font-size: 120%;
+    }
+    .rsa-force-layout-link .text {
+      font-size: 0;
+    }
+    .line {
+      stroke-width: 1.5pt;
+    }
+    #force-layout__grid {
+      .grid-axis {
+        &.minor {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .process rect  {
+    fill: transparent;
+  }
+
+  .process-type {
+    pointer-events: none;
+    fill: text-color(primary);
+  }
+  .process-icon {
+    fill: text-color(primary);
+  }
+  .process {
+    cursor: pointer;
+  }
+
+  .link {
+    fill: none;
+    stroke: $circle-border-color;
+    stroke-width: 1.5px;
+  }
+
+  .text-icon, .collapse-icon, .process-icon, .child-count, .process-name, .process-type {
+    fill: text-color(neutral);
+  }
+
+  .process-name, .child-count, .machine-count {
+    font-size: 12px;
+  }
+}
+
+section {
+  &.launchArguments {
+    word-wrap: break-word;
+  }
+}
+.rsa-fast-force__wait {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+
+.process {
+  circle {
+    &.selected {
+      fill: background-color(neutral, base);
+      stroke: none;
+    }
+  }
+  rect {
+    &.selected {
+      fill: text-color(neutral);
+    }
+  }
+  .process-icon, .process-type, .process-name, .score-text, .machine-count {
+    &.selected {
+      fill: text-color(neutral, dark);
+    }
+  }
+
+  circle.is-danger + .score-text {
+    &.selected {
+      fill: text-color(neutral);
+    }
+  }
+}
+
+.process-hover-content {
+  padding-top: rsa-whitespace();
+  min-height: 1.7rem;
+  .copy-icon {
+    cursor: pointer;
+    position: absolute;
+    bottom: -15px;
+    right: 2.5%;
+    margin-right: -10px;
+    padding-top: 10px;
+  }
+  .rsa-icon {
+    padding-right: 5px;
+  }
+}
+
+.process-hover-key {
+  display: block;
+  min-height: 1.2rem;
+  padding-right: rsa-whitespace();
+  color: text-color(primary, light);
+}
+.process-hover-value {
+  padding-right: 10px;
+  display: block;
+  min-height: 1.7rem;
+  padding-bottom: 1rem;
+  line-height: 1.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+
+.process-hover-value.paramDst {
+  line-height: 1.5rem;
+  display: -webkit-box;
+  margin: 0 auto;
+  -webkit-line-clamp: 4;
+  // autoprefixer removes '-webkit-box-orient', hence disabling autoprefixer
+  /*! autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /*! autoprefixer: on */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-bottom: 5px;
+}
+
+.process-tool-tip {
+  max-width: 250px;
+  padding: rsa-whitespace(more);
+}
+
+.process-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: text-color(secondary);
+  display: inline-block;
+  width: 270px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  min-height: 1.7rem;
+}
+
+.panel-content {
+  .process-hover-item {
+    .copy-icon
+    {
+      i {
+        cursor: pointer;
+      }
+      .rsa-icon {
+      }
+      cursor: pointer;
+      padding-right: 10px;
+    }
+  }
+}

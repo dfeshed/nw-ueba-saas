@@ -1,0 +1,628 @@
+.rsa-investigate-events-table {
+  @include rsa-col(justify,fill);
+
+  h2.title {
+    padding-right: rsa-whitespace();
+
+    .sort-indicator {
+      display: none;
+    }
+    .sort-indicator-container {
+      .asc {
+        top: 2px;
+      }
+      .desc {
+        bottom: 2px;
+      }
+      .rsa-icon {
+        font-size: 1.2em;
+      }
+      span {
+        height: 50%;
+        overflow: hidden;
+      }
+      i {
+        height: 100%
+      }
+    }
+
+    &:hover {
+      .sort-indicator {
+        display: inline-block;
+      }
+    }
+  }
+
+  &__header {
+    @include rsa-vendor-prefix(flex-grow,0);
+    background-color: background-color(primary, darkest);
+    @include border-bottom(1px, solid, primary, darker);
+    align-items: baseline;
+
+    &__container {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+
+    .apper {
+      display: inline-flex;
+    }
+
+    &__content {
+      display: inline-flex;
+
+      &::after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    }
+
+    &__eventLabel {
+      float: left;
+
+      h2 {
+        text-transform: capitalize;
+        @include rsa-font(header, large);
+        padding: rsa-whitespace() rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less);
+        color: text-color(primary, lighter);
+        display: inline-block;
+
+        .at-threshold {
+          margin-top: -1px;
+          position: relative;
+          top: 2px;
+          color: text-color(accentFour);
+        }
+      }
+    }
+
+    &__content {
+      display: flex;
+      flex: 1 1 auto;
+
+      h2 {
+        white-space: nowrap;
+      }
+    }
+
+    .rsa-investigate-events-table__header__controls {
+      display: inline-flex;
+      flex: 1 1 auto;
+      flex-wrap: wrap;
+      padding-left: rsa-whitespace(less);
+
+      .toggle-wrapper {
+        line-height: 30px;
+      }
+
+      .x-toggle-component {
+        float: left;
+        white-space: nowrap;
+        margin-left: rsa-whitespace(less);
+      }
+    }
+
+    // below includes overwrite styles for global components
+    // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+    // TODO: remove global component overwrites below and update the global component itself
+    &__columnGroups {
+      float: left;
+      position: relative;
+      left: 2px;
+      margin-right: rsa-whitespace(least);
+      margin-bottom: rsa-whitespace(least);
+      .list-manager .rsa-content-tethered-panel-trigger .list-caption {
+        top: -1px;
+      }
+      .rsa-button-group div:first-child {
+        margin-right: -8px;
+      }
+      .rsa-button-group:hover button, .rsa-button-group .rsa-form-button-wrapper:hover button {
+        border-color: border-color(primary, lighter)!important;
+      }
+      .rsa-button-group:hover i, .rsa-button-group .rsa-form-button-wrapper:hover i  {
+        color: text-color(primary, lighter)!important;
+        font-weight:bolder;
+      }
+      .rsa-button-group .rsa-form-button-wrapper {
+        &.is-standard {
+          &:first-of-type button.rsa-form-button {
+            text-align: left;
+            padding-left: rsa-whitespace(least);
+            font-size: .85rem;
+            width: 190px;
+            border-right: none;
+            overflow-x: hidden;
+            white-space: nowrap;
+            display: inline-block;
+            text-overflow: ellipsis;
+          }
+          &:last-of-type button.rsa-form-button {
+            border-left: none;
+            color: text-color(primary, light);
+            position: relative;
+            left: -1px;
+          }
+          &:last-of-type i {
+            font-size: .65rem;
+          }
+          .rsa-form-button:hover, .rsa-form-button:focus, &:hover, &.is-active .rsa-form-button:focus {
+            border-color: $formInputBorderColor;
+          }
+        }
+        button, button:hover {
+          border-color: border-color(primary, lighter)!important;
+        }
+        button {
+          padding-left: rsa-whitespace(less)!important;
+          i, i:hover, button:hover i {
+            color: text-color(primary, lighter)!important;
+            font-weight:bolder;
+          }
+        }
+      }
+    } // end of &__columnGroups
+
+    // below includes overwrite styles for global components
+    // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+    // TODO: remove global component overwrites below and update the global component itself
+    &__manageIncident {
+      margin: 0;
+      margin-right: rsa-whitespace(less);
+      margin-left: rsa-whitespace(least);
+
+      .rsa-button-group {
+        > .rsa-form-button-wrapper:first-of-type {
+          button {
+            text-align: left;
+            padding-left: rsa-whitespace(least);
+            font-size: .85rem;
+            width: 189px;
+          }
+        }
+
+        i.rsa-icon.selected-events-threshold {
+          margin: 0 rsa-whitespace(least);
+          font-size: 1rem;
+        }
+      }
+
+      .rsa-form-button-wrapper:last-of-type {
+        i {
+          font-size: .65rem;
+        }
+      }
+
+      .incident-dropdown ul {
+        width: 216px;
+      }
+    }
+
+    // below includes overwrite styles for global components
+    // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+    // TODO: remove global component overwrites below and update the global component itself
+    &__downloadEvents {
+      float: left;
+      max-height: 43px;
+      margin-right: rsa-whitespace(least);
+      margin-bottom: rsa-whitespace(least);
+      margin-left: rsa-whitespace(least);
+
+      iframe {
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+      }
+      &.is-disabled {
+        .ember-power-select-trigger{
+          @include border(1px, solid, primary, dark);
+          background-color: background-color(primary, darkest);
+          border-color: $formButtonDisabledBorderColor;
+          cursor: default;
+          span {
+            color: $formButtonDisabledTypeColor;
+          }
+        }
+      }
+      .ember-power-select-trigger {
+        // Need to use important to override from-select style.
+        @include border(1px, solid, primary, light);
+        width: 200px;
+        overflow: hidden;
+        .ember-power-select-status-icon {
+          right: rsa-whitespace(least)
+        }
+        .ember-power-select-selected-item {
+          display: block;
+          overflow-x: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+      div {
+        min-width: 150px;
+      }
+
+    .rsa-loader {
+      display: inline-block;
+      vertical-align: top;
+      min-width: 1px;
+      &__text {
+        display: none;
+      }
+    }
+      .rsa-loader__wheel {
+        margin: -2px rsa-whitespace(less) -2px -2px;
+        min-width: 1px;
+        position: relative;
+        top: rsa-whitespace(less);
+        left: rsa-whitespace(less);
+      }
+    }
+    &__downloadEvents > div {
+      display: none;
+    }
+    .events-table-control {
+      display: inline-flex;
+      margin-top: 17px;
+      margin-right: rsa-whitespace(less);
+      color: text-color(primary, light);
+
+      span, i {
+        height: 1rem;
+      }
+      
+      .rsa-icon {
+        cursor: pointer;
+        margin: 0 rsa-whitespace(least);
+        padding: 0 rsa-whitespace(least);
+        &:hover {
+          color: text-color(primary, lightest);
+        }
+        &.active:not(.disabled) {
+          color: text-color(primary, lightest);
+        }
+        &.disabled {
+          color: text-color(primary);
+          cursor: default;
+        }
+      }
+    }
+  }
+
+  &__body {
+    @include rsa-vendor-prefix(flex-grow,1);
+    position: relative;
+  }
+
+  &.show-scroll-message {
+    .scroll-message {
+      display: block;
+    }
+  }
+
+  .scroll-message {
+    display: none;
+    @include rsa-font(body, small);
+    font-weight: 300;
+    background-color: text-color(accentThree, dark);
+    padding: rsa-whitespace(less) rsa-whitespace();
+    text-align: center;
+    .rsa-icon {
+      vertical-align: middle;
+    }
+  }
+
+  .rsa-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .rsa-data-table {
+    position: absolute;
+    top: 0;
+    bottom: 9px;
+    left: 0;
+    right: 0;
+    z-index: 1;
+
+    &-header {
+      background-color: background-color(primary, darker);
+      /* @workaround Clear defaults that were introduced for Response UI. */
+      margin: 0;
+      padding: 0;
+      border: 0;
+
+      .rsa-data-table-header-cell {
+        .sort-indicator {
+          color: text-color(primary);
+          position: absolute;
+          right: rsa-whitespace(less);
+
+          &.active {
+            color: text-color(primary, lightest);
+            display: block;
+          }
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+        .sort-indicator-container {
+          .sort-indicator {
+            color: text-color(primary, lighter);
+            &.active {
+              color: text-color(secondary);
+              display: inline-block;
+            }
+            &.show {
+              display: inline-block;
+              color: text-color(primary);
+            }
+            &.hover {
+              color: text-color(primary, lightest);
+            }
+            &.disabled {
+              color: text-color(primary);
+            }
+          }
+
+        }
+
+        &:first-of-type {
+          & > div {
+            overflow: visible;
+          }
+        }
+      }
+    }
+
+    &-body-row {
+      cursor: default;
+      border-top: 0px;
+
+      &.is-parent {
+        @include rsa-layer(controls);
+        .rsa-data-table-body-cell {
+          background: none;
+        }
+
+        &:hover {
+          .rsa-data-table-body-cell:not([data-visibility=false]) {
+            background-color: background-color(primary, darker);
+          }
+        }
+      }
+
+      // Need to set height big enough to accommodate logs which
+      // come in after the row is rendered
+      min-height: 57px;
+
+      .expand-collapse-children {
+        color: text-color(primary, lightest);
+        @include rsa-layer(controls);
+        position: absolute;
+        left: .5rem;
+        top: 8px;
+        font-size: 1rem;
+        line-height: 20px;
+
+        &.is-disabled {
+          color: text-color(primary);
+        }
+
+        &:hover {
+          cursor: pointer;
+          color: text-color(secondary);
+        }
+      }
+
+      .session-split-decorator {
+        color: text-color(secondary, light);
+        @include rsa-layer(controls);
+        position: absolute;
+        left: calc(3rem + 24px);
+        top: 8px;
+        font-size: 1rem;
+        line-height: 20px;
+
+        &[data-visibility=false] {
+          display: none;
+        }
+      }
+
+      &:hover {
+        .session-split-decorator {
+          left: calc(3.5rem + 24px);
+        }
+        .expand-collapse-children {
+          left: 1rem;
+        }
+      }
+
+      .rsa-data-table-body-cell[data-field="checkbox"] {
+        text-align: right;
+
+        &:hover {
+          cursor: pointer;
+
+          .rsa-form-checkbox-label {
+            &::before {
+              color: text-color(secondary);
+            }
+          }
+        }
+      }
+
+      &.is-selected {
+        .rsa-data-table-body-cell[data-field="checkbox"] {
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
+        .session-split-decorator {
+          color: text-color(primary, lightest);
+          left: calc(3.5rem + 24px);
+        }
+
+        .expand-collapse-children {
+          left: 1rem;
+
+          &.is-disabled {
+            color: text-color(primary, lightest);
+          }
+        }
+
+        &:hover {
+          .session-split-decorator {
+            left: calc(3.5rem + 24px);
+          }
+
+          .expand-collapse-children {
+            left: 1rem;
+            color: text-color(primary, lightest);
+          }
+        }
+      }
+
+    }
+
+    &-body-cell {
+      @include border-top(1px, solid, primary, dark);
+
+      &[data-visibility=false] {
+        .content {
+          display: none;
+        }
+      }
+
+      .meta-key-and-value {
+        .key {
+          color: text-color(neutral, base, translucent);
+          padding-right: rsa-whitespace();
+
+          &::after {
+            content: ':';
+            color: text-color(neutral,base,translucent);
+          }
+        }
+      }
+
+      .meta-src-dst-pair {
+        display: block;
+        white-space: nowrap;
+
+        .arrow {
+          display: inline-block;
+          padding: 0 rsa-whitespace(less);
+          color: text-color(neutral, base, translucent);
+        }
+      }
+
+      &[data-field="custom.meta-summary"],
+      &[data-field="custom.metasummary"] {
+        position: relative;
+
+        .meta-key-and-value,
+        .meta-src-dst-pair {
+          display: inline-block;
+        }
+
+        .meta-key-value-pairs {
+          .value {
+            color: text-color(primary, lightest);
+            padding-left: rsa-whitespace(least);
+          }
+        }
+
+        .meta-key-value-pairs,
+        .log-data {
+          padding-left: 0;
+          padding-right: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .log-data {
+          @include rsa-font-monospace();
+        }
+      }
+
+      /* For meta details column, arrange values in columns, top -> bottom, left -> right. */
+      &[data-field="custom.meta-details"] {
+        .content {
+          /* Stacks columns of meta details, left to right. */
+          @include rsa-row(left,fill);
+        }
+        .meta-details-column {
+          margin-right: rsa-whitespace();
+        }
+      }
+      &[data-field="custom.meta-summary"] {
+        .content {
+          overflow: hidden;
+          height: 3rem;
+          white-space: normal;
+
+          .log-data {
+            height: 3rem;
+            white-space: normal;
+          }
+        }
+      }
+      .has-context-data {
+        text-decoration: underline;
+        text-decoration-style: dashed;
+      }
+    }
+    .rsa-panel-message a {
+      padding: 0;
+    }
+  }
+
+  .rsa-data-table-header-row:last-child {
+    .sortable-item:last-child {
+        h2 {
+          padding-right: 2rem;
+        }
+      .sort-indicator {
+        right: 1.5rem;
+      }
+    }
+  }
+}
+
+.download-dropdown {
+  width: auto !important;
+  min-width: 218px !important;
+  .ember-power-select-options {
+    max-height: 25rem;
+    span.right {
+      padding-left: rsa-whitespace(less);
+      float: right;
+    }
+  }
+}
+
+.recon-is-open, .recon-is-expanded, .recon-is-closed {
+  .incident-buttons {
+    display: none;
+  }
+  .incident-dropdown {
+    display: inherit;
+  }
+  .selected-events-threshold {
+    position: relative;
+    color: text-color(accentFour);
+  }
+}
+
+.rsa-form-button-wrapper.is-standard:not(.is-disabled):not(.is-icon-only) .rsa-form-button {
+  border-color: border-color(primary, light);
+}

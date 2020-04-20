@@ -1,0 +1,12 @@
+{{rsa-form-textarea-oneway
+  class="custom-config__textarea"
+  maxLength=4000
+  value=customConfig
+  isError=customConfigValidator.showError
+  onFocusOut=(action "handleCustomSettingChange" value="target.value")
+}}
+<div class="input-error">
+  {{#if customConfigValidator.showError}}
+    {{t customConfigValidator.errorMessage}}
+  {{/if}}
+</div>

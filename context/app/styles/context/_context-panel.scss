@@ -1,0 +1,663 @@
+$font-highlight-color: text-color(primary, lightest);
+$font-fade-color: text-color(primary, lighter);
+$panelBackgroundImage: radial-gradient(circle at 0px 25%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
+radial-gradient(circle at 70% 0px, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
+radial-gradient(circle at 35% 65%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%),
+radial-gradient(circle at 85% 85%, background-color(primary, darker, almost-transparent) 0, background-color(primary, dark, transparent) 65%);
+.rsa-context-panel {
+  @include rsa-vendor-prefix(flex-grow, 0);
+  @include rsa-layer(overlay);
+  @include rsa-vendor-prefix(flex-shrink, 0);
+  @include rsa-col(justify, fill);
+  @include border(1px, solid, primary, dark);
+  background-image: $panelBackgroundImage;
+  background-color: background-color(primary, darkest);
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  &__linkButton {
+    text-decoration: none;
+    padding: rsa-whitespace(less) rsa-whitespace();
+    @include border(1px, solid, primary, lighter);
+    margin-left: rsa-whitespace(least);
+    color: text-color(primary, lightest);
+    cursor: pointer;
+    &:hover {
+      border-color: border-color(neutral);
+    }
+  }
+  .rsa-nav-tab-group {
+    display: flex;
+    flex-direction: column;
+  }
+  .rsa-nav-tab.is-left-aligned-primary {
+    padding: 5px;
+    margin: 5px;
+    font-size: 20px;
+    color: text-color(primary, dark);
+  }
+  .rsa-nav-tab.is-active {
+    background-color: background-color(secondary);
+  }
+  &__tabs {
+    background: background-color(neutral, dark);
+    &__empty {
+      width: 40px;
+    }
+    &__enabled {
+      color: text-color(primary, lightest);
+    }
+    &__disabled {
+      color: text-color(primary);
+    }
+    &__tooltip {
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+    &__icon-loader {
+      position: absolute;
+      left: 0;
+      padding-left: rsa-whitespace(less);
+    }
+  }
+  &__header {
+    background: background-color(neutral, dark);
+    color: text-color(neutral);
+    padding: rsa-whitespace(less) - rsa-whitespace(least);
+    >hbox {
+      height: 30px;
+      >vbox {
+        height: inherit;
+      }
+    }
+  }
+  &__layout {
+    width: 100%;
+    display: inline-block;
+    height: calc(100% - 6px);
+  }
+  &__loader {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+  }
+  &__error-text {
+    @include rsa-font();
+    color: text-color(accentFour, light);
+    text-align: center;
+    align-items: center;
+    padding: rsa-whitespace(least);
+    font-style: italic;
+    display: flex;
+    line-height: 1.35;
+    span {
+      margin-left: rsa-whitespace();
+    }
+  }
+  &__body_layout {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    position: relative;
+    color: text-color(neutral);
+    position: relative;
+    width: calc(100% - 50px);
+    height: calc(100% - 100px);
+    background-image: $panelBackgroundImage;
+    background-color: background-color(primary, darkest);
+  }
+  &__body_size {
+    height: 100%
+  }
+  &__body {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include border(1px, solid, primary, dark);
+    position: relative;
+    color: text-color(neutral);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-image: $panelBackgroundImage;
+    background-color: background-color(primary, darkest);
+  }
+  &__footer {
+    height: 15px;
+    border-bottom: 1px solid border-color(primary, dark);
+    background-color: background-color(neutral, dark);
+    padding: rsa-whitespace(less);
+    color: text-color(primary, lighter);
+    @include rsa-font(footer, small);
+    display: flex;
+    justify-content: space-between;
+    >span {
+      float: right;
+    }
+  }
+  &__endpoint {
+    height: 100%;
+    &__machines {
+      height: 210px;
+      overflow: hidden;
+      align-items: center;
+      >div>div {
+        overflow: hidden;
+      }
+    }
+    &__data-table {
+      height: calc(100% - 240px);
+      display: flex;
+      >div {
+        @include border(1px, solid, neutral, dark, nearly-transparent);
+      }
+    }
+  }
+  &__risk-badge {
+    &__danger-risk {
+      color: text-color(accentOne);
+    }
+    &__high-risk {
+      color: text-color(accentThree);
+    }
+    &__medium-risk {
+      color: text-color(accentFour);
+    }
+    &__low-risk {
+      color: text-color(accentTwo);
+    }
+  }
+  &__data__header {
+    align-content: center;
+    display: flex;
+  }
+  &__config-grid {
+    color: $font-fade-color;
+    height: 100%;
+    width: calc(100% - 4px);
+    padding-top: rsa-whitespace();
+    display: flex;
+    justify-content: center;
+    .full-width {
+      width: 100%;
+    }
+    &__panel {
+      display: block;
+    }
+    &__layout {
+      float: left;
+      width: 25%;
+      padding: 0 12px 0;
+      display: block;
+      height: auto;
+      overflow: hidden;
+      min-height: 70px;
+    }
+  }
+  &__grid,
+  &__context-data-table {
+    color: $font-fade-color;
+    height: 100%;
+    width: calc(100% - 4px);
+    display: flex;
+    justify-content: center;
+    .link {
+      justify-content: flex-start;
+    }
+    &__box {
+      overflow: auto;
+      height: 100%;
+      width: 100%;
+      justify-content: center;
+    }
+    &__groupdata {
+      padding-left: rsa-whitespace();
+    }
+    &__Score_width {
+      max-width: 12%;
+    }
+    &__group-data-header {
+      padding-left: 0;
+    }
+    &__risk-badge {
+      max-width: 180px;
+      svg circle {
+        stroke: text-color(accentOne);
+        stroke-width: 4;
+      }
+      .details .score {
+        color: text-color(accentThree);
+      }
+      &__default {
+        padding: 1rem;
+      }
+    }
+    .rsa-content-badge-score.is-danger .score {
+      color: text-color(accentOne);
+    }
+    .rsa-content-badge-score.is-high .score {
+      color: text-color(accentThree);
+    }
+    .rsa-content-badge-score.is-medium .score {
+      color: text-color(accentFour);
+    }
+    .rsa-content-badge-score.is-low .score {
+      color: text-color(accentTwo);
+    }
+    &__itemsContainer {
+      position: relative
+    }
+    &__itemsContainer:hover &__iconlink {
+      display: block
+    }
+    &__iconlink {
+      position: absolute;
+      display: none;
+      top: 20%;
+      width: 40px;
+      margin: 0 auto;
+      left: 0px;
+      right: -60%;
+    }
+    .link a {
+      color: text-color(secondary);
+      display: block;
+      text-decoration: none;
+    }
+    .link:hover {
+      display: block;
+      text-decoration: underline;
+      color: text-color(secondary);
+    }
+    &__heading-text {
+      @include rsa-font(header, large);
+      color: text-color(primary, lighter);
+      padding: rsa-whitespace(less);
+    }
+    &__heading-text>span {
+      float: right;
+      color: $font-fade-color;
+      @include rsa-font(header, small);
+      letter-spacing: 0.05rem;
+    }
+    &__button {
+      background: none!important;
+      border: none;
+      margin-left: 50%;
+      color: text-color(secondary);
+      text-decoration: underline;
+      cursor: pointer;
+      @include rsa-font(default, small);
+    }
+    &__border {
+      padding-left: rsa-whitespace(base);
+      padding-top: rsa-whitespace(less);
+      padding-bottom: rsa-whitespace(less);
+      @include border-bottom(1px, solid, neutral, dark, nearly-transparent);
+      border-bottom-style: ridge;
+    }
+    &__host-details,
+    &__reputation-server,
+    &__archer-details,
+    &__ad-details {
+      padding-top: rsa-whitespace();
+      .value {
+        @include rsa-word-wrap();
+      }
+      vbox+vbox {
+        padding-left: rsa-whitespace(less);
+        min-height: 50px;
+        width: 80%;
+        padding-bottom: rsa-whitespace();
+      }
+      &__tetheredPanel {
+        width: rsa-whitespace(less);
+      }
+      &__field-name,
+      &__row-field-name {
+        @include rsa-font(header, small);
+        padding-top: rsa-whitespace();
+        padding-bottom: rsa-whitespace(less);
+      }
+      &__field-value,
+      &__row-field-value,
+      &__header-data {
+        @include rsa-word-wrap();
+        color: $font-highlight-color;
+        text-align: left;
+        text-overflow: ellipsis;
+        justify-content: flex-start;
+      }
+      &__groupdata {
+        color: text-color(secondary);
+      }
+      &__group {
+        overflow-y: auto;
+        max-height: 200px;
+      }
+      &__field-value {
+        padding-bottom: rsa-whitespace(least);
+        @include rsa-font(default, small);
+      }
+      &__single-column {
+        padding-left: rsa-whitespace();
+        padding-top: rsa-whitespace(less);
+      }
+      &__header-data {
+        @include rsa-font(header, larger);
+        font-weight: 500;
+        max-height: 60%;
+        color: text-color(primary, lightest);
+        padding-left: rsa-whitespace();
+      }
+      &__badge-score {
+        max-height: 25%;
+        padding: rsa-whitespace();
+        padding: 0;
+        max-width: 25%;
+        @include rsa-font(default, small);
+      }
+    }
+    &__ad-details,
+    &__reputation-server,
+    &__archer-details {
+      vbox {
+        padding-left: rsa-whitespace(less);
+        min-height: 50px;
+        width: 100%;
+      }
+    }
+    &__module-details,
+    &__iioc-details,
+    &__panel {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      >section {
+        height: 100%;
+        width: 100%;
+      }
+      margin: 0 rsa-whitespace(least) 0 rsa-whitespace(least);
+      .progress-bar {
+        width: 30%;
+      }
+      &__sort-icon {
+        display: table !important;
+        position: absolute;
+        padding: 0.25rem;
+        right: 0.25rem;
+        top: 0.5rem;
+      }
+    }
+    &__iioc-details {
+      .rsa-data-table {
+        &-body-cell {
+          float: left;
+        }
+      }
+    }
+    &__min-ioc {
+      @include rsa-font(header, small);
+      padding-left: rsa-whitespace();
+    }
+  }
+  &__liveconnect {
+    color: $font-fade-color;
+    height: calc(100% - 175px);
+    width: calc(100% - 4px);
+    overflow: auto;
+    overflow-x: hidden;
+    .rsa-context-panel__loader,
+    .rsa-context-panel__error-text {
+      display: flex;
+      position: absolute;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      align-items: center;
+    }
+    &__related-entity-error {
+      @include rsa-font();
+      color: text-color(accentFour, light);
+      text-align: center;
+      align-items: center;
+      padding: rsa-whitespace(least);
+      font-style: italic;
+      display: flex;
+      line-height: 1.35;
+      margin-left: 35%;
+    }
+    &__field {
+      padding: rsa-whitespace();
+    }
+    &__emptychart {
+      width: 100%;
+      height: 130px;
+      background: background-color(primary, darkest);
+      text-align: center;
+      span {
+        display: inline-block;
+        margin-top: 50px;
+      }
+    }
+    &__field-name {
+      @include rsa-font(header, small);
+      padding: rsa-whitespace();
+    }
+    &__no-feedback-label {
+      color: text-color(accentFour, dark);
+    }
+    &__heading {
+      @include rsa-font(header, large);
+      color: text-color(primary, lighter);
+      padding: rsa-whitespace();
+      @include border-top(3px, solid, primary, darkest);
+    }
+    &__heading>span {
+      float: right;
+      color: $font-fade-color;
+      @include rsa-font(header, small);
+      letter-spacing: 0.05rem;
+    }
+    &__community_trend {
+      padding: rsa-whitespace();
+      .rsa-area-series {
+        stroke-width: 1;
+        &.series-0 {
+          stroke: text-color(secondary);
+          fill: text-color(secondary, base, somewhat-opaque);
+        }
+      }
+    }
+    &__submission_trend {
+      padding: rsa-whitespace();
+      .rsa-area-series {
+        stroke-width: 1;
+        &.series-0 {
+          stroke: text-color(accentOne);
+          fill: text-color(accentOne, base, somewhat-opaque);
+        }
+        &.series-1 {
+          stroke: text-color(accentThree);
+          fill: text-color(accentThree, base, somewhat-opaque);
+        }
+        &.series-2 {
+          stroke: text-color(accentFour, dark);
+          fill: text-color(accentFour, dark, somewhat-opaque);
+        }
+      }
+    }
+    &__comm-activity {
+      &__charts-parent {
+        vbox {
+          width: 33%;
+        }
+      }
+      &__charts-container {
+        .rsa-chart {
+          width: 100%;
+          height: 100%;
+        }
+        .tick {
+          line,
+          text {
+            shape-rendering: crispEdges;
+            text-rendering: geometricPrecision;
+            text-anchor: end;
+            fill: text-color(neutral);
+          }
+        }
+      }
+      &__desc {
+        padding-left: rsa-whitespace();
+        @include rsa-font(paragraph);
+        &__seen {
+          @include rsa-font(bold);
+          color: text-color(secondary);
+        }
+        &__submitted {
+          @include rsa-font(bold);
+          color: text-color(accentThree);
+        }
+        &__high-risk {
+          @include rsa-font(bold);
+          color: text-color(accentOne, darker);
+        }
+        &__unsafe {
+          @include rsa-font(bold);
+          color: text-color(accentThree);
+        }
+        &__suspicious {
+          @include rsa-font(bold);
+          color: text-color(accentFour, light);
+        }
+        &__safe {
+          @include rsa-font(bold);
+          color: text-color(accentTwo);
+        }
+        &__unknown {
+          @include rsa-font(bold);
+          color: text-color(primary, light);
+        }
+      }
+    }
+    &__risk-indicators {
+      padding: rsa-whitespace();
+      &__category-panel {
+        width: 50%;
+        &__cat-header {
+          @include rsa-font(header);
+        }
+      }
+      &__tags-panel {
+        padding-top: rsa-whitespace(least);
+        padding-bottom: rsa-whitespace();
+      }
+    }
+    &__risk-badge {
+      max-width: 180px;
+      margin-left: 100px;
+      &__unsafe {
+        svg circle {
+          stroke: text-color(accentThree);
+        }
+        .details .score {
+          color: text-color(accentThree);
+        }
+      }
+      &__safe {
+        svg circle {
+          stroke: text-color(accentTwo);
+        }
+        .details .score {
+          color: text-color(accentTwo);
+        }
+      }
+      &__suspicious {
+        svg circle {
+          stroke: text-color(accentFour)
+        }
+        .details .score {
+          color: text-color(accentFour)
+        }
+      }
+      &__high-risk {
+        svg circle {
+          stroke: text-color(accentOne);
+        }
+        .details .score {
+          color: text-color(accentOne);
+        }
+      }
+      &__unknown {
+        svg circle {
+          stroke: text-color(primary, lightest);
+        }
+        .details .score {
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+    &__risk-reason-padding {
+      margin-left: 50px;
+    }
+    &__risk-description {
+      @include rsa-font(header, large);
+      padding: rsa-whitespace();
+    }
+    &__risk-reason {
+      padding-bottom: rsa-whitespace(base);
+      padding-left: rsa-whitespace();
+    }
+    &__block {
+      margin-top: rsa-whitespace();
+      margin-left: rsa-whitespace();
+      margin-bottom: rsa-whitespace();
+      background-color: background-color(primary, darkest, nearly-opaque);
+      padding: rsa-whitespace();
+    }
+    &__risk-rating-unsafe {
+      color: text-color(accentOne, darker);
+    }
+    &__risk-rating-safe {
+      color: text-color(accentTwo);
+    }
+    &__risk-rating-unknown {
+      color: text-color(accentFour, dark);
+    }
+    &__entity-value {
+      color: text-color(secondary);
+    }
+    &__feedback {
+      height: 175px;
+      position: absolute;
+      bottom: 1px;
+      width: 100%;
+      background-color: background-color(primary, darker);
+      background-image: $panelBackgroundImage;
+      .risk-level-col,
+      .confidence-col {
+        max-width: 20%;
+      }
+      .submit-col {
+        max-width: 95px;
+      }
+      button {
+        margin-top: 2rem;
+      }
+    }
+  }
+}
+
+.feedback-margin {
+  margin-bottom: 175px;
+}
+
+.tab-active-background {
+  background-color: background-color(secondary);
+}
+
+.filter-icon {
+  padding-top: rsa-whitespace();
+  padding-left: rsa-whitespace(more);
+  color: text-color(primary, light)
+}

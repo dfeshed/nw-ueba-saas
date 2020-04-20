@@ -1,0 +1,40 @@
+.process-node-list {
+  .rsa-data-table-body-row.is-row-checked {
+    background-color: background-color(primary, darker);
+  }
+  .rsa-data-table {
+    .rsa-data-table-body {
+      overflow-x: hidden;
+    }
+    height: calc(100% - 2rem);
+    .rsa-data-table-body-cell.local-score {
+      padding: 3px 7px 0 7px;
+    }
+    .rsa-data-table-body-row {
+      left: 0;
+      right: 0;
+      .event-category {
+        color: text-color(primary);
+        padding-left: 1rem;
+        line-height: 2.3;
+        .has-events {
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+    .rsa-data-table-header-cell:first-child {
+      padding-left: 0.5rem;
+    }
+  }
+  .footer-info {
+    text-align: center;
+  }
+  svg {
+    width: inherit;
+    height: inherit;
+    position: inherit;
+    top: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+  }
+}

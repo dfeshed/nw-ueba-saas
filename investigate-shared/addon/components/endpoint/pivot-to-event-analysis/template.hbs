@@ -1,0 +1,30 @@
+<hbox class="rsa-button-group">
+  {{#rsa-form-button
+     title=(if isDisabled (t "investigateShared.endpoint.fileActions.pivotToInvestigateDisableToolTip" label=label))
+     isIconOnly=isIconOnly
+     class="event-analysis"
+     defaultAction=(action "processEventAnalysis")
+     isDisabled=isDisabled}}
+    {{rsa-icon name="expand-6" size="small" title=(t "investigateShared.endpoint.fileActions.pivotToInvestigate")}}
+    {{#unless isIconOnly}}
+      {{t "investigateShared.endpoint.fileActions.pivotToInvestigate"}}
+    {{/unless}}
+  {{/rsa-form-button}}
+  {{#unless isIconOnly}}
+    {{#click-outside action=(action "clickOutside")}}
+      {{#rsa-form-button class="rsa-split-dropdown" isDisabled=isDisabled isActive=isExpanded defaultAction=(action "toggleExpand")}}
+        {{rsa-icon name="arrow-down-12"}}
+      {{/rsa-form-button}}
+      {{#rsa-button-menu isExpanded=isExpanded style=offsetsStyle}}
+        {{#each categories as |category|}}
+          <li>
+            <a {{action "processMenuItem" category.category}}>
+              {{t category.label}}
+            </a>
+          </li>
+        {{/each}}
+      {{/rsa-button-menu}}
+    {{/click-outside}}
+  {{/unless}}
+</hbox>
+

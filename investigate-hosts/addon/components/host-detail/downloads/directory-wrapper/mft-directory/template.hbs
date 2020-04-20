@@ -1,0 +1,34 @@
+{{#if data.directoryCount}}
+
+  {{#host-detail/downloads/directory-wrapper/subdirectory-access data=data}}
+
+    <div class="mft-folder parent" {{action "fetchSubdirectoriesAndFiles" data}}>
+      {{#if isMainDrive}}
+        <span class="mft-folder-icon main-drive">
+          {{rsa-icon name="computer-disk-drive-1"}}
+        </span>
+        <span class="file main-drive">{{value}}</span>
+      {{else}}
+        <span class="mft-folder-icon">
+          {{rsa-icon name="folder-2"}}
+        </span>
+        <span class="file">{{value}}</span>
+      {{/if}}
+    </div>
+
+    {{#each data.children as |item|}}
+      {{host-detail/downloads/directory-wrapper/mft-directory data=item value=item.name}}
+    {{/each}}
+
+  {{/host-detail/downloads/directory-wrapper/subdirectory-access}}
+
+{{else}}
+
+  <div class="mft-folder no-sub-folders" {{action "fetchSubdirectoriesAndFiles" data}}>
+    <span class="mft-folder-icon">
+      {{rsa-icon name="folder-2"}}
+    </span>
+    <span class="file">{{value}}</span>
+  </div>
+
+{{/if}}

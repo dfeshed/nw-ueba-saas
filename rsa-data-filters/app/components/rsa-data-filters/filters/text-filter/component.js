@@ -1,0 +1,1 @@
+export { default } from 'rsa-data-filters/components/rsa-data-filters/filters/text-filter/component';

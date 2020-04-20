@@ -1,0 +1,95 @@
+<div class="console-content">
+  <div>
+    <div class="service">
+      <span class="label">{{t "investigate.queryStats.queried"}}</span>
+      <span class="value">{{queriedService.displayName}}</span>
+    </div>
+
+    <div class="timerange">
+      <span class="label">{{t "investigate.queryStats.between"}}</span>
+      <span class="value">
+        <span class="start">
+          {{moment-format formattedStartDate format
+            locale=i18n.primaryLocale
+            timeZone=timezone.selected.zoneId
+          }}
+        </span>
+        -
+        <span class="end">
+          {{moment-format formattedEndDate format
+            locale=i18n.primaryLocale
+            timeZone=timezone.selected.zoneId
+          }}
+        </span>
+      </span>
+    </div>
+
+    {{#if filters.metaFilters}}
+      <div class="filters">
+        <span class="label">{{t "investigate.queryStats.metaFilter"}}</span>
+        <span class="value">
+          <code>{{filters.metaFilters}}</code>
+        </span>
+      </div>
+    {{/if}}
+
+    {{#if filters.textFilter}}
+      <div class="filters">
+        <span class="label" title={{t "investigate.queryStats.textFilterWarning"}}>
+          {{t "investigate.queryStats.textFilter"}}
+          {{rsa-icon name="information-circle"}}&nbsp;:
+        </span>
+        <span class="value">
+          <code>{{filters.textFilter}}</code>
+        </span>
+      </div>
+    {{/if}}
+  </div>
+
+  {{#if (or hasWarning isMixedMode)}}
+    <ul class="warnings">
+      {{#if isMixedMode}}
+        <li>
+          {{rsa-icon title=(t "investigate.queryStats.warning") name="synchronize-warning-1" size="large" class="is-mixed-mode"}}
+          {{t "investigate.queryStats.isMixedMode"}}
+        </li>
+      {{/if}}
+      {{#each warnings as |w|}}
+        {{query-container/console-panel/warning message=w.warning service=w.serviceName}}
+      {{/each}}
+    </ul>
+  {{/if}}
+
+  <div class="status-summary">
+    <div class="progress">
+      <span class="label">{{t "investigate.queryStats.progress"}}</span>
+      <span class="value">
+        {{progressLabel}}
+      </span>
+    </div>
+
+    {{#if isRetrieving}}
+      {{#unless hasError}}
+        {{query-container/console-panel/progress-bar}}
+      {{/unless}}
+    {{/if}}
+
+    {{#if hasError}}
+      <ul class="fatal-errors">
+        {{#each errors as |error|}}
+          <li>
+            {{rsa-icon title=(t "investigate.queryStats.error") name="report-problem-triangle" size="large"}}
+            {{#if error.serviceName}}
+              <strong>{{error.serviceName}}:</strong>
+            {{/if}}
+            <span class="error-text">{{error.error}}</span>
+          </li>
+        {{/each}}
+      </ul>
+    {{/if}}
+
+    {{#if devices.length}}
+      {{query-container/console-panel/devices}}
+    {{/if}}
+  </div>
+</div>

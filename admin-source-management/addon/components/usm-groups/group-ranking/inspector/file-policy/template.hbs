@@ -1,0 +1,43 @@
+<vbox class="rsa-application-layout-panel-content" xs="12" fit>
+  {{#each selectedFilePolicy as |section|}}
+    <div class="heading">
+      <hbox fit class="col-xs-12">
+        <hbox class="value col-xs-6 col-md-7">{{t section.header fileType=section.headerVars.fileType}}</hbox>
+        <hbox class="value col-xs-6 col-md-5"></hbox>
+      </hbox>
+    </div>
+    {{#each section.props as |prop|}}
+      <hbox fit class="col-xs-12">
+        <hbox class="title col-xs-6 col-md-4">{{t prop.name}}</hbox>
+        {{#if (eq prop.name "adminUsm.policyWizard.filePolicy.customConfig") }}
+          <hbox class="value col-xs-6 col-md-3">
+            {{#rsa-text-with-tooltip value=prop.value
+              style="standard"}}
+              <div class="table-cell-text">{{prop.value}}</div>
+            {{/rsa-text-with-tooltip}}
+          </hbox>
+        {{else}}
+          <hbox class="value col-xs-6 col-md-3">{{prop.value}}</hbox>
+        {{/if}}
+        <hbox class="value col-xs-6 col-md-5 propValue">{{prop.origin.policyName}} - {{prop.origin.groupName}}</hbox>
+      </hbox>
+    {{/each}}
+    {{#if section.advancedProps}}
+      <div class="advanced-props">
+        <div class="heading">
+          <hbox fit class="col-xs-12">
+            <hbox class="value col-xs-6 col-md-7">{{t section.advancedHeader}}</hbox>
+            <hbox class="value col-xs-6 col-md-5"></hbox>
+          </hbox>
+        </div>
+        {{#each section.advancedProps as |advancedProp|}}
+          <hbox fit class="col-xs-12">
+            <hbox class="title col-xs-6 col-md-4">{{t advancedProp.name}}</hbox>
+            <hbox class="value col-xs-6 col-md-3">{{advancedProp.value}}</hbox>
+            <hbox class="value col-xs-6 col-md-5 propValue">{{advancedProp.origin.policyName}} - {{advancedProp.origin.groupName}}</hbox>
+          </hbox>
+        {{/each}}
+      </div>
+    {{/if}}
+  {{/each}}
+</vbox>

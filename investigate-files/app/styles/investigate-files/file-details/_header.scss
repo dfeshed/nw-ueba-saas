@@ -1,0 +1,114 @@
+.file-header {
+  height: 122px;
+  padding: rsa-whitespace() rsa-whitespace(less) 0 rsa-whitespace();
+  border-bottom: 1px solid text-color(primary, dark);
+  background-color: text-color(primary, darker);
+  .title-bar {
+    line-height: 3px;
+
+    &__file-title {
+      @include rsa-font(header, larger);
+      border-bottom-width: 3px;
+      line-height: 2.25rem;
+      .divider {
+        height: 45px;
+        @include border-left(1px, solid, primary, dark);
+        margin: rsa-whitespace(least) rsa-whitespace(less);
+      }
+    }
+
+    .rsa-form-button-wrapper {
+      &.is-active button {
+        border-bottom: 3px solid border-color(secondary);
+      }
+    }
+    .open-properties {
+      bottom: 4px;
+    }
+    .rsa-risk-score {
+      padding-right: 0.75rem;
+    }
+    .header-top-right-elements {
+      position: absolute;
+      right: 0;
+    }
+    .file-header-actions {
+      .edit-file-status {
+        display: none
+      }
+      .file-actionbar {
+        padding-top: 0;
+        .rsa-form-button i{
+          @include border-bottom(2px, solid, primary, base, transparent);
+          padding-bottom: rsa-whitespace(less);
+          border-color: transparent;
+          &:hover{
+            border-color: border-color(secondary);
+          }
+        }
+        .pivot-to-event-analysis {
+            margin-right: 0;
+        }
+        .rsa-form-button-wrapper.is-icon-only {
+          padding-left: 0;
+        }
+      }
+      .file-status-more-actions {
+        margin-left: -0.5rem;
+        margin-top: -3px;
+        .rsa-icon-arrow-down-12 {
+          display: none;
+        }
+      }
+    }
+    .file-title-os-wrapper {
+      max-width: 300px;
+      padding-right: 0.5rem;
+      .title-bar__file-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 195px;
+        white-space: nowrap;
+      }
+      .osType {
+        text-transform: none;
+        font-size: 1rem;
+        margin-top: -5px;
+      }
+    }
+  }
+
+  .file-summary {
+    padding-left: rsa-whitespace(less);
+    svg {
+      padding-right: rsa-whitespace(more);
+    }
+    .rsa-content-definition {
+      padding-right: rsa-whitespace(more);
+      padding-top: rsa-whitespace();
+      height: 3rem;
+      .label {
+        @include rsa-font(header, small);
+        color: text-color(primary, light);;
+        margin-bottom: rsa-whitespace();
+      }
+      .value {
+        color: text-color(primary, lightest);
+      }
+    }
+  }
+
+  .file-details-tabs {
+    .label {
+      text-transform: uppercase;
+      @include rsa-font(navigation);
+      padding-bottom: 0.5rem;
+    }
+    .rsa-nav-tab {
+      cursor: pointer;
+      margin-bottom: 0px;
+      padding-bottom: 6px;
+    }
+  }
+
+}

@@ -1,0 +1,53 @@
+.rsa-context-panel-header {
+
+  background-color: background-color(primary, darkest);
+  &__ip-value {
+    @include rsa-font(bold);
+  }
+  &__panel-close {
+    float: right;
+    transform: translate(-100%, 0);
+    color: text-color(primary, light);
+    margin-top: 0.8rem;
+    cursor: pointer;
+  }
+
+  &__header-icons {
+    padding-left: rsa-whitespace(base);
+    align-items: flex-end;
+  }
+
+  &__close-icon {
+    padding-right: rsa-whitespace();
+  }
+
+  &__title {
+    @include rsa-font(header, large);
+    height: inherit;
+    padding-top: rsa-whitespace(less);
+    > span {
+      height: inherit;
+      vertical-align: top;
+    }
+    &__lookup {
+      cursor: auto !important;
+      max-width: 75%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__tooltip {
+      padding:rsa-whitespace(less);
+      max-width: 350px;
+      word-break: break-all;
+  }
+
+  &__unsafe {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: rsa-whitespace(less);
+    color: text-color(accentOne, darker);
+  }
+}

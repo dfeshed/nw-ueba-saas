@@ -1,0 +1,14 @@
+.rsa-offset-column {
+  cursor: default;
+  width: $packet-offsets-width;
+  padding-left: 2.5rem;
+
+  td {
+    @include rsa-font-monospace();
+    display: block;
+    @include border(1px, solid, primary, base, transparent);
+    padding: 1px;
+    margin: 1px;
+    height: 12px;
+  }
+}

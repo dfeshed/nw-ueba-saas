@@ -1,0 +1,24 @@
+<h2 class="title">
+  {{t "respond.eventDetails.title"}}
+</h2>
+<h3 class="subtitle">
+  {{#if model.description}}
+    <span class="description">
+      {{model.description}}
+    </span>
+    <span class="delim">
+      &middot;
+    </span>
+  {{/if}}
+  {{#if model.timestamp}}
+    <span class="timestamp">
+      {{rsa-content-datetime
+        timestamp=model.timestamp
+        displayDate=true
+        displayTime=true
+        displaySeconds=true
+        displayMilliseconds=false
+      }}
+    </span>
+  {{/if}}
+</h3>

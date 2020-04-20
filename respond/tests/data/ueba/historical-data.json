@@ -1,0 +1,879 @@
+{
+  "data": [
+    {
+      "data": [
+        {
+          "keys": [
+            "1575280800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575198000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575712800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575810000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576076400000"
+          ],
+          "additionalInformation": null,
+          "value": 60,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575291600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575129600000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575619200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575734400000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575187200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575205200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575208800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575792000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575190800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575370800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575723600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575216000000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575900000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575979200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575993600000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575277200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576062000000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575644400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575630000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576054800000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575115200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575471600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575622800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575813600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575388800000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575907200000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575457200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575100800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575468000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575561600000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575982800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575799200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575550800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575543600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575111600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575475200000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575532800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575108000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575201600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575806400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575558000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575964800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575720000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575367200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575633600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575889200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575460800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575298800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575892800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575126000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575194400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575385200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575302400000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576058400000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575648000000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575273600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575705600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575730800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576072800000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575295200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575284400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575626400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575637200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575360000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576069200000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575547200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575975600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575374400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575640800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575716400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575212400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575446400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575972000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575885600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575464400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575990000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575540000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575878400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575453600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575122400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575378000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576051200000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575903600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575817200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576080000000"
+          ],
+          "additionalInformation": null,
+          "value": 30,
+          "anomaly": true
+        },
+        {
+          "keys": [
+            "1575896400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575363600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575968400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575381600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575450000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575288000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575802800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575554400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575820800000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575104400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575727200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575118800000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575709200000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575795600000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575882000000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1576065600000"
+          ],
+          "additionalInformation": null,
+          "value": 0,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575536400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        },
+        {
+          "keys": [
+            "1575986400000"
+          ],
+          "additionalInformation": null,
+          "value": 1,
+          "anomaly": false
+        }
+      ],
+      "contexts": {
+        "userId": "lily anderson"
+      }
+    }
+  ],
+  "total": 1,
+  "offset": 0,
+  "warning": null,
+  "info": null
+}

@@ -1,0 +1,15 @@
+{{#if isError}}
+  <centered>
+    {{rsa-panel-message message=(t "health-wellness.error.serviceOffline")}}
+  </centered>
+{{else if isDataLoading}}
+  <centered>
+    {{rsa-loader size="larger"}}
+  </centered>
+{{else}}
+  {{#rsa-page-layout as |layout|}}
+    {{#layout.center}}
+      {{hw-list}}
+    {{/layout.center}}
+  {{/rsa-page-layout}}
+{{/if}}

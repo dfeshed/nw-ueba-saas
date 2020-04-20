@@ -1,0 +1,34 @@
+<span class="rsa-form-label">
+  {{#if tooltip}}
+    {{#rsa-text-with-tooltip value=tooltip
+      style="standard"
+      alwaysShow=true
+    }}
+      {{label}}
+    {{/rsa-text-with-tooltip}}
+  {{else}}
+    {{label}}
+  {{/if}}
+</span>
+
+{{input
+  type=type
+  value=value
+  maxlength=maxLength
+  placeholder=placeholder
+  disabled=resolvedDisabled
+  spellcheck=spellcheck
+  enter=onEnter
+  key-up=onKeyUp
+  key-down=onKeyDown
+  focus-out=focusOut
+  autocomplete=autocomplete
+  autofocus=autofocus
+  bubbles=bubbles
+}}
+
+{{#if (and isError errorMessage)}}
+  <div class="input-error">
+    {{errorMessage}}
+  </div>
+{{/if}}

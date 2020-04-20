@@ -1,0 +1,13 @@
+.entity-details-container-body-indicator-navigator {
+  display: flex;
+  align-items: center;
+  &_button {
+    height: 100%;
+
+    .rsa-form-button {
+      height: 100%;
+      border: none;
+      padding: rsa-whitespace(less);
+    }
+  }
+}

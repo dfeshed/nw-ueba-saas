@@ -1,0 +1,63 @@
+$footerHeight: 40px;
+
+.configure-engine .log-parsers {
+  .log-parser-toolbar {
+    margin: rsa-whitespace(more) 0 0 0;
+    padding-bottom: rsa-whitespace(least);
+    border-bottom: 1px solid border-color(primary);
+    .action-control {
+      padding: rsa-whitespace(less);
+      display: inline-block;
+    }
+    .delete-log-parser {
+      padding-right: rsa-whitespace(more);
+    }
+    .add-new-log-parser {
+      margin-left: rsa-whitespace(less);
+    }
+  }
+}
+
+.add-log-parser {
+  .add-log-parser-form {
+    padding: rsa-whitespace();
+    .add-log-parser-instruction {
+      padding: rsa-whitespace() 0;
+      @include rsa-font(paragraph);
+      color: text-color(primary, light);
+    }
+    .form-option {
+      margin-bottom: rsa-whitespace();
+      .ember-power-select-clear-btn {
+        font-size: 1.25rem;
+        font-weight: 200;
+      }
+    }
+    .nameMessage {
+      font-size: 10px;
+      margin-bottom: 5px;
+      line-height: 12px;
+      color: text-color(primary, light);
+    }
+  }
+  footer {
+    height: $footerHeight;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: rsa-whitespace();
+    width: 100%;
+    padding: rsa-whitespace(less);
+
+    .modal-footer-buttons {
+      justify-content: flex-end;
+      .rsa-form-button-wrapper {
+        margin: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace();
+      }
+    }
+  }
+}
+
+#modalDestination .add-log-parser-modal {
+  width: 400px;
+  height: 600px;
+}

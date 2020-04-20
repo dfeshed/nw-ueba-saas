@@ -1,0 +1,63 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Example"}}
+        {{rsa-collapseable-nav
+          onTabClick=(action "onTabClick")
+          activeTab=activeTab
+          contentSections=contentSections
+        }}
+
+        {{!-- BEGIN-SNIPPET example
+        {{rsa-collapseable-nav
+          onTabClick=(action "onTabClick") // or onTabClick=onTabClick
+          activeTab=activeTab
+          contentSections=contentSections
+        }}
+        END-SNIPPET --}}
+        {{code-snippet name="example.hbs"}}
+
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category title="Inputs"}}
+      {{#spec-member title="contentSections" subtitle="contentSections:Array of EmberObject with name, label"}}
+        {{!-- BEGIN-SNIPPET contentSections
+        import EmberObject from '@ember/object';
+
+        [
+          EmberObject.create({ // be sure to use EmberObject or isActive binding won't work
+            name: 'files', // this will be used to set isActive when activeTab is passed in
+            label: 'Files' // how the tab will be rendered, don't forget i18n
+          })
+        ]
+        END-SNIPPET --}}
+        {{code-snippet name="contentSections.hbs"}}
+      {{/spec-member}}
+      {{#spec-member title="activeTab" subtitle="activeTab:String used to decorate contentSection with isActive"}}
+        {{!-- BEGIN-SNIPPET activeTab
+          'files',
+        END-SNIPPET --}}
+        {{code-snippet name="activeTab.hbs"}}
+      {{/spec-member}}
+      {{#spec-member title="onTabClick" subtitle="onTabClick:Action or ActionCreator used to update activeTab"}}
+        {{!-- BEGIN-SNIPPET onTabClick
+        {
+          actions: {
+            onTabClick(newTabName) {
+              this.set('activeTab', newTabName);
+            }
+          }
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="onTabClick.hbs"}}
+      {{/spec-member}}
+
+    {{/spec-category}}
+
+  </fill>
+</hbox>

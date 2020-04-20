@@ -1,0 +1,82 @@
+{{#if isExpensive}}
+  {{rsa-icon
+    name="stopwatch"
+    class="is-expensive expensive-indicator"
+    title=(t "queryBuilder.expensive")
+  }}
+{{/if}}
+
+{{query-container/pill-meta
+  canPerformTextSearch=canPerformTextSearch
+  shouldCleanInputFields=shouldCleanInputFields
+  hasTextPill=hasTextPill
+  isInsideParens=isInsideParens
+  isActive=(readonly isMetaActive)
+  isAutoFocused=(readonly isMetaAutoFocused)
+  isEditing=(readonly isEditing)
+  isExpanded=(readonly shouldMetaExpand)
+  isFirstPill=(eq position 0)
+  isLastPill=isLastPill
+  activePillTab=(readonly activePillTab)
+  metaOptions=metaOptions
+  prepopulatedMetaText=(readonly prepopulatedMetaText)
+  pillPlaceholder=pillPlaceholder
+  selection=(readonly selectedMeta)
+  sendMessage=(action "handleMessage")
+}}
+
+{{query-container/pill-operator
+  activePillTab=(readonly activePillTab)
+  canPerformTextSearch=canPerformTextSearch
+  hasTextPill=hasTextPill
+  isInsideParens=isInsideParens
+  isActive=(readonly isOperatorActive)
+  isEditing=(readonly isEditing)
+  isExpanded=(readonly shouldOperatorExpand)
+  isFocusAtBeginning=(readonly isOperatorFocusedAtBeginning)
+  meta=(readonly selectedMeta)
+  prepopulatedOperatorText=(readonly prepopulatedOperatorText)
+  selection=(readonly selectedOperator)
+  sendMessage=(action "handleMessage")
+}}
+
+{{query-container/pill-value
+  activePillTab=(readonly activePillTab)
+  canPerformTextSearch=canPerformTextSearch
+  hasTextPill=hasTextPill
+  isInsideParens=isInsideParens
+  isActive=(readonly isValueActive)
+  isEditing=(readonly isEditing)
+  isFocusAtBeginning=(readonly isValueFocusedAtBeginning)
+  operator=(readonly selectedOperator)
+  sendMessage=(action "handleMessage")
+  valueString=(readonly valueString)
+  valueSuggestions=(readonly valueSuggestions)
+  isValueSuggestionsCallInProgress=isValueSuggestionsCallInProgress
+}}
+
+{{#if isDeletable}}
+  {{query-container/delete-pill
+    sendMessage=(action "handleMessage")
+  }}
+{{/if}}
+
+{{#if isFocused}}
+  {{query-container/focus-holder
+    sendMessage=(action "handleMessage")
+  }}
+{{/if}}
+
+{{#if (not isExistingPill)}}
+  {{query-container/recent-query
+    isActive=(readonly isRecentQueriesTabActive)
+    shouldCleanInputFields=shouldCleanInputFields
+    hasTextPill=hasTextPill
+    isInsideParens=isInsideParens
+    prepopulatedRecentQueryText=(readonly prepopulatedRecentQueryText)
+    pillPlaceholder=pillPlaceholder
+    isFirstPill=(eq position 0)
+    isLastPill=isLastPill
+    sendMessage=(action "handleMessage")
+  }}
+{{/if}}

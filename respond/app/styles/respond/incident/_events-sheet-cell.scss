@@ -1,0 +1,9 @@
+.rsa-items-sheet {
+  .rsa-data-table-body-cell {
+    @include border-bottom(1px, solid, primary, darkest);
+
+    .has-context-data {
+      @include rsa-has-context-data();
+    }
+  }
+}

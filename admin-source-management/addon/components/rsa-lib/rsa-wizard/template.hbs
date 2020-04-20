@@ -1,0 +1,51 @@
+{{!-- wizard left side steps nav --}}
+<vbox fit class="rsa-wizard-left-container">
+  {{!-- wizard top-left titlebar container  --}}
+  <div class="rsa-wizard-titlebar-container">
+    {{component currentStep.titlebarComponent step=currentStep}}
+  </div>
+  {{!-- TODO maybe extract into a separate component if validation gets crazy? --}}
+  <ul>
+    {{#each steps as |step|}}
+      <li>
+        <a
+          class="{{if (eq currentStepId step.id) "active"}}"
+          {{!-- TODO make steps clickable once we figure out validations --}}
+          {{!-- onclick={{action 'transitionToStep' step.id}} --}}
+        >
+          {{t step.title}}
+          {{#if (not-eq currentStepId step.id)}}
+            {{rsa-icon name="arrow-right-12"}}
+          {{/if}}
+        </a>
+      </li>
+    {{/each}}
+  </ul>
+</vbox>
+
+{{!-- wizard right side step & toolbar container --}}
+<vbox class="rsa-wizard-right-container">
+  {{!-- wizard current step container --}}
+  <vbox fit class="rsa-wizard-step-container">
+    {{component currentStep.stepComponent step=currentStep}}
+  </vbox>
+  {{!-- wizard warning message box --}}
+  {{#if warningMessages}}
+    <vbox class="rsa-wizard-warning-box">
+      {{#rsa-content-warn-text-box value=warningMessages.[0]}}{{/rsa-content-warn-text-box}}
+    </vbox>
+  {{/if}}
+  {{!-- wizard current step toolbar container --}}
+  <vbox class="rsa-wizard-toolbar-container">
+    {{component currentStep.toolbarComponent step=currentStep transitionToStep=(action "transitionToStep") transitionToClose=(action transitionToClose)}}
+  </vbox>
+</vbox>
+
+{{!-- Overlay to prevent interactions while loading --}}
+{{#if isWizardLoading}}
+  <div class="rsa-wizard-loading-overlay">
+    <centered>
+      {{rsa-loader size="large"}}
+    </centered>
+  </div>
+{{/if}}

@@ -1,0 +1,52 @@
+export const COMPLETE = 0x00000001;
+export const PARTIAL = 0x00000002;
+export const DATA_TYPE_MASK = 0x00FF0000;
+export const BINARY = 0x00010000;
+export const STRING = 0x00020000;
+export const PARAMS = 0x00030000;
+export const PARAM_LIST = 0x00040000;
+export const NODE_INFO = 0x00050000;
+export const NODE_LIST = 0x00060000;
+export const QUERY_RESULTS = 0x00070000;
+export const PARAMS_BINARY = 0x00080000; // New message type, string params followed by binary data
+export const STREAM = 0x00090000; // A stream of bytes, probably sent over many messages. Special handling for it is built into the architecture
+export const MSGPACK = 0x000A0000; // New message type for v11.0
+export const CANCEL = 0x00000004; // Cancel any ongoing operation, same as closing the channel
+export const MONITOR = 0x00000008; // This is a monitor response
+export const NODE_ADDED = 0x00000010; // Node has been added, monitor response
+export const NODE_DELETED = 0x00000020; // Node has been deleted, monitor response
+export const BUFFER_CRC = 0x00000040; // Computes a CRC on the buffer whenever the message is serialized/deserialized
+export const STATUS_UPDATE = 0x00000080; // Indicates the message is a status update and not part of a large chunked series of responses
+export const RESPONSE = 0x40000000; // Set when the flag is a service response, otherwise it's a request
+export const ERROR = 0x080000000; // last bit, other bits are error code
+
+// NetWitness admin SDK node types and masks
+export const NODE_FLAGS_MASK = 0x000000000000FFFF;
+export const MONITOR_TREE_CHANGES_ONLY = 0x0000000000000001;
+export const PRETTY_PRINT = 0x0000000000000002; // < Pretty print stat values like size */
+export const CONFIG_VALUE_RESTART_NEEDED = 0x0000000000000010; // < Node value changed, but restart needed before it takes effect */
+export const STAT_THRESHOLDS_PERMITTED = 0x0000000000000020; // < Stat node allows threshold values for SNMP */
+export const NODE_NAME_MATCHES_HANDLE = 0x0000000000000100; // < The node name will always match it's handle, which may change after a restart */
+export const STAT_THRESHOLD_ROLE_MISSING = 0x0000000000004000; // < Thresholds of node could not be returned, missing getLimit msg role */
+export const NODE_GET_ROLE_MISSING = 0x0000000000008000; // < Value of node could not be returned, missing GET msg role */
+export const NODE_TYPE_MASK = 0x0000FFFF00000000;
+export const FOLDER_NODE = 0x0000100000000000;
+export const STAT_NODE = 0x0000200000000000;
+export const CONFIG_NODE = 0x0000400000000000;
+export const CHANNEL_NODE = 0x0000800000000000;
+export const TASK_NODE = 0x0000010000000000;
+export const MONITOR_NODE = 0x0000020000000000;
+
+// NetWitness Admin SDK node instance types, most significant upper 2 bytes
+export const NODE_INSTANCE_MASK = 0xFFFF000000000000;
+export const FOLDER_INSTANCE = 0x0001000000000000;
+export const STAT_INSTANCE = 0x0002000000000000;
+export const CONFIG_INSTANCE = 0x0003000000000000;
+export const USER_INSTANCE = 0x0004000000000000; // < /users/[user] */
+export const PASSWORD_INSTANCE = 0x0005000000000000; // < /users/[user]/config/password */
+export const CONNECTION_INSTANCE = 0x0006000000000000; // < /connections/[IP] */
+export const SESSION_INSTANCE = 0x0007000000000000; // < /connections/[IP]/sessions/[session id] */
+export const CHANNEL_INSTANCE = 0x0008000000000000; // < /connections/[IP]/sessions/[session id]/channels/[channel id] */
+export const SERVICE_INSTANCE = 0x0009000000000000; // < /services/[service] */
+export const TASK_INSTANCE = 0x000A000000000000;
+export const MONITOR_INSTANCE = 0x000B000000000000;

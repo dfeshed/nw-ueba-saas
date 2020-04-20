@@ -1,0 +1,34 @@
+<span class="rsa-form-label">
+  {{#if tooltip}}
+    {{#rsa-text-with-tooltip value=tooltip
+      style="standard"
+      alwaysShow=true}}
+      {{label}}
+    {{/rsa-text-with-tooltip}}
+  {{else}}
+    {{label}}
+  {{/if}}
+</span>
+
+<textarea
+  value={{value}}
+  autofocus={{autofocus}}
+  disabled={{resolvedDisabled}}
+  maxlength={{maxLength}}
+  placeholder={{placeholder}}
+  spellcheck={{spellcheck}}
+  {{!--
+    'enter=onEnter' is specific to the {{textarea}} helper and does NOT work with <textarea>,
+    but we are handling it with a 'keyup' listener added in the .js file
+  --}}
+  {{!-- enter={{action onEnter}} --}}
+  onblur={{action onFocusOut}}
+  onkeydown={{action onKeyDown}}
+  onkeyup={{action onKeyUp}}
+></textarea>
+
+{{#if (and isError errorMessage)}}
+  <div class="input-error">
+    {{errorMessage}}
+  </div>
+{{/if}}

@@ -1,0 +1,64 @@
+version: '2.1'
+services:
+
+  mongo:
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-mongodb
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "'db.ServerStatus()'"]
+    ports:
+      - 27017:27017
+
+  rabbitmq:
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-rabbitmq
+    healthcheck:
+       test: ["CMD", "rabbitmqctl", "status"]
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  logdecoder:
+    restart: always
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-logdecoder
+    ports:
+      - 50002:50002
+      - 56002:56002
+      - 50102:50102
+      
+  content-server:
+    image: docker-registry-mirror.rsa.lab.emc.com/netwitness/rsa-nw-content-server:${DOCKER_INTEGRATION_TAG:-latest}
+    environment:
+      logging.level.DataAccess: DEBUG
+      rsa.admin.security.settings.same-origin-required: "false"
+      rsa.configuration.remote-enabled: "false"
+      rsa.security.authorization.remote-enabled: "false"
+      rsa.security.pki.use-deployment-trust: "false"
+      rsa.transport.bus.shutdown-timeout: 1ms
+      rsa.transport.bus.host: rabbitmq
+      rsa.process.shutdown-delay: 1s
+      rsa.transport.bus.shutdown-timeout: 1ms
+      rsa.transport.http.secure: "false"
+      rsa.data.enabled: "true"
+      rsa.data.control.enabled: "true"
+      rsa.data.control.servers[0]: mongo
+      rsa.data.application.servers[0]: mongo
+      rsa.orchestration.service.remote-enabled: "false"
+      rsa.orchestration.service.instances[0].id: 1
+      rsa.orchestration.service.instances[0].name: log-decoder
+      rsa.orchestration.service.instances[0].display-name: logDecoder
+      rsa.orchestration.service.instances[0].host: logdecoder
+      rsa.orchestration.service.instances[0].port: 50002
+      rsa.orchestration.service.instances[0].use-tls: "false"
+      rsa.orchestration.service.instances[0].version: 11.3.0.0
+      rsa.security.oauth.auth-server: "true"
+      rsa.service.password: changeMe
+      rsa.dev.integration: "true"
+      rsa.nextgen.system.client.username: admin
+      rsa.nextgen.system.client.password: netwitness
+      rsa.nextgen.system.client.role: Administrator
+    ports:
+      - 7006:7006
+    depends_on:
+      - rabbitmq
+      - mongo
+      - logdecoder
+      

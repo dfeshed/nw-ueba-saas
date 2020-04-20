@@ -1,0 +1,31 @@
+<span class="rsa-form-label">
+  {{label}}
+</span>
+
+{{rsa-icon name="calendar-2" class="datetime-picker-icon"}}
+
+{{ember-flatpickr
+  enableTime=enableTime
+  onChange=onChange
+  onClose=(action "forceChangeOnClose")
+  placeholder=placeholder
+  disabled=isDisabled
+  allowInput=allowInput
+  enableSeconds=enableSeconds
+  dateFormat=convertedFullFormat
+  minuteIncrement=1
+  locale=locale
+  time_24hr=time24HR
+  defaultHour=defaultHour
+  defaultMinute=defaultMinute
+  static=static
+  date=(readonly value)
+  minDate=minDate
+  maxDate=maxDate
+}}
+
+{{#if (and isError errorMessage)}}
+  <div class="input-error">
+    {{errorMessage}}
+  </div>
+{{/if}}

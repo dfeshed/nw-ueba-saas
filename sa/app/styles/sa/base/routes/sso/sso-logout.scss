@@ -1,0 +1,44 @@
+.sso-logout-page {
+  background-image: url('images/NW-Background-Blur.jpg');
+  color: #eeeeee;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+
+  .sso-logout-message {
+    border-color: #212121;
+    border-width: 1px;
+    border-style: solid;
+    padding: 1rem;
+    background: rgba(22, 22, 22, 0.6);
+    width: 41rem;
+    height: 5rem;
+    text-align: center;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
+  p {
+    @include rsa-font(paragraph, small);
+    margin-bottom: rsa-whitespace();
+  }
+
+  h3 {
+    @include rsa-font(body, larger);
+    line-height: 2.5rem;
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,54 @@
+.process-properties-container {
+  @include border-right(1px, solid, primary, dark);
+  @include border-left(1px, solid, primary, dark);
+  @include border-bottom(1px, solid, primary, dark);
+  height: 280px;
+  border-right: 1px solid ;
+  grid-auto-flow: column;
+  display: grid;
+  overflow: auto;
+  .title {
+    text-transform: uppercase;
+    padding: rsa-whitespace(less) rsa-whitespace();
+    color: text-color(secondary);
+    font-weight: bold;
+  }
+}
+.property-container {
+  grid-template-columns: repeat(auto-fill, 200px);
+
+}
+
+.list_items {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(5, 40px);
+  grid-gap: 7px;
+  border-right: 1px solid border-color(primary);
+  padding: 0 7px;
+  .tooltip-text {
+    line-height: 1.2rem;
+    margin-top: 0px;
+  }
+  li {
+    padding: 7px;
+    width: fit-content;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    .item-title {
+      text-transform: uppercase;
+      color: text-color(primary, light);
+      font-size: 0.7rem;
+      font-weight: bold;
+      line-height: 1.2rem;
+    }
+    .item-value {
+      color: text-color(primary, lightest);
+      line-height: 1.2rem;
+      div {
+        outline: none;
+      }
+    }
+  }
+}

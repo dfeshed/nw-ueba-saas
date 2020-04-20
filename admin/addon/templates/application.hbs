@@ -1,0 +1,41 @@
+<page class="admin-engine {{routePath}}">
+  <div class="rsa-nav-tab-group">
+    {{#if accessControl.hasAdminViewAppliancesAccess}}
+      {{#rsa-nav-tab compact=true align="left" isActive=false}}
+        <a href="/admin/appliances" class="label">{{t "admin.navbar.appliances"}}</a>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasAdminViewServicesAccess}}
+      {{#rsa-nav-tab compact=true align="left" isActive=false}}
+        <a href="/admin/services" class="label">{{t "admin.navbar.services"}}</a>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasAdminViewEventSourcesAccess}}
+      {{#rsa-nav-tab compact=true align="left" isActive=false}}
+        <a href="/admin/eventsources" class="label">{{t "admin.navbar.eventSources"}}</a>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if hasAdminViewUnifiedSourcesAccess}}
+      {{#rsa-nav-tab compact=true align="left" class="usmNavTab" isActive=isUnifiedSourcesActive}}
+        {{#link-to "admin-source-management" class="label"}}{{t "admin.navbar.unifiedSources"}}{{/link-to}}
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasAdminHealthWellnessAccess}}
+      {{#rsa-nav-tab compact=true align="left" isActive=false}}
+        <a href="/admin/monitoring" class="label">{{t "admin.navbar.healthWellness"}}</a>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasAdminSystemSettingsAccess}}
+      {{#rsa-nav-tab compact=true align="left" isActive=false}}
+        <a href="/admin/system" class="label">{{t "admin.navbar.system"}}</a>
+      {{/rsa-nav-tab}}
+    {{/if}}
+    {{#if accessControl.hasAdminSASecurityAccess}}
+      {{#rsa-nav-tab compact=true align="left" isActive=false}}
+        <a href="/admin/security" class="label">{{t "admin.navbar.security"}}</a>
+      {{/rsa-nav-tab}}
+    {{/if}}
+  </div>
+  {{license-banner}}
+  {{outlet}}
+</page>

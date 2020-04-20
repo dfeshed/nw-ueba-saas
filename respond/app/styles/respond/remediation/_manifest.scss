@@ -1,0 +1,16 @@
+@import "task";
+
+.rsa-remediation-task-overview {
+  .metadata.assignee {
+    label {
+      padding-top: rsa-whitespace(less);
+    }
+  }
+  .text.description {
+    .editable-field {
+      &.textarea {
+        min-height: 300px;
+      }
+    }
+  }
+}

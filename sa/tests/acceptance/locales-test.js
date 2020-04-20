@@ -1,0 +1,139 @@
+import { Promise } from 'rsvp';
+import { get } from '@ember/object';
+import { test, module } from 'qunit';
+import { setupApplicationTest } from 'ember-qunit';
+import { setupLoginTest, login } from '../helpers/setup-login';
+import { waitForRedux } from '../helpers/wait-for-redux';
+import { waitForSockets } from '../helpers/wait-for-sockets';
+import { patchFetch } from 'sa/tests/helpers/patch-fetch';
+import { visit, currentURL, settled, waitUntil } from '@ember/test-helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
+
+const english = { id: 'en_US', key: 'en-us', label: 'english' };
+const spanish = { id: 'es_MX', key: 'es-mx', label: 'spanish', fileName: 'spanish_es-mx.json' };
+const german = { id: 'de_DE', key: 'de-de', label: 'german', fileName: 'german_de-de.json' };
+const japanese = { id: 'ja_JP', key: 'ja-jp', label: 'japanese', fileName: 'japanese_ja-jp.json' };
+
+const setupLocalStorage = (locale, locales) => {
+  localStorage.setItem('reduxPersist:global', JSON.stringify({
+    preferences: {
+      locale,
+      locales
+    }
+  }));
+};
+
+module('Acceptance | locales', function(hooks) {
+  setupApplicationTest(hooks);
+  setupLoginTest(hooks);
+
+  test('locales are fetched and persisted before login', async function(assert) {
+    assert.expect(6);
+
+    setupLocalStorage(english, [english]);
+    await waitForRedux('global.preferences.locale.id', english.id);
+
+    const done = waitForSockets();
+
+    await visit('/');
+
+    assert.equal(currentURL(), '/login');
+
+    await settled();
+
+    const i18n = this.owner.lookup('service:i18n');
+    assert.equal(get(i18n, 'primaryLocale'), 'en-us');
+
+    const redux = this.owner.lookup('service:redux');
+    const { locale, locales } = redux.getState().global.preferences;
+    assert.deepEqual(locale, english);
+    assert.equal(locales.length, 4);
+
+    await login();
+
+    await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
+    assert.equal(currentURL(), '/respond/incidents');
+
+    await waitUntil(() => get(i18n, 'primaryLocale') === 'en-us', { timeout: 5000 });
+    assert.equal(get(i18n, 'primaryLocale'), 'en-us');
+
+    await settled().then(() => done());
+  });
+
+  test('users locale preference will update i18n locale after successful login', async function(assert) {
+    assert.expect(6);
+
+    setupLocalStorage(spanish, [english, spanish]);
+    await waitForRedux('global.preferences.locale.id', spanish.id);
+
+    const done = waitForSockets();
+
+    await visit('/');
+
+    assert.equal(currentURL(), '/login');
+
+    await settled();
+
+    const i18n = this.owner.lookup('service:i18n');
+    assert.equal(get(i18n, 'primaryLocale'), 'es-mx');
+
+    const redux = this.owner.lookup('service:redux');
+    const { locale, locales } = redux.getState().global.preferences;
+    assert.deepEqual(locale, spanish);
+    assert.deepEqual(locales, [english, german, japanese, spanish]);
+
+    await login();
+
+    await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
+    assert.equal(currentURL(), '/respond/incidents');
+
+    await waitUntil(() => get(i18n, 'primaryLocale') === 'en-us', { timeout: 5000 });
+    assert.equal(get(i18n, 'primaryLocale'), 'en-us');
+
+    await settled().then(() => done());
+  });
+
+  test('application title will update when i18n locale changed', async function(assert) {
+    assert.expect(5);
+
+    const done = waitForSockets();
+
+    await visit('/');
+
+    assert.equal(currentURL(), '/login');
+
+    const headData = this.owner.lookup('service:headData');
+    assert.equal(get(headData, 'title').toString(), 'NetWitness Platform');
+
+    await login();
+
+    await waitUntil(() => currentURL() === '/respond/incidents', { timeout: 5000 });
+    assert.equal(currentURL(), '/respond/incidents');
+
+    await waitUntil(() => get(headData, 'title') === 'Incidents - Respond - NetWitness Platform', { timeout: 5000 });
+    assert.equal(get(headData, 'title'), 'Incidents - Respond - NetWitness Platform');
+
+    patchFetch(() => {
+      return new Promise(function(resolve) {
+        resolve({
+          ok: true,
+          text() {
+            return new Promise(function(r) {
+              r({ respond: { title: 'JA_Respond' } });
+            });
+          }
+        });
+      });
+    });
+
+    const powerSelect = '[test-id=locale-preferences] .power-select';
+    await selectChoose(`${powerSelect} .ember-power-select-trigger`, 'Japanese');
+
+    await waitUntil(() => {
+      return get(headData, 'title') === 'Incidents - JA_Respond - NetWitness Platform';
+    }, { timeout: 5000 });
+    assert.equal(get(headData, 'title').toString(), 'Incidents - JA_Respond - NetWitness Platform');
+
+    await settled().then(() => done());
+  });
+});

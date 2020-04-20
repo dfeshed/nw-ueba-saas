@@ -1,0 +1,67 @@
+<vbox>
+  <hbox class="control source-type">
+    <label class="rsa-form-label power-select">
+      <div class="label-text">
+        <div class="tooltip">
+          {{#rsa-text-with-tooltip value=(t "adminUsm.policyWizard.sourceTypeTooltip")
+            style="standard"
+            alwaysShow=true}}
+            {{t "adminUsm.policyWizard.sourceType"}}
+          {{/rsa-text-with-tooltip}}
+        </div>
+      </div>
+      {{#power-select
+        class="source-type"
+        tabIndex="1"
+        placeholder=(t "adminUsm.policyWizard.sourceTypePlaceholder")
+        options=sourceTypes
+        selected=selectedSourceType
+        searchField="label"
+        disabled=cannotEditSourceType
+        onchange=(action "handleSourceTypeChange") as |option|
+      }}
+        {{rsa-form-select/default-option
+          disabled=option.disabled
+          disabledTooltip=(t option.disabledTooltip)
+          optionLabel=(t option.label)
+        }}
+      {{/power-select}}
+    </label>
+  </hbox>
+  <hbox class="control">
+    {{rsa-form-input-oneway
+      class="policy-name"
+      tooltip=(t "adminUsm.policyWizard.nameTooltip")
+      tabIndex="2"
+      label=(t "adminUsm.policyWizard.name")
+      placeholder=(t "adminUsm.policyWizard.namePlaceholder")
+      value=name
+      maxLength=256
+      isError=nameValidator.showError
+      errorMessage=(t nameValidator.errorMessage)
+      isDisabled=cannotEditPolicyIdentity
+      onFocusOut=(action "handleNameChange" value="target.value")
+    }}
+  </hbox>
+  <vbox>
+    <hbox class="control-with-error">
+      {{rsa-form-textarea-oneway
+        class="policy-description"
+        tooltip=(t "adminUsm.policyWizard.descTooltip")
+        tabIndex="3"
+        label=(t "adminUsm.policyWizard.description")
+        placeholder=(t "adminUsm.policyWizard.descPlaceholder")
+        value=description
+        maxLength=8000
+        isError=descriptionValidator.showError
+        isDisabled=cannotEditPolicyIdentity
+        onFocusOut=(action "handleDescriptionChange" value="target.value")
+      }}
+    </hbox>
+    <div class="control-input-error policy-description-error">
+      {{#if descriptionValidator.showError}}
+        {{t descriptionValidator.errorMessage}}
+      {{/if}}
+    </div>
+  </vbox>
+</vbox>

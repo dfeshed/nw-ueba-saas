@@ -1,0 +1,54 @@
+{{#if showSavedFilters}}
+  {{endpoint/saved-filter-list
+    selectedFilterId=selectedFilterId
+    savedFilter=savedFilter
+    savedFilters=savedFilters
+    applyFilter=(action "applyFilters" filterType)
+    deleteFilter=(action "deleteSavedFilter" filterType)}}
+{{/if}}
+
+{{rsa-data-filters
+  config=allFilters
+  showSaveFilterButton=showSaveFilterButton
+  showSaveAsFilterButton=showSaveAsFilterButton
+  closeEntityDetails=closeEntityDetails
+  onSave=(action "showSaveFilter")
+  onFilterChange=(action "filterChanged")
+  resetFilters=(action "resetAllFilters" filterType)}}
+
+{{#if showSaveFilter}}
+  {{#rsa-application-modal autoOpen=true onClose=(action "closeSaveFilterModal") label=(t label)}}
+    <div class="modal-content rsa-save-search rsa-p-md save-search">
+      <label class="rsa-form-label">
+        {{t "investigateFiles.filter.customFilters.save.description"}}
+      </label>
+      <div class="rsa-margin name">
+        {{rsa-form-input
+          class="custom-filter-name"
+          isError=isError
+          onKeyUp=(action "validate")
+          maxLength=255
+          value=saveFilterName
+        }}
+      </div>
+      {{#if isError}}
+        <label class="rsa-form-label is-error rsa-m-t-xs rsa-m-b-xs">
+          {{t "investigateFiles.filter.customFilters.save.invalidInput"}}
+        </label>
+      {{/if}}
+      <div class="rsa-btn-group align-right rsa-m-md">
+        {{#rsa-form-button class= "cancel-filter" click=(action "closeSaveFilterModal")}}
+          {{t "investigateFiles.button.cancel"}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button
+          style="primary"
+          class= "rsa-m-r-md save-filter"
+          isDisabled=disableSaveButton
+          click=(action "saveFilter")
+        }}
+          {{t "investigateFiles.button.save"}}
+        {{/rsa-form-button}}
+      </div>
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}

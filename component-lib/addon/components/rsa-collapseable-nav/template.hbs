@@ -1,0 +1,43 @@
+<div class="rsa-nav-tab-group for-collapsed">
+  {{#rsa-content-tethered-panel-trigger panel=panelId}}
+    {{#each decoratedContentSections as |section|}}
+      {{#if section.isActive}}
+        {{#rsa-nav-tab compact=true isActive=true}}
+          <div class="label">
+            {{section.label}}
+            {{rsa-icon
+              class="more-options"
+              name="arrow-down-12"
+              size="small"
+            }}
+          </div>
+        {{/rsa-nav-tab}}
+      {{/if}}
+    {{/each}}
+  {{/rsa-content-tethered-panel-trigger}}
+
+  {{#rsa-content-tethered-panel
+    displayCloseButton=false
+    position="top"
+    panelId=panelId
+  }}
+    {{rsa-collapseable-nav/collapsed-list
+      onTabClick=onTabClick
+      decoratedContentSections=decoratedContentSections
+    }}
+  {{/rsa-content-tethered-panel}}
+</div>
+
+<div class="rsa-nav-tab-group for-expanded">
+  {{#each decoratedContentSections as |section|}}
+    {{#rsa-nav-tab
+      compact=true
+      isActive=section.isActive
+      click=(action "onTabClick" section.name)
+    }}
+      <div class="label">{{section.label}}</div>
+    {{/rsa-nav-tab}}
+  {{/each}}
+
+  <span class="intersection-trigger"></span>
+</div>

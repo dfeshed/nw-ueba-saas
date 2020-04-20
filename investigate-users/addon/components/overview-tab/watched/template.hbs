@@ -1,0 +1,20 @@
+<div>
+  {{#rsa-form-button class="user-overview-tab_users_watched_risk" isFullWidth=true click=(action "applyFilter" "risky")}}
+    {{rsa-icon name="alarm-check"}}
+    {{riskyUserCount}}
+    {{t "investigateUsers.users.risky"}}
+  {{/rsa-form-button}}
+</div>
+<div>
+  {{#rsa-form-button class="user-overview-tab_users_watched_watched" isFullWidth=true click=(action "applyFilter" "watched")}}
+    {{rsa-icon name="view-1"}}
+    {{watchedUserCount}}
+    {{t "investigateUsers.users.watched"}}
+  {{/rsa-form-button}}
+</div>
+<div>
+  {{#rsa-form-button class="user-overview-tab_users_watched_total" isFullWidth=true}}
+    {{totalEntitiesCount}}
+    {{t "investigateUsers.users.all"}} {{t (concat "investigateUsers.entityTypes." entityType)}}
+  {{/rsa-form-button}}
+</div>

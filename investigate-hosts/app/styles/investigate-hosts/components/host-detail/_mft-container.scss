@@ -1,0 +1,151 @@
+.mft-container-panel {
+  min-height: calc(100vh - 212px);
+  .mft-container {
+    min-height: 100%;
+    .mft-content {
+      min-height: 100%;
+      .left-zone {
+        .rsa-header {
+          min-height: 70px;
+          .title {
+            padding-top: 1.8rem;
+          }
+          .close-zone {
+            padding-top: 1.3rem;
+          }
+        }
+        .content-body {
+          height: calc(100vh - 399px);
+          overflow: scroll;
+        }
+      }
+      .mft-action {
+        max-height: 70px;
+        background-color: text-color(primary, darkest);
+        padding-top: 0.5rem;
+      }
+      .mft-table {
+        .mft-header {
+          .mft-file-name {
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 10px 20px 9px 13px;
+            font-size: 10px;
+            font-weight: bold;
+          }
+          height: 31px;
+          background-color: text-color(primary, darker);
+        }
+        background-color: text-color(primary, darkest);
+        border-right: 1px solid text-color(primary, dark);
+        .mft-help {
+          margin: auto;
+          margin: auto;
+          width: 325px;
+          font-size: 1rem;
+          .line-one {
+            &.content {
+              padding: 2rem 1rem 2rem 2rem;
+              background: text-color(primary, darker);
+              height: 72px;
+
+            }
+            color: text-color(accentFour);
+            text-align: center;
+            padding-bottom: 13px;
+            .header {
+              background: text-color(primary, darker);
+              text-align: left;
+              color: text-color(primary, lightest);
+            }
+          }
+          ul {
+            color: text-color(primary, lightest);
+            background-color: text-color(primary, darker);
+            text-align: left;
+            padding: 12px;
+            list-style-type: disc;
+            li {
+              margin: auto;
+              width: 254px;
+              padding: 0.5rem;
+              font-size: 0.8rem;
+              float: left;
+            }
+          }
+        }
+        .file-pager {
+          position: relative;
+        }
+      }
+      .mft-bar {
+        &.mft-tree{
+          max-width: 360px;
+        }
+        &.mft-list {
+          width: 50vw;
+          height: calc(100vh - 217px);
+        }
+
+      }
+      .filter-wrapper {
+        height: calc(100vh - 286px);
+        [test-id$="Si"] {
+          margin-bottom: rsa-whitespace(more);
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+    .mft-action-bar {
+      .close-action {
+        text-align: right;
+        padding-top: 0.9rem;
+        padding-right: 0.5rem;
+        i {
+          &.close-mft-view-button {
+            font-size: 0.8rem;
+            padding-right: 0.6rem;
+            color: text-color(primary, light);
+            padding-top: 0.8rem;
+          }
+          &:hover {
+            color: text-color(primary, lightest)
+          }
+        }
+        .title {
+          font-size: 1.28rem;
+          padding-left: 0;
+          font-weight: 100;
+          text-align: left;
+          margin-right: 1.5rem;
+          padding: 0.6rem;
+          width: fit-content;
+          float: left;
+        }
+      }
+      .download-to-server {
+       float: left;
+      }
+
+    }
+  .filter-action-bar {
+    .title-header {
+      .close-zone {
+        padding-left: 0.3rem;
+        padding-top: 0;
+      }
+      margin-bottom: 5px;
+      padding-left: 1rem;
+      padding-top: 1rem;
+      i {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  }
+}

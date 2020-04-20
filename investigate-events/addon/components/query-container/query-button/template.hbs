@@ -1,0 +1,13 @@
+{{#rsa-form-button
+  class="execute-query-button"
+  defaultAction=(action "cancelOrExecuteAction")
+  isDisabled=isDisabled
+  style="primary"}}
+  {{#if showSpinner}}
+    {{rsa-loader size="small" testId="queryButtonQueued"}}
+  {{else if isQueryRunning}}
+    {{rsa-icon class="execute-query-spyglass" name="stop-button" testId="queryButtonExecuting"}}
+  {{else}}
+    {{rsa-icon class="execute-query-spyglass" name="search" testId="queryButtonInactive"}}
+  {{/if}}
+{{/rsa-form-button}}

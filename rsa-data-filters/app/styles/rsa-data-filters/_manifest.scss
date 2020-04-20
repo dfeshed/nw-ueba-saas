@@ -1,0 +1,113 @@
+.filter-controls {
+  padding-bottom: rsa-whitespace(more);
+  h2 {
+    @include rsa-font(header, small);
+    padding: 0 0 rsa-whitespace(less) 0;
+    color: text-color(primary, light);
+    letter-spacing: 1px;
+  }
+  .file-name-input, .number-input {
+    padding-left: rsa-whitespace();
+    input {
+      padding: 0.3em;
+    }
+  }
+
+  .file-name-input {
+    width: calc(100% - 90px);
+    .operators {
+      .ember-power-select-trigger {
+        width: 70px;
+      }
+    }
+  }
+
+  .number-input {
+    flex: 1
+  }
+
+  .text-filter-content {
+    height: auto;
+    .operators {
+      width: 90px;
+    }
+  }
+
+  .list-filter-option {
+    padding: rsa-whitespace(least) 0;
+    width: fit-content;
+    color: text-color(primary, lighter);
+    text-decoration: none;
+  }
+
+  .number-filter {
+    .operators {
+      .ember-power-select-trigger {
+        width: 97px;
+      }
+    }
+    .units {
+      padding-left: rsa-whitespace();
+      .ember-power-select-trigger {
+        width: 50px;
+      }
+    }
+  }
+
+  .range-filter {
+    .noUi-pips-horizontal {
+      left: 2px;
+      width: 99%;
+    }
+  }
+
+
+  /**Hide the arrow buttons for number type */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+}
+
+.filters-footer {
+  @include border-top(1px, solid, primary, dark, opaque);
+  bottom: 1px;
+  width: 100%;
+  padding: rsa-whitespace(less);
+  display: inline-flex;
+  position: absolute;
+  .rsa-form-button-wrapper {
+    flex-grow: 1;
+  }
+  button {
+    width: 100%;
+  }
+  .save-filter-button, .save-as-filter-button {
+    padding-left: rsa-whitespace(less);
+  }
+}
+
+.content-body {
+  padding: rsa-whitespace();
+}
+
+.filter-wrapper {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.date-time-options {
+  width: 100%;
+}
+.range-start-time, .range-end-time {
+  .datetime-picker-icon {
+    top: 1rem;
+  }
+}
+
+.toggle-custom-range {
+  float: right;
+}

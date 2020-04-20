@@ -1,0 +1,49 @@
+.spec-masthead {
+  padding: rsa-whitespace();
+  width: 100%;
+  box-sizing: border-box;
+  background-color: background-color(primary, darkest, nearly-opaque);
+
+  .spec-notes {
+    color: text-color(primary, lightest);
+    margin: rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
+  }
+
+  > h2 {
+    @include rsa-font(header, larger);
+    margin-bottom: rsa-whitespace(less);
+    color: text-color(primary, lightest);
+  }
+
+  > .subtitle {
+    @include rsa-font(paragraph, small);
+    margin-bottom: rsa-whitespace();
+    color: text-color(primary, lightest);
+  }
+
+  > .description {
+    @include rsa-font(paragraph);
+    color: text-color(primary, light);
+  }
+
+
+  > h3 {
+    display: inline-block;
+    color: text-color(primary, light);
+  }
+
+  > ul {
+    margin-top: rsa-whitespace(more);
+    display: inline-block;
+
+    > li {
+      display: inline-block;
+      margin: 0 rsa-whitespace();
+
+      > a {
+        text-decoration: none;
+        color: text-color(neutral);
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+<div>                 
+  {{#if policy.name}}
+    {{#rsa-text-with-tooltip value=policy.name style="standard"}}
+      {{rsa-icon name="settings-1"}}
+      <label class="policy-name-label">
+        {{policy.name}}  
+      </label>
+    {{/rsa-text-with-tooltip}}        
+  {{else}}    
+    {{rsa-icon name="settings-1"}}
+    <label class="policy-name-label">
+      {{t "adminUsm.policyWizard.newPolicy"}}      
+    </label>
+  {{/if}}
+</div>
+<div>
+  {{#rsa-text-with-tooltip value=policy.description style="standard"}}
+    <label class="policy-description-label">{{policy.description}}</label>
+  {{/rsa-text-with-tooltip}}
+</div>

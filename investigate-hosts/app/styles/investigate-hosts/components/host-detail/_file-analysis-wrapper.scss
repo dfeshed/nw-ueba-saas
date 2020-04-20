@@ -1,0 +1,119 @@
+.file-analysis-wrapper {
+  background-color: background-color(primary, darkest);
+  height: 100%;
+  width: 100%;
+  @include rsa-vendor-prefix(transition-property, left);
+  @include rsa-vendor-prefix(transition-duration, 0.4s);
+  .file-analysis-header {
+    width: calc(100vw - 500px);
+    padding: 19px 20px;
+    letter-spacing: 0.05rem;
+    .rsa-form-button {
+      padding: 0.5rem 0.75rem;
+      margin-left: -1rem;
+      .backButton {
+        text-transform: capitalize;
+        letter-spacing: 0.05rem;
+        font-size: 14px;
+      }
+    }
+    .file-analysis-title {
+      height: 30px;
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      box-sizing: border-box;
+      line-height: 1rem ;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 100;
+      margin-left:-10px;
+      .rsa-icon
+      {
+        font-size: 10px;
+      }
+    }
+    .view-type {
+      font-size: 1.2rem;
+      font-weight: 100;
+      padding: 0.5rem 1rem;
+    }
+  }
+  .rsa-page-layout.show-right-zone .right-zone {
+    max-width: 550px;
+    h3.title {
+      margin: 0 auto;
+      font-size: 1rem;
+    }
+    > .rsa-header {
+      height: 52px;
+      border-bottom: 0px;
+      padding: 3% 0;
+    }
+    .label {
+      text-transform: uppercase;
+      font-size: .85rem;
+      display: inline-block;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+  }
+  .string-filter-wrapper {
+    width: 360px;
+    display: inline-block;
+    float: right;
+    margin-right: 50px;
+    height: 32px;
+    label {
+      display: inline-block;
+      width: 210px;
+      span.rsa-form-label {
+        margin-bottom: 0px;
+      }
+    }
+    .label {
+      display: inline-block;
+      margin-right: 14px;
+      color: $formSelectLabelColor;
+      margin-bottom: rsa-whitespace(less);
+      @include rsa-font(header, small);
+      text-transform: uppercase;
+    }
+  }
+  .rsa-nav-tab.is-active {
+    width: 57px;
+    align-self: normal;
+    padding-top: 0;
+    margin-bottom: 0px;
+  }
+  .file-analysis-properties {
+    @include border-top(1px, solid, primary);
+  }
+  .file-analysis-loading{
+    margin: 20% auto;
+  }
+}
+.host-detail-wrapper {
+  .rsa-nav-tab{
+    margin-bottom: 0px;
+    padding-bottom: 1rem;
+  }
+  .file-analysis_close-action {
+    margin-right: 10px;
+    color: text-color(primary, light);
+  }
+  .file-analysis-header {
+    a {
+      text-decoration: none;
+    }
+  }
+  .file-analysis-wrapper {
+    .close-zone {
+      padding-top: 0;
+    }
+    .close-action-wrapper {
+      display: inline-block;
+      margin: 0px;
+      padding-right: 10px;
+    }
+  }
+}

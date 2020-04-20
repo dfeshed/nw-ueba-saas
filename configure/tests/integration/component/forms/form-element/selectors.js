@@ -1,0 +1,21 @@
+export const selectors = {
+  formElement: '[test-id=formElement]',
+  formGroup: '[test-id=formGroup]',
+  iconSelector: '[test-id=toggleRiskScoring]',
+  formValidation: '[test-id=formValidation]',
+  formGroupValidation: '[test-id=formGroupValidation]',
+  formGroupValidationMessage: '[test-id=formGroupValidationMessage]',
+  formInput: '[test-id=formGroupInput]',
+  formLabel: '[test-id=formGroupLabel]',
+  legend: 'legend',
+  fieldset: 'fieldset',
+  fieldsetInput: '[test-id=fieldsetInput]',
+  fieldsetLabel: '[test-id=fieldsetInputLabel]',
+  radioShape: '[test-id=radioShape]',
+  radioInput: 'input[type=radio]',
+  saveButton: '[test-id=saveButton] button',
+  resetButton: '[test-id=resetButton] button',
+  powerSelect: '.ember-power-select-trigger',
+  powerSelectItem: '.ember-power-select-selected-item',
+  powerSelectOptions: '.ember-power-select-options'
+};

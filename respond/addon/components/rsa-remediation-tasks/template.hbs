@@ -1,0 +1,47 @@
+{{#rsa-explorer
+  columns=columns
+  reduxSpace="respond.remediationTasks"
+  creators=creators as |explorer|}}
+
+  {{#explorer.toolbar toolbarControlsComponent="rsa-remediation-tasks/toolbar-controls" as |toolbar|}}
+    {{toolbar.toolbarControls}}
+  {{/explorer.toolbar}}
+
+  {{#explorer.filters filterControlsComponent="rsa-remediation-tasks/filter-controls" as |filters|}}
+    {{filters.filterControls}}
+  {{/explorer.filters}}
+
+  {{#explorer.table as |row|}}
+    {{#row.cell as |item index column|}}
+      {{#if (eq column.dataType "date")}}
+        {{rsa-content-datetime timestamp=(get item column.field) displayTime=true displayMilliseconds=false}}
+
+      {{else if (eq column.dataType "number")}}
+        <div class="number-type">{{get item column.field}}</div>
+
+      {{else if (eq column.dataType "checkbox") }}
+        <label class="rsa-form-checkbox-wrapper {{if (contains item.id explorer.instance.itemsSelected) "checked"}}">
+          {{rsa-form-checkbox checked=(contains item.id explorer.instance.itemsSelected) change=(action explorer.select item)}}
+          <span></span>
+        </label>
+
+      {{ else if (eq column.field "priority")}}
+        <span class="entity-priority-indicator {{concat "priority-" (priority-to-content-style (get item column.field))}}"></span>
+        <span class="entity-priority">{{t (concat "respond.priority." (get item column.field))}}</span>
+      {{ else if (eq column.field "status")}}
+        {{t (concat "respond.status." (get item column.field)) }}
+      {{ else if (eq column.field "incidentId")}}
+        <span>{{#link-to "incident" item.incidentId}}{{item.incidentId}}{{/link-to}}</span>
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/row.cell}}
+  {{/explorer.table}}
+
+  {{#explorer.inspector
+    inspectorHeaderComponent="rsa-remediation-tasks/inspector-header"
+    inspectorContentComponent="rsa-remediation-tasks/task-overview" as |inspector|}}
+    {{inspector.inspectorHeader}}
+    {{inspector.inspectorContent}}
+  {{/explorer.inspector}}
+{{/rsa-explorer}}

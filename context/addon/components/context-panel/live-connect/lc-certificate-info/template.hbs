@@ -1,0 +1,42 @@
+<div class="rsa-context-panel__liveconnect__heading">{{t "context.lc.certificateInfo"}}</div>
+<hbox>
+  <vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.certIssuer") value=liveConnectData.certIssuer}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.certSigAlgo") value=liveConnectData.certSigAlgo}}
+    </div>
+  </vbox>
+  <vbox>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.certNotValidBefore")}}
+      {{#if liveConnectData.certNotValidBefore}}
+        {{rsa-content-datetime timestamp=liveConnectData.certNotValidBefore}}
+      {{else}}
+        {{t "context.lc.blankField"}}
+      {{/if}}
+    </vbox>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t "context.lc.certNotValidAfter")}}
+      {{#if liveConnectData.certNotValidAfter}}
+        {{rsa-content-datetime timestamp=liveConnectData.certNotValidAfter}}
+      {{else}}
+        {{t "context.lc.blankField"}}
+      {{/if}}
+    </vbox>
+  </vbox>
+</hbox>
+
+<div class="rsa-context-panel__liveconnect__block">
+  {{rsa-content-definition label=(t "context.lc.certSerial") value=liveConnectData.certSerial}}
+</div>
+
+<div class="rsa-context-panel__liveconnect__block">
+  {{rsa-content-definition label=(t "context.lc.certSubject") value=liveConnectData.certSubject}}
+</div>
+
+<div class="rsa-context-panel__liveconnect__block">
+  {{rsa-content-definition label=(t "context.lc.certThumbprint") value=liveConnectData.certThumbprint}}
+</div>
+

@@ -1,0 +1,78 @@
+{{#rsa-content-tethered-panel-trigger panel=param.name}}
+  <hbox class="flex-space-between">
+    {{#if type.isText}}
+      <box fill>
+        {{rsa-form-input label=param.displayName placeholder="Text" value=value focusOut=(action "updateValue")}}
+      </box>
+    {{else if type.isNumber}}
+      <box fill>
+        {{rsa-form-input label=param.displayName placeholder="Number" value=value focusOut=(action "updateValue")}}
+      </box>
+    {{else if type.isBoolean}}
+      {{#x-toggle
+        showLabels=true
+        onLabel=param.displayName
+        value=(readonly bool)
+        onToggle=(action "toggleValue") as |toggle|}}
+        {{toggle.switch}}
+        {{toggle.onLabel value=(readonly (not bool))}}
+      {{/x-toggle}}
+    {{else if type.isEnumOne}}
+      <box fill>
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{param.displayName}}
+          </div>
+
+          {{#power-select
+            placeholder="Parameter options..."
+            options=param.acceptableValues
+            selected=value
+            searchPlaceholder="Type to filter options"
+            onchange=(action "setSelect") as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
+      </box>
+    {{else if type.isEnumAny}}
+      <box fill>
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            {{param.displayName}}
+          </div>
+
+          {{#power-select-multiple
+          placeholder="Parameter options (select multiple)..."
+          options=param.acceptableValues
+          selected=selections
+          searchField="name"
+          searchPlaceholder="Type to filter options"
+          onchange=(action "setSelections") as |option|}}
+            {{option.name}}
+          {{/power-select-multiple}}
+        </label>
+      </box>
+    {{else if type.isDateTime}}
+      <box fill>
+        {{rsa-form-datetime
+          label=param.displayName
+          placeholder="Pick a date & time"
+          dateFormat=dateFormat
+          value=dateTime
+          onChange=(action "setDateTime")
+        }}
+      </box>
+    {{else}}
+      <box fill>
+        {{rsa-form-input label=param.displayName placeholder=param.type value=value focusOut=(action "updateValue")}}
+      </box>
+    {{/if}}
+    {{#if (or param.custom param.optional)}}
+      <hbox fit align="center" class="close-button"><a {{action "deleteOrHideSelf"}}>{{rsa-icon name="close"}}</a></hbox>
+    {{/if}}
+  </hbox>
+{{/rsa-content-tethered-panel-trigger}}
+{{#rsa-content-tethered-panel position="bottom" displayCloseButton=false panelId=param.name}}
+  <header>{{param.name}}</header>
+  <p>{{param.description}}</p>
+{{/rsa-content-tethered-panel}}

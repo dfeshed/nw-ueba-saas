@@ -1,0 +1,17 @@
+.rsa-investigate-meta-key-values {
+
+  &__empties {
+    @include rsa-font(body,small);
+    li {
+      color: text-color(primary);
+      display: inline-block;
+      padding: 0 rsa-whitespace(least) rsa-whitespace(less) 0;
+      &::after {
+        content: ',';
+      }
+      &:last-of-type::after {
+        content: '';
+      }
+    }
+  }
+}

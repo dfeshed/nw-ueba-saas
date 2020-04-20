@@ -1,0 +1,47 @@
+.error-page {
+  color: text-color(primary, lighter);
+  padding: rsa-whitespace(more);
+
+  vbox {
+    margin: rsa-whitespace() 0;
+  }
+
+  p, li {
+    @include rsa-font(paragraph, small);
+  }
+
+  li {
+    margin-left: rsa-whitespace();
+    list-style: disc;
+  }
+
+  .bottom-links {
+    color: text-color(secondary);
+    box {
+      cursor: pointer;
+      padding-right: rsa-whitespace(more);
+    }
+  }
+
+  .error-description {
+    @include rsa-font(body);
+
+    h3 {
+      @include rsa-font(header, base, true);
+      color: text-color(primary, light);
+    }
+
+    p {
+      margin-bottom: rsa-whitespace();
+    }
+  }
+
+  .subtitle, .title {
+    @include rsa-font(header, larger);
+    color: text-color(primary);
+  }
+
+  .title {
+    font-size: 4rem;
+  }
+}

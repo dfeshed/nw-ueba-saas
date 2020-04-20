@@ -1,0 +1,1 @@
+export { default } from 'health-wellness/components/hw-list/action-bar/component';

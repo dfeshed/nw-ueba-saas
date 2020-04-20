@@ -1,0 +1,1174 @@
+.context-menu__item {
+  color: text-color(neutral);
+}
+
+.context-menu__item.context-menu__item--disabled {
+  color: text-color(primary, light);
+  &:hover {
+    background-color: transparent;
+    color: text-color(primary, light);
+  }
+}
+
+// We do not want to show this input element on the page.
+// Is in dom just to listen for keystrokes.
+// Giving 'width: 0' did not work for safari, as it
+// needs some width in order to listen for keystrokes.
+// Thus, adding position and left property to move it
+// off the page
+.focus-holder {
+  input {
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    position: absolute;
+    left: -9999px;
+  }
+}
+
+.rsa-icon.expensive-indicator {
+  display: inline-flex;
+  align-self: center;
+  margin-right: rsa-whitespace(less);
+  color: transparent;
+  &.is-expensive {
+    color: text-color(primary, lightest);
+  }
+}
+
+.rsa-investigate-query-container {
+  display: flex;
+
+  // below includes overwrite styles for global components
+  // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+  // TODO: remove global component overwrites below and update the global component itself
+  &__service-selector,
+  &__time-selector {
+    height: 40px;
+    margin-right: rsa-whitespace(less);
+    flex: 0 0 auto;
+    .rsa-form-button-wrapper {
+      &.is-standard:not(.is-disabled):not(.is-icon-only) {
+        .rsa-form-button {
+          &:focus {
+            border-color: border-color(neutral);
+          }
+        }
+        &:hover, &.is-active {
+          .rsa-form-button {
+            &:focus {
+              border-color: border-color(neutral);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &__profile-selector {
+    flex: 0 0 auto;
+    .list-caption {
+      top: 0;
+      .rsa-form-button {
+        border-right-width: 0px;
+      }
+    }
+    .rsa-split-dropdown {
+      .rsa-form-button {
+        border-left-width: 0px;
+        margin-left: -2px;
+      }
+    }
+    .rsa-button-group:hover i {
+      color: border-color(primary, lightest);
+    }
+    .rsa-form-button-wrapper {
+      &.is-standard:not(.is-disabled):not(.is-icon-only) {
+        .rsa-form-button {
+          &:focus {
+            border-color: border-color(neutral);
+          }
+        }
+        &:hover, &.is-active {
+          .rsa-form-button {
+            &:focus {
+              border-color: border-color(neutral);
+            }
+          }
+        }
+      }
+    }        
+  }
+
+  .time-range-invalid {
+    .rsa-date-time-range {
+      border-color: border-color(accentOne, darker);
+    }
+    .rsa-form-button {
+      &:not(.is-standard) {
+        border-left-width: 0px;
+        border-color: border-color(accentOne, darker);
+      }
+    }
+  }
+
+  // below includes overwrite styles for global components
+  // many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+  // TODO: remove global component overwrites below and update the global component itself
+  &__time-selector {
+    display: flex;
+    .rsa-date-time-range {
+      border-right-width: 0px;
+      padding-top: rsa-whitespace(least);
+    }
+    .rsa-form-button {
+      border-left-width: 0px;
+    }
+  }
+
+  .query-button-wrapper {
+    flex: 0 0 auto;
+    height: 40px;
+    width: 40px;
+  }
+  .execute-query-button {
+    height: 100%;
+    width: 100%;
+    .rsa-form-button {
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      i.rsa-icon {
+        margin: 0;
+      }
+    }
+    .rsa-loader {
+      height: 40px;
+      width: 40px;
+      margin: 0;
+      padding-top: 9px;
+      box-sizing: border-box;
+      .rsa-loader__wheel {
+        border-color: text-color(secondary);
+        border-top-color: text-color(primary, lightest);
+      }
+    }
+  }
+
+  .rsa-form-button {
+    height: 40px;
+    white-space: nowrap;
+  }
+
+  // TODO, this belongs with service selector which
+  // is in investigate-shared
+  .disclaimer {
+    color:text-color(accentThree);
+  }
+
+  .rsa-loader {
+    height: 0.9rem;
+    margin-right: rsa-whitespace(less);
+    margin-left: -(rsa-whitespace(least));
+  }
+
+  .rsa-investigate-time-range {
+    display: inline;
+  }
+
+  .query-bar-selection {
+    flex: 1 1 auto;
+    margin-right: rsa-whitespace(less);
+    min-width: 350px;
+    a {
+      text-decoration: none;
+      color: text-color(secondary);
+      margin: rsa-whitespace(least) rsa-whitespace(less);
+    }
+
+    .query-bar-options {
+      @include border(1px, solid, primary, lighter);
+    }
+
+    &.is-console-open {
+      .query-bar-options {
+        @include border(1px, solid, secondary);
+      }
+    }
+
+    &.console-has-warning {
+      .query-bar-options {
+        @include border(1px, solid, accentFour);
+      }
+    }
+
+    &.console-has-error,
+    &.has-offline-services {
+      .query-bar-options {
+        @include border(1px, solid, accentOne);
+      }
+    }
+
+    .query-bar-options {
+      position: relative;
+      min-height: 40px;
+      box-sizing: border-box;
+      padding: 4px 31px 0 4px;
+
+      .console-panel {
+        box-sizing: border-box;
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        right: -1px;
+        background: background-color(primary, darker);
+        @include rsa-layer(panels);
+        overflow: hidden;
+        @include rsa-font(body, small);
+        box-shadow: 1px 1px 1px background-color(neutral, dark);
+
+        .devices-status {
+          display: inline-block;
+          display: flex;
+          margin-top: rsa-whitespace(least);
+
+          .all-online,
+          .some-offline,
+          .device-hierarchy {
+            color: text-color(primary, lightest);
+            display: inline-block;
+            margin-right: rsa-whitespace(more);
+          }
+
+          .all-online,
+          .some-offline {
+            white-space: nowrap;
+            i {
+              position: relative;
+              top: rsa-whitespace(least);
+              color: text-color(accentOne);
+            }
+          }
+
+          .some-offline {
+            margin-top: -6px;
+          }
+
+          .device-hierarchy {
+            color: text-color(primary, light);
+
+            li {
+              position: relative;
+              padding-bottom: rsa-whitespace();
+
+              i {
+                display: inline-block;
+                margin-left: rsa-whitespace(less);
+
+                &.warning {
+                  margin-top: -.5rem;
+                  color: text-color(accentFour);
+                  position: relative;
+                  top: 3px;
+                }
+
+                &.slowest {
+                  margin-top: -.5rem;
+                  color: text-color(accentFour);
+                  position: relative;
+                  top: 3px;
+                }
+
+                &.offline {
+                  margin-top: -.5rem;
+                  color: text-color(accentOne);
+                  position: relative;
+                  top: 3px;
+                }
+              }
+
+              &:last-of-type {
+                padding-bottom: rsa-whitespace(less);
+              }
+            }
+
+            svg {
+              width: 2px;
+              position: absolute;
+              @include rsa-layer(controls);
+              left: 4px;
+
+              line {
+                stroke: text-color(primary);
+                stroke-width: 2px;
+              }
+            }
+
+            svg.horizontal {
+              width: 23px;
+              height: 2px;
+              position: absolute;
+              @include rsa-layer(controls);
+              left: -23px;
+              top: 5px;
+            }
+
+            i.rsa-icon-arrow-down-12 {
+              margin-left: rsa-whitespace(least);
+
+              &:hover, &:active {
+                cursor: pointer;
+                color: text-color(secondary);
+              }
+            }
+
+            .device {
+              color: text-color(primary, lightest);
+              padding: 0;
+              margin-right: rsa-whitespace(least);
+              font-weight: bold;
+            }
+          }
+        }
+
+        .device-hierarchy {
+          .device-hierarchy {
+            display: block;
+            padding-left: rsa-whitespace(more);
+            margin-right: 0;
+            overflow: hidden;
+            position: relative;
+            top: 6px;
+
+            li {
+              &:first-of-type {
+                padding-top: rsa-whitespace(less);
+              }
+            }
+          }
+        }
+
+        .one-line-summary {
+          position: relative;
+          display: inline-block;
+          @include rsa-layer(above);
+          white-space: nowrap;
+        }
+
+        .circle {
+          @include rsa-layer(controls);
+          position: relative;
+          margin: 0;
+          display: inline-block;
+          margin-right: rsa-whitespace(least);
+          border-radius: .35rem;
+          height: .35rem;
+          width: .35rem;
+
+          &.empty {
+            @include border(2px, solid, primary, light);
+            background-color: background-color(primary, darker);
+
+            &.offline {
+              @include border(2px, solid, accentOne);
+              background-color: background-color(primary, darker);
+            }
+
+            &.warning {
+              @include border(2px, solid, accentFour);
+              background-color: background-color(primary, darker);
+            }
+
+            &.error {
+              @include border(2px, solid, accentOne);
+              background-color: background-color(primary, darker);
+            }
+          }
+
+          &.populated {
+            &.open {
+              @include border(2px, solid, primary, lightest);
+              background-color: background-color(primary, darker);
+            }
+
+            &.closed {
+              @include border(2px, solid, primary, lightest);
+              background-color: background-color(primary, lightest);
+            }
+
+            &.offline {
+              @include border(2px, solid, accentOne);
+              &.closed {
+                background-color: background-color(accentOne);
+              }
+            }
+
+            &.warning {
+              @include border(2px, solid, accentFour);
+              &.closed {
+                background-color: background-color(accentFour);
+              }
+            }
+
+            &.error {
+              @include border(2px, solid, accentOne);
+              &.closed {
+                background-color: background-color(accentOne);
+              }
+            }
+          }
+        }
+
+        .progress-bar {
+          box-sizing: border-box;
+          margin-right: rsa-whitespace(more);
+          @include border(1px, solid, primary, lightest);
+          width: 15rem;
+          height: 1rem;
+          display: inline-block;
+          position: relative;
+          top: rsa-whitespace(least);
+
+          &.is-disabled {
+            @include border(1px, solid, primary, dark);
+
+            .current-progress {
+              display: none;
+            }
+          }
+
+          .current-progress {
+            height: calc(1rem - 2px);
+            background: background-color(secondary);
+          }
+        }
+
+        code {
+          color: text-color(primary, light);
+          font-size: .85rem;
+          display: inline;
+        }
+
+        &.has-warning {
+          .console-content {
+            @include border(1px, solid, accentFour);
+            @include border-top(1px, solid, primary, dark);
+          }
+        }
+
+        &.has-error,
+        &.has-offline-services {
+          .console-content {
+            @include border(1px, solid, accentOne);
+            @include border-top(1px, solid, primary, dark);
+          }
+        }
+
+        .warnings {
+          margin: 0 rsa-whitespace();
+          position: relative;
+          top: calc(#{rsa-whitespace(less)} * -1);
+
+          li {
+            color: text-color(primary, light);
+            line-height: 1.75rem;
+            white-space: nowrap;
+
+            strong {
+              font-weight: bold;
+              color: text-color(primary, lightest);
+            }
+
+            i {
+              color: text-color(accentFour);
+              margin-right: rsa-whitespace(least);
+              position: relative;
+              top: 3px;
+
+              &.is-mixed-mode {
+                color: text-color(accentFour);
+              }
+            }
+
+            .message {
+              margin-left: rsa-whitespace(less);
+              margin-right: rsa-whitespace();
+            }
+          }
+        }
+
+        .status-summary {
+          display: flex;
+          margin-bottom: rsa-whitespace();
+        }
+
+        .progress, .service, .timerange, .filters {
+          margin: 0 0 rsa-whitespace() rsa-whitespace();
+          color: text-color(primary, light);
+          white-space: nowrap;
+
+          .label {
+            font-weight: bold;
+            color: text-color(primary, lightest);
+          }
+
+          .value {
+            margin-left: rsa-whitespace(less);
+          }
+        }
+
+        .progress {
+          margin: rsa-whitespace(least) rsa-whitespace(more) 0 rsa-whitespace();
+          display: inline-block;
+        }
+
+        .fatal-errors {
+          display: inline-block;
+          position: relative;
+          top: -3px;
+          white-space: nowrap;
+          padding-right: rsa-whitespace(more);
+
+          strong {
+            font-weight: bold;
+            margin-right: rsa-whitespace(least);
+          }
+
+          i {
+            margin-right: rsa-whitespace(least);
+            position: relative;
+            top: 3px;
+            color: text-color(accentOne);
+          }
+        }
+
+        .service,
+        .timerange {
+          margin: rsa-whitespace();
+          display: inline-block;
+        }
+
+        .console-content {
+          overflow: auto;
+          max-height: 20rem;
+          height: 0;
+          max-height: 20rem;
+          height: auto;
+          @include border(1px, solid, secondary);
+          @include border-top(1px, solid, primary, dark);
+        }
+      }
+
+      .copy-trigger {
+        position: absolute;
+        top: calc(#{rsa-whitespace(less)} + 1px);
+        right: calc(2rem + #{rsa-whitespace(less)});
+        color: text-color(primary, lightest);
+        cursor: pointer;
+
+        &.is-disabled {
+          color: text-color(primary);
+          cursor: default;
+        }
+
+        &:hover:not(.is-disabled) {
+          color: text-color(secondary, lighter);
+        }
+
+        &:active:not(.is-disabled) {
+          color: text-color(secondary);
+        }
+      }
+
+      .console-trigger {
+        position: absolute;
+        top: calc(#{rsa-whitespace(less)} + 1px);
+        right: rsa-whitespace(less);
+        color: text-color(primary, lighter);
+        cursor: pointer;
+
+        &.is-disabled {
+          color: text-color(primary);
+          cursor: default;
+        }
+
+        &.is-open {
+          color: text-color(secondary);
+        }
+
+        &:hover:not(.is-disabled) {
+          color: text-color(secondary, lighter);
+        }
+
+        &:active:not(.is-disabled) {
+          color: text-color(secondary);
+        }
+
+        &.has-warning {
+          top: rsa-whitespace(less);
+          color: text-color(accentFour);
+
+          &:hover {
+            color: text-color(accentFour, lighter);
+          }
+
+          &:active {
+            color: text-color(accentFour);
+          }
+        }
+
+        &.has-error,
+        &.has-offline-services {
+          top: rsa-whitespace(less);
+          color: text-color(accentOne);
+          &:hover:not(.is-disabled) {
+            color: text-color(accentOne, lighter);
+          }
+
+          &:active:not(.is-disabled) {
+            color: text-color(accentOne);
+          }
+        }
+      }
+    }
+
+    &.freeForm {
+      a.freeForm-link {
+        color: text-color(primary, light);
+        pointer-events: none;
+      }
+      .query-pills {
+        display: none;
+      }
+    }
+
+    &.guided {
+      a.guided-link {
+        color: text-color(primary, light);
+        pointer-events: none;
+      }
+      .rsa-investigate-free-form-query-bar {
+        display: none;
+      }
+    }
+  }
+
+  .rsa-investigate-free-form-query-bar {
+    min-width: 100%;
+    position: relative;
+    top: -2px;
+    left: -2.5px;
+    .rsa-form-label {
+      display: none;
+    }
+    input {
+      border-bottom: none;
+      @include rsa-input-placeholder(text-color(primary));
+    }
+  }
+
+  // ***************************** pill styles ****************************** //
+  .query-pills {
+    display: flex;
+    position: relative;
+    flex-flow: row wrap;
+    max-height: 10.5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-left: 0.3rem;
+  }
+
+  .new-pill-trigger-container {
+    flex: 0 0 auto;
+    .pill {
+      border: none;
+      background-color: transparent;
+    }
+  }
+
+  .new-pill-trigger {
+    @include rsa-layer(controls);
+    background-color: opacity-value(transparent);
+    position: absolute;
+    margin-left: -.30rem;
+    margin-top: -.05rem;
+    width: .5rem;
+    height: 2.3rem;
+
+    &:hover {
+      cursor: text;
+      background-color: background-color(secondary, base, translucent);
+      position: absolute; // force a flow break so it renders above query-bar
+    }
+
+    &:hover:after {
+      position: absolute;
+      content: "";
+      width: 100%;
+      top: 0;
+      left: 0;  
+      /* Bottom is positioned to cover the area the hovered element is leaving */
+      bottom: -1em;
+  
+      /* We need to place the pseudo-element under everything else. Without 
+         specifying the placement, it will sit on top of the parent element
+         and block the user from selecting text or clicking links */
+      z-index: -1;
+    }
+  }
+
+  .delete-pill {
+    margin-right: 5px;
+    margin-left: 7px;
+    margin-top: 1px;
+    color: text-color(primary, lighter);
+    display: inline-flex;
+    align-self: center;
+
+    &:hover {
+      cursor: pointer;
+      color: text-color(primary, lightest);
+    }
+  }
+
+  // No matter what pill is open, hide the triggers
+  .pill-open {
+    .new-pill-trigger {
+      display: none;
+    }
+  }
+
+  // If trigger is open, or editing something, also hide the template
+  .pill-trigger-open-for-add, .pill-open-for-edit {
+    .new-pill-template {
+      display: none;
+    }
+  }
+
+  // base pill style
+  .pill {
+    @include border(1px, solid, primary, base, nearly-opaque);
+    border-radius: rsa-whitespace(least);
+    background-color: background-color(primary, dark, translucent);
+    display: flex;
+    flex: 0 1 auto;
+    margin: 0 4px 4px 0;
+    padding: 0 rsa-whitespace(least);
+    min-height: rsa-whitespace(more);
+    line-height: rsa-whitespace(more);
+    transition: border-color 0.5s;
+    min-width: 0;
+    &.is-active {
+      flex: 1 1 auto;
+      min-width: 80px;
+    }
+    &.is-selected {
+      background-color: background-color(secondary);
+      border-color: border-color(secondary);
+    }
+    &.logical-operator {
+      border: 1px solid transparent;
+      background-color: opacity-value(transparent);
+      &.is-text-pill-attached {
+        color: text-color(primary);
+      }
+    }
+    &.is-focused {
+      border-color: border-color(accentTwo);
+    }
+    &.is-invalid {
+      border-color: border-color(accentOne);
+    }
+  }
+
+  .query-pill {
+    &.is-editing {
+      flex: 1 1 auto;
+      max-width:fit-content;
+    }
+    &.meta-tab {
+      .recent-query {
+        display: none;
+      }
+    }
+    &.recent-queries-tab {
+      .pill-meta, .pill-operator, .pill-value {
+        display: none;
+      }
+    }
+    &.is-active {
+      .pill-value {
+        text-overflow: clip;
+      }
+    }
+    > div.is-expanded {
+      flex-grow: 100;
+      input {
+        width: 100%;
+      }
+    }
+    > div.is-populated {
+      margin-left: 4px;
+    }
+    .quote-highlight {
+      color: text-color(primary, light);
+    }
+    .pill-meta,
+    .pill-operator {
+      height: rsa-whitespace(more);
+      min-width: 0.5rem;
+      flex: 0 0 auto;
+    }
+    .pill-value {
+      height: rsa-whitespace(more);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1 1 auto;
+      position: relative;
+      .shadow {
+        visibility: hidden;
+      }
+      input {
+        width: 100%;
+      }
+    }
+  }
+  @mixin resizeable-input {
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    border-radius: 0;
+    width: 100%;
+    font-size: inherit;
+    line-height: inherit;
+  }
+  .complex-pill {
+    font-family: 'Courier New', Courier, monospace;
+    .text-wrapper {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    &.is-active {
+      flex: 1 1 auto;
+      max-width:fit-content;
+      label {
+        width: 100%;
+        .rsa-form-label {
+          display: none;
+        }
+      }
+    }
+    &.is-editing {
+      position: relative;
+      text-overflow: unset;
+      .shadow-text {
+        visibility: hidden;
+        white-space: pre;
+        padding: 0 2px;// helps prevent subpixel difference between span and input
+      }
+      input {
+        font-family: 'Courier New', Courier, monospace;
+        @include resizeable-input
+      }
+    }
+  }
+
+  .text-pill {
+    background-color: transparent;
+    .text-wrapper {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    &.is-active {
+      flex: 1 1 auto;
+      max-width:fit-content;
+      label {
+        width: 100%;
+        .rsa-form-label {
+          display: none;
+        }
+      }
+      input {
+        border-bottom: none;
+        padding: 0;
+      }
+    }
+    &.is-editing {
+      position: relative;
+      text-overflow: unset;
+      .shadow-text {
+        visibility: hidden;
+        white-space: pre;
+        padding: 0 2px;// helps prevent subpixel difference between span and input
+      }
+      input {
+        @include resizeable-input
+      }
+    }
+    // icon to indicate text pill
+    .rsa-icon.is-text-pill {
+      display: inline-flex;
+      align-self: center;
+      margin-right: rsa-whitespace(less);
+    }
+  }
+
+  .new-pill-template {
+    border: none;
+    background-color: transparent;
+  }
+
+  .open-paren,
+  .close-paren {
+    font-size: 2rem;
+    font-weight: 100;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    height: 30px;
+    line-height: 0.8;
+    box-sizing: border-box;
+    cursor: default;
+
+    &.is-selected {
+      background-color: background-color(secondary);
+      border-color: border-color(secondary);
+    }
+
+    &.is-focused {
+      border-color: border-color(accentTwo);
+    }
+
+    &.is-twin-focused {
+      border-bottom: 1px solid border-color(accentTwo);
+    }
+
+  }
+
+  .open-paren {
+    margin-right: 4px;
+  }
+
+  .close-paren {
+    margin-right: 4px;
+  }
+}
+
+// *********************** ember-power-select styles ************************ //
+// Trigger styles
+.rsa-investigate-query-container {
+  // Styles to support resizable input for power-selects
+  .ember-power-select-trigger {
+    position: relative;
+    text-overflow: unset;
+    .shadow-text {
+      visibility: hidden;
+      white-space: pre;
+      padding: 0 2px;// helps prevent subpixel difference between span and input
+    }
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+  .ember-power-select-typeahead-input,
+  .ember-power-select-trigger {
+    border: none;
+    padding: 0;
+    input {
+      padding: 0;
+    }
+  }
+}
+
+// below includes overwrite styles for global components
+// many of these overwrites are being again overwritten in investigate-events/app/styles/investigate-events
+// TODO: remove global component overwrites below and update the global component itself
+// dropdown styles
+
+// refer to ASOC-87080 #8 need to override for the light theme
+// text color of enabled options in dropdown in query bar
+.light-theme .investigate-query-dropdown .ember-power-select-option:not([aria-disabled=true]) .description {
+  color: rsa-color(grey, base);
+}
+.investigate-query-dropdown {
+  z-index: 20001;
+  @include border(1px, solid, primary, lighter);
+  border-bottom: transparent;
+  border-right: transparent;
+  border-left: transparent;
+  // override default backgroud color
+  // add color separately to drop-down
+  // options to provide the effect like
+  // pill tabs are hanging off the edge
+  background-color: opacity-value(transparent);
+  .ember-power-select-options {
+    border-right: 1px solid text-color(primary);
+    border-left: 1px solid text-color(primary);
+    border-bottom: 1px solid text-color(primary);
+    background: background-color(primary, darkest);
+    height: 15rem;
+  }
+  .ember-power-select-option--no-matches-message {
+    /* If message needs to be centered
+    position: relative;
+    top: 6.5rem;
+    left: 4rem; */
+    color: rsa-color(grey, light);
+    font-weight: 100;
+  }
+  .ember-power-select-group {
+    .ember-power-select-options {
+      border-right: 1px solid text-color(primary);
+      border-left: 1px solid text-color(primary);
+      border-bottom: none;
+      background: background-color(primary, darkest);
+      height: 15rem;
+    }
+    .ember-power-select-option {
+      min-width: 300px;
+      max-width: 600px;
+      display: flex;
+      font-weight: 100;
+      padding: 0 1rem;
+      .value {
+        flex: 1 1 auto;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .description {
+        flex: 0 0 auto;
+        color: rsa-color(grey, light);
+        padding-left: rsa-whitespace();
+      }
+    }
+  }
+  .ember-power-select-group:first-child {
+    border-bottom: 1px solid text-color(primary);
+    .ember-power-select-group-name {
+      display: none;
+    }
+    .ember-power-select-options {
+      max-height: 30px;
+    }
+  }
+  .ember-power-select-group-name {
+    padding: 0 rsa-whitespace();
+  }
+  .ember-power-select-group-name-hint {
+    position: absolute;
+    right: rsa-whitespace(less);
+    font-weight: 100;
+  }
+  .ember-power-select-loading-options-spinner {
+    display: flex;
+    background: background-color(primary, darkest);
+    .rsa-loader {
+      position: relative;
+      vertical-align: middle;
+      margin-left: 10rem;
+      top: 0.4rem;
+    }
+  }
+
+  .ember-power-select-option {
+    min-width: 300px;
+    max-width: 600px;
+    display: flex;
+    font-weight: 100;
+    &[aria-current=true] {
+      transition: background-color 50ms;
+    }
+    .value {
+      flex: 1 1 auto;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .description {
+      flex: 0 1 auto;
+      padding-left: rsa-whitespace();
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+    }
+    // if option is not disabled
+    &:not([aria-disabled=true]) .description {
+      color: rsa-color(grey, light);
+    }
+    // icons for meta indexed by value, key, none
+    // key icon for sessionid
+    .rsa-icon[class*="-indicator"]{
+      display: inline-flex;
+      align-self: center;
+      margin-right: rsa-whitespace(less);
+    }
+  }
+  // power select after options
+  .ember-power-select-after-options {
+    border-top: 1px solid text-color(primary);
+    background-color: transparent;
+    .value {
+      flex: 1 1 auto;
+    }
+    .description {
+      flex: 0 0 auto;
+    }
+
+    .border-advanced-options-separater-box {
+      border-left: 1px solid text-color(primary);
+      border-right: 1px solid text-color(primary);
+      border-bottom: 1px solid text-color(primary);
+      background: background-color(primary, darkest);
+    }
+  }
+  // afterOptions tabs
+  .power-select-tabs {
+    position: relative;
+    left: 10px;
+    bottom: 0.5px;
+
+    .tabrow {
+      display: flex;
+    }
+
+    .tabrow li {
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+      padding: 0 20px;
+      background: background-color(primary, darkest);
+      border-bottom: 1px solid text-color(primary);
+    }
+
+    .recent-queries-tab {
+      border-left: 1px solid text-color(primary);
+      border-right: 1px solid text-color(primary);
+    }
+    .meta-tab {
+      border-left: 1px solid text-color(primary);
+    }
+
+    .tabrow a {
+      text-decoration: none;
+      @include rsa-font(default, small);
+    }
+
+    .tabrow li:not(.selected) {
+      border-top: 1px solid text-color(primary);
+      color: text-color(secondary);
+    }
+
+    .tabrow li.selected {
+      font-weight: 100;
+      pointer-events: none;
+      color: text-color(neutral, light);
+      border-top: none;
+    }
+  }
+}

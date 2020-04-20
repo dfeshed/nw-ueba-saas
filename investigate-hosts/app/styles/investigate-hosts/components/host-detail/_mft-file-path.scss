@@ -1,0 +1,22 @@
+.mft-file-path {
+  height: 23px;
+  background-color: text-color(primary, darker);
+  padding-top: 10px;
+  padding-left: 6px;
+  font-size: .85rem;
+  border-top: 1px solid text-color(primary, dark);
+  color: text-color(primary, light);
+  .path {
+    color: text-color(primary,lighter);
+  }
+  .filter {
+    cursor: pointer;
+    padding-left: 0.5rem;
+    label {
+      cursor: pointer;
+    }
+    i {
+      padding-left: 0.5rem;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<div class="query-bar-options">
+
+  {{query-container/query-pills
+    isPrimary=true
+    executeQuery=executeQuery
+    takeFocus=(unbound takeFocus)
+  }}
+
+  {{!-- TODO: add additional disabled states and uncomment --}}
+  {{!-- {{query-container/copy-trigger}} --}}
+  {{query-container/console-trigger}}
+
+  {{#if isConsoleOpen}}
+    {{query-container/console-panel}}
+  {{/if}}
+</div>

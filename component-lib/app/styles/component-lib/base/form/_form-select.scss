@@ -1,0 +1,217 @@
+$ember-power-select-text-color: text-color(primary, lightest);
+$ember-power-select-trigger-border-bottom: 1px solid borer-color(primary, light);
+$ember-power-select-default-border-radius: 0;
+$ember-power-select-highlighted-background: background-color(secondary, darker);
+$ember-power-select-selected-background: background-color(secondary, dark);
+$ember-power-select-option-padding: rsa-whitespace();
+$ember-power-select-line-height: 2rem;
+
+@import "ember-power-select";
+
+.power-select {
+  .label-text {
+    vertical-align: bottom;
+    box-sizing: border-box;
+    color: $formSelectLabelColor;
+    margin-bottom: rsa-whitespace(less);
+    @include rsa-font(header, small);
+    text-transform: uppercase;
+  }
+
+  &.is-error {
+    .label-text {
+      color: text-color(accentOne);
+    }
+  }
+
+  span.label-text {
+    position: relative;
+    top: calc(#{rsa-whitespace(least)} - #{rsa-whitespace()});
+    margin-right: rsa-whitespace();
+    margin-bottom: 0;
+    display: inline-block;
+  }
+}
+
+.ember-power-select-dropdown.ember-basic-dropdown-content--below, .ember-power-select-dropdown.ember-basic-dropdown-content--in-place {
+  // needs to be +1 more than .ember-tether to nest a power-select in a rsa-content-tethered-panel
+  // Also needs to be +1 of modal
+  z-index: 1002;
+
+  @include border(1px, solid, primary, lightest);
+
+  &.is-error {
+    @include border(1px, solid, accentOne);
+  }
+}
+
+// this class must be added to power-select options that use rsa-text-with-tooltip,
+// look in components/rsa-form-select/default-option/template.hbs for an example
+.ember-power-select-option-tooltip {
+  // needs to be +1 more than the power-select dropdown's z-index ^above^ for option tooltips to display properly
+  z-index: 1003 !important;
+}
+
+.ember-power-select-dropdown {
+  background: background-color(primary, darkest);
+
+  .ember-power-select-option {
+    &[aria-current="true"] {
+      color: text-color(primary, lightest);
+    }
+    &[aria-selected="true"] {
+      &[aria-current="false"] {
+        color: text-color(primary, lightest);
+      }
+    }
+    &[aria-disabled="true"], .disabled-option-in-tootlip {
+      color: text-color(primary);
+      cursor: auto;
+    }
+  }
+
+  &.is-error {
+    .ember-power-select-option {
+      &[aria-selected="true"] {
+        background-color: background-color(accentOne);
+      }
+      &[aria-current="true"] {
+        background-color: background-color(accentOne, darker);
+      }
+    }
+  }
+
+  .ember-power-select-search {
+    padding: 0 rsa-whitespace(less) rsa-whitespace(least);
+
+    &-input {
+      padding: rsa-whitespace(least);
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+  }
+
+}
+
+.ember-power-select-trigger {
+  outline: none;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid border-color(primary, light);
+
+  &.is-error {
+    border-bottom: 1px solid border-color(accentOne);
+    background-color: $formSelectErrorBackgroundColor;
+
+    .ember-power-select-status-icon {
+      color: text-color(accentOne);
+    }
+
+    &:hover {
+      border-bottom: 1px solid border-color(accentOne);
+
+      .ember-power-select-status-icon {
+        color: text-color(accentOne);
+      }
+    }
+  }
+
+  &.inline {
+    display: inline-block;
+  }
+
+  &.is-small {
+    @include rsa-font(body, small);
+  }
+
+  .ember-power-select-selected-item, .ember-power-select-placeholder {
+    color: $ember-power-select-text-color;
+    margin-left: rsa-whitespace(least);
+    margin-right: rsa-whitespace();
+  }
+
+  .ember-power-select-status-icon {
+    border-color: transparent;
+    width: .6rem;
+    right: 0;
+    top: 2px;
+    bottom: auto;
+    display: block;
+    line-height: 1.75em;
+    color: text-color(primary, light);
+
+    &::after {
+      font-size: .6rem;
+      font-family: 'nw-icon-library-all-1';
+      content: $rsa-icon-arrow-down-12;
+      display: block;
+      line-height: 1.75em;
+    }
+  }
+
+  &[aria-expanded="true"],
+  &--active {
+    border-bottom: 1px solid transparent;
+
+    &:hover {
+      border-bottom: 1px solid transparent;
+    }
+
+    .ember-power-select-status-icon {
+      color: text-color(primary, lightest);
+      transform: none;
+    }
+
+    &.is-error {
+      color: text-color(accentOne);
+      border-bottom: 1px solid border-color(accentOne);
+
+      .ember-power-select-status-icon {
+        color: text-color(accentOne);
+      }
+
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    border-bottom: 1px solid border-color(primary, lightest);
+
+    .ember-power-select-status-icon {
+      color: text-color(primary, lightest);
+    }
+  }
+
+  &[aria-disabled=true] {
+    background-color: background-color(primary, dark);
+    .ember-power-select-trigger-multiple-input:disabled {
+      background-color: background-color(primary, dark);
+    }
+  }
+}
+
+input[type=search] {
+  -webkit-appearance: none;
+  -moz-appearance:    none;
+  appearance:         none;
+}
+
+.ember-power-select-multiple-option {
+  @include border(1px, solid, primary, lightest);
+  background: transparent;
+  border-radius: 3px;
+  color: text-color(primary, lightest);
+}
+
+#ember-basic-dropdown-wormhole {
+  .ember-power-select-option {
+    position: relative; /* lets us absolutely position elements within the option */
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-right:rsa-whitespace(less);
+  }
+}

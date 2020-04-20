@@ -1,0 +1,16 @@
+{{#rsa-data-table
+  items=dllList
+  selectedIndex=selectedIndex
+  lazy=true
+  columnsConfig=columnsConfig
+  onRowClick=(action "toggleSelectedRow")}}
+  {{#rsa-data-table/header as |column|}}
+    {{t column.title}}
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body noResultsMessage=(t "investigateHosts.process.dll.message.noResultsMessage") as |item index column|}}
+    {{host-detail/utils/table-cell item=item column=column sid=sid}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}
+<box>
+  {{host-table-footer total=dllList.length index=dllList.length label="loaded libraries" selectedItems=-1 }}
+</box>

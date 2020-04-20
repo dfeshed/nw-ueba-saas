@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside respond */
+@import 'component-lib/manifest';
+
+/* Pulling in local springboard styles */
+@import "springboard/manifest";
+
+@import "springboard-widget-lib/manifest";
+
+// Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
+body.springboard-engine-dummy {
+  .springboard {
+    height: 100vh;
+  }
+  color: text-color(primary, light);
+  .engine-splash-page {
+    .rsa-logo {
+      .rsa-logo__title {
+        color: text-color(accentTwo);
+        text-align: center;
+        font-size: 25px;
+      }
+    }
+    a:-webkit-any-link {
+      text-decoration: none;
+    }
+  }
+}
+
+.springboard-engine {
+  .background-icon {
+    font-size: 15rem;
+    color: text-color(accentOne, dark);
+  }
+}

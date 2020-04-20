@@ -1,0 +1,1 @@
+export { default } from 'context/components/context-panel/data-table/body-cell/component';

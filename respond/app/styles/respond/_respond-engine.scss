@@ -1,0 +1,32 @@
+.respond-engine {
+  min-height: 100vh;
+  color: text-color(primary, lightest);
+
+  /* Common background for all sub-routes. */
+  background-color:$respondBackgroundColor;
+
+  /* Tab strip for sub-routes: Incidents, Alerts, Remediation Tasks. Matches investigate color. */
+  > .rsa-nav-tab-group {
+    background-color: background-color(primary, darker);
+    border-bottom: 1px solid border-color(secondary);
+
+    a, .label {
+      position: relative;
+      top: 2px;
+      cursor: pointer;
+    }
+  }
+
+  .error-page .bottom-links {
+    display: none;
+  }
+
+  .transaction-in-progress .transaction-overlay {
+    @include rsa-fill-abs();
+    z-index: 2;
+    background-color: background-color(neutral,dark,translucent);
+    centered {
+      height: 100%;
+    }
+  }
+}

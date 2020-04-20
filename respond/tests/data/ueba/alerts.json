@@ -1,0 +1,4641 @@
+{
+  "data": [
+    {
+
+      "id": "3af8801b-0979-4066-b906-6330eaca2337",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576098000000,
+      "endDate": 1576101600000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "1486f9ac-974d-4be6-8641-1b0826097854",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576098000000,
+          "endDate": 1576101600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 55,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "0b597994-0c7f-472c-811a-c3622f55fabc",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576098000000,
+          "endDate": 1576098000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal File Access Time",
+          "anomalyTypeFieldName": "abnormal_file_day_time",
+          "name": "Abnormal File Access Time",
+          "anomalyValue": "2019-12-11T21:00:00Z",
+          "dataEntitiesIds": [
+            "file"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T21:00:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 24,
+          "scoreContribution": 21,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "f6d203df-588b-4fb0-a841-d3231f6f9516",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576098000000,
+          "endDate": 1576101600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 19,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "6112620a-4d75-4dc6-a484-c53016cbbeb1",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576099200000,
+          "endDate": 1576099200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T21:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T21:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 3,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 4,
+      "score": 54,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "f18cca31-910e-4109-9f28-82ad867f8aa6",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576094400000,
+      "endDate": 1576098000000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "afc7e26e-ed5c-4743-921e-7be19adb7e24",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576094400000,
+          "endDate": 1576098000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "21.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 79,
+          "scoreContribution": 57,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 21,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "47daff27-8fd1-4191-b2c4-b4099b8cdec7",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576096200000,
+          "endDate": 1576096200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal File Access Time",
+          "anomalyTypeFieldName": "abnormal_file_day_time",
+          "name": "Abnormal File Access Time",
+          "anomalyValue": "2019-12-11T20:30:00Z",
+          "dataEntitiesIds": [
+            "file"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T20:30:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 24,
+          "scoreContribution": 20,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "d341c3b3-94c6-4950-ae08-b143d486f7fc",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576094400000,
+          "endDate": 1576098000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 18,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "b0b135cf-d416-4008-a268-a6e56c95f561",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576095600000,
+          "endDate": 1576095600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T20:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T20:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 3,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 4,
+      "score": 55,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "6937abb1-4822-4083-ae81-f6d76b07e2e0",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576090800000,
+      "endDate": 1576094400000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "8fc13318-0e6a-499a-a5d5-1d409182cce4",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576090800000,
+          "endDate": 1576094400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 70,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "660503fd-4ca1-4208-9d35-34309b879d2c",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576090800000,
+          "endDate": 1576094400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 24,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "9b7e3dcb-c8fd-4396-9719-bfba305adfbd",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576092000000,
+          "endDate": 1576092000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T19:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T19:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 3,
+      "score": 46,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "ca124c14-0ae2-4ea6-8da9-3e2c61c1d8f7",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576087200000,
+      "endDate": 1576090800000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "80e07a15-bbe4-4b11-bac0-c690e68d53c2",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576087200000,
+          "endDate": 1576090800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 70,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "41a9a859-7146-4fa8-bbd4-638e415d7fc5",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576087200000,
+          "endDate": 1576090800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 24,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "a79bbccd-3674-4fba-8057-d0e672801c2f",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576088400000,
+          "endDate": 1576088400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T18:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T18:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 3,
+      "score": 46,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "abdfb03e-7e93-44ff-be90-68c3051d20bf",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576083600000,
+      "endDate": 1576087200000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "bc69a589-c4e0-4349-bae9-ace6bcce6098",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576083600000,
+          "endDate": 1576087200000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 70,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "16e01a26-1704-4b67-83bf-3bc58f55c964",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576083600000,
+          "endDate": 1576087200000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 24,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "ecb07472-5b89-43e6-9046-46b3baa5ec6b",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576084800000,
+          "endDate": 1576084800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T17:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T17:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 3,
+      "score": 46,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "d5cc0897-1702-4b87-909f-80712083b81f",
+      "name": "discovery_reconnaissance",
+      "startDate": 1576080000000,
+      "endDate": 1576083600000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "17334feb-2d68-4420-8ad9-dad2c8d76386",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080000000,
+          "endDate": 1576083600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Reconnaissance Tool Activities Executed",
+          "anomalyTypeFieldName": "high_number_of_reconnaissance_tool_activities_executed",
+          "name": "Multiple Reconnaissance Tool Activities Executed",
+          "anomalyValue": "30.0",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 100,
+          "scoreContribution": 21,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 30,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "8dfd4c68-0c00-4e00-8ce9-cb1138e056a1",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080600000,
+          "endDate": 1576080600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "services.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 15,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "746fa7c0-0664-4e69-ac14-f84a6b76179f",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080000000,
+          "endDate": 1576083600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 13,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "2b388b32-f301-476a-87be-2b76d7fd60f4",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080660000,
+          "endDate": 1576080660000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "dsquery.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "dsquery.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "4ca69df5-1785-4a2e-9bc1-a957be8da818",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081080000,
+          "endDate": 1576081080000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "net.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "net.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "c98eee94-32cd-4e78-9df0-02ef2730d4ad",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080480000,
+          "endDate": 1576080480000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "arp",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "arp",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "ddf4b0ab-854a-4fa1-8ae3-c93f62b22298",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080720000,
+          "endDate": 1576080720000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "forfiles.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "forfiles.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "8c942c57-9e71-4710-9454-1cea33719444",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080600000,
+          "endDate": 1576080600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "dsget.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "dsget.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "fc263a27-4da0-43c2-a1b8-5b54fc191504",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081200000,
+          "endDate": 1576081200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netsh",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netsh",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "946d8256-e77c-4d35-b0cc-047d222f1437",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081140000,
+          "endDate": 1576081140000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netdom.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netdom.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "531ae7ba-dcaa-43fc-8e39-6d7e341e47a3",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080540000,
+          "endDate": 1576080540000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "arp.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "arp.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 5,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "00a8f59f-80c3-4d04-9949-cd98652ae3b1",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080000000,
+          "endDate": 1576083600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "ee866f48-8efd-460b-b18f-044f8944e688",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081800000,
+          "endDate": 1576081800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T16:30:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T16:30:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 2,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "8eb8146b-069a-4385-8688-40b3be09e0e5",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081380000,
+          "endDate": 1576081380000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netstat.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netstat.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "72dc3f88-0efd-4246-8afb-a930d38d6f49",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080960000,
+          "endDate": 1576080960000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "ipconfig.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "ipconfig.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "4e931da7-dbc8-48e1-ac65-83464ac6d5aa",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080420000,
+          "endDate": 1576080420000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "wmic.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "wmic.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "afd1ed3c-5e27-44e9-bd9e-ebfa39b80411",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081500000,
+          "endDate": 1576081500000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "nltest.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "nltest.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "75f38dad-098a-4665-972e-152055a68546",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080780000,
+          "endDate": 1576080780000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "fsutil.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "fsutil.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "6b6df5ea-fd1d-43df-8485-6987f5c8958c",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080180000,
+          "endDate": 1576080180000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "tree",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "tree",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "9707d74c-f0d1-4e36-a0aa-ddb2e2516181",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080120000,
+          "endDate": 1576080120000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "tasklist.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "tasklist.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "e654f3bf-4701-49ca-b930-4965241631dd",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081440000,
+          "endDate": 1576081440000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "nbtstat.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "nbtstat.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "81d5e716-5a80-49cc-8da0-b24c1b9ee7c2",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081620000,
+          "endDate": 1576081620000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "ping.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "ping.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "678848c8-d004-4955-b967-88def7adf6a4",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080240000,
+          "endDate": 1576080240000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "edea7419-21af-4c01-8614-8c04a1ade054",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080360000,
+          "endDate": 1576080360000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "whoami.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "whoami.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "6d38af44-b79e-4ec7-ae24-7bc862ff3349",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080300000,
+          "endDate": 1576080300000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "whoami",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "whoami",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "f3ff35e2-b552-40e2-aff6-9eaa07bf3484",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080060000,
+          "endDate": 1576080060000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "systeminfo.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "systeminfo.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "4957b8b8-367e-4b88-a5ad-e627fd782472",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080900000,
+          "endDate": 1576080900000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "hostname.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "hostname.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "dab0cfdd-4bde-4aa0-9fc3-bce8528860da",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081320000,
+          "endDate": 1576081320000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netstat",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netstat",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "89d60a5a-71a0-4a74-87f6-3d7c775a632e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080000000,
+          "endDate": 1576080000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "sc.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "sc.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "90870090-b7a5-4fd7-ba89-4293c06af009",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576081260000,
+          "endDate": 1576081260000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netsh.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netsh.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "4a97d4be-6561-4d8d-9165-d344b18f2942",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576080000000,
+          "endDate": 1576083600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Distinct Reconnaissance Tools Executed",
+          "anomalyTypeFieldName": "high_number_of_distinct_reconnaissance_tools_executed",
+          "name": "Multiple Distinct Reconnaissance Tools Executed",
+          "anomalyValue": "30.0",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 0,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 30,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 31,
+      "score": 94,
+      "severityCode": 1,
+      "severity": "High",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 15.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "ad08bf6a-570f-4f88-988b-33d5cb5a3d60",
+      "name": "discovery_reconnaissance",
+      "startDate": 1576076400000,
+      "endDate": 1576080000000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "bdfe6346-b8b9-47b3-b337-a1e6f67e4475",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076400000,
+          "endDate": 1576080000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Reconnaissance Tool Activities Executed",
+          "anomalyTypeFieldName": "high_number_of_reconnaissance_tool_activities_executed",
+          "name": "Multiple Reconnaissance Tool Activities Executed",
+          "anomalyValue": "60.0",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 100,
+          "scoreContribution": 15,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 60,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "5de3b98f-1e2d-40a3-90b1-d47ebc79c422",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576079400000,
+          "endDate": 1576079400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injected into LSASS",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_lsass",
+          "name": "Abnormal Process Injected into LSASS",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsass.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 11,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "9bc4e16e-ac54-4578-ae69-c6cd5afae00e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076400000,
+          "endDate": 1576080000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 9,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "f0505113-6af6-4275-835c-143646e14ee6",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576078200000,
+          "endDate": 1576078200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "smss.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 8,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "b944148a-c871-4b81-8214-d1b8f64aca8a",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077000000,
+          "endDate": 1576077000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "taskhostw.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 8,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "5bfe2915-f5c5-4cd5-90fe-46fc9f479122",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076400000,
+          "endDate": 1576078440000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "arp",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "arp",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "0a7ba181-1c1b-41ec-8531-f2472cd77906",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077060000,
+          "endDate": 1576079100000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netdom.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netdom.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "bd18c493-7728-463d-b604-25580005bd29",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077120000,
+          "endDate": 1576079160000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netsh",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netsh",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "81fccf6a-47e2-45a3-8cae-a2c4641ab455",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076460000,
+          "endDate": 1576078500000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "arp.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "arp.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "30fc6dbf-1cf0-4ae1-b528-034221dd15a2",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076640000,
+          "endDate": 1576078680000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "forfiles.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "forfiles.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "72174c45-b734-4109-85bb-961ffd1570ba",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077000000,
+          "endDate": 1576079040000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "net.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "net.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "ad91aa0d-1ba4-4c34-863c-7367f2fbd6fd",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076520000,
+          "endDate": 1576078560000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "dsget.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "dsget.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "a9375ee9-93c8-4f78-83d7-e82637bbc5fa",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076580000,
+          "endDate": 1576078620000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "dsquery.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "dsquery.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "3fc73ef0-28cc-46aa-bff5-54c86ef6e4a8",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076400000,
+          "endDate": 1576080000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 3,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "7712eae5-120b-4bc0-83e6-1211b6ac0bfb",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076940000,
+          "endDate": 1576078980000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "net",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "net",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "d74831e4-9617-4fbf-981d-b12fe0fb1052",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076820000,
+          "endDate": 1576078860000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "hostname.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "hostname.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "2c54c59b-981a-47d1-93b5-36f780f0773e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077360000,
+          "endDate": 1576079400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "nbtstat.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "nbtstat.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "375188b5-b2e3-4c16-8413-c07cff13a438",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076880000,
+          "endDate": 1576078920000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "ipconfig.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "ipconfig.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "a6dd4101-bcb9-417f-875f-e28dd31162d9",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077540000,
+          "endDate": 1576079580000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "ping.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "ping.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "84573560-a938-4a20-87be-4f9f7217efe0",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077420000,
+          "endDate": 1576079460000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "nltest.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "nltest.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "0e66cd18-a25d-41e3-bf04-439ce4734a72",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077180000,
+          "endDate": 1576079220000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netsh.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netsh.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "d47d487c-deb4-4af4-bfa7-aa91feb3ff6d",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077240000,
+          "endDate": 1576079280000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netstat",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netstat",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "7d6bd7fd-1249-4eba-aac2-1d3e27feb3c4",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077300000,
+          "endDate": 1576079340000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "netstat.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "netstat.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "7a6451c8-2a39-4da1-a090-ce7f91b2a8c7",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077900000,
+          "endDate": 1576079940000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "route.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "route.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "e70e1008-3bc5-489d-beff-739ef816cad9",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076760000,
+          "endDate": 1576078800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "hostname",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "hostname",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "0e8f3b15-a2a0-4149-951c-e334235f1ab4",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076700000,
+          "endDate": 1576078740000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "fsutil.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "fsutil.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "86ae3367-50a6-48be-be3e-88725b587db9",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576077480000,
+          "endDate": 1576079520000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "ping",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "ping",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 2,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "fdedd7f9-4c9b-413b-9a3b-4fceb9e30671",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576078140000,
+          "endDate": 1576078140000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "tree",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "tree",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "21119afd-4a3c-4a3d-96ef-e6fdd430d0a2",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576078020000,
+          "endDate": 1576078020000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "systeminfo.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "systeminfo.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "7c1b139e-abae-4d08-aad6-379125ebbe4d",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576078080000,
+          "endDate": 1576078080000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "tasklist.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "tasklist.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "fbfea291-a305-40a3-88f6-a0be8c4787f2",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576078380000,
+          "endDate": 1576078380000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Reconnaissance Tool Executed",
+          "anomalyTypeFieldName": "abnormal_reconnaissance_tool_executed",
+          "name": "Abnormal Reconnaissance Tool Executed",
+          "anomalyValue": "wmic.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "wmic.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 3,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "5e768687-e5fd-4e03-b21b-eda81c2dde81",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576076400000,
+          "endDate": 1576080000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Distinct Reconnaissance Tools Executed",
+          "anomalyTypeFieldName": "high_number_of_distinct_reconnaissance_tools_executed",
+          "name": "Multiple Distinct Reconnaissance Tools Executed",
+          "anomalyValue": "34.0",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 0,
+          "scoreContribution": 0,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 60,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 32,
+      "score": 97,
+      "severityCode": 1,
+      "severity": "High",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 15.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "47f23b71-d9de-4308-950d-99d7673ababb",
+      "name": "process_injection",
+      "startDate": 1576072800000,
+      "endDate": 1576076400000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "9a3752c7-9ea2-4542-8e5c-906bf427caf3",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576073400000,
+          "endDate": 1576073400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injected into LSASS",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_lsass",
+          "name": "Abnormal Process Injected into LSASS",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsass.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 26,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "80887a77-7d2b-4854-9372-f65db298069a",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576072800000,
+          "endDate": 1576076400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 22,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "d591bff7-c308-4f46-8139-6675043586c5",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576075800000,
+          "endDate": 1576075800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsaiso.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 21,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "54464db8-6a70-4ed7-ac02-046e67f8878b",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576074600000,
+          "endDate": 1576074600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "services.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 21,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "79800abd-dcc6-440f-ba82-5aa07c513b22",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576072800000,
+          "endDate": 1576076400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 7,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 5,
+      "score": 83,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "0a9061d9-d1be-45f2-b7ec-d9b6aea1321d",
+      "name": "process_injection",
+      "startDate": 1576069200000,
+      "endDate": 1576072800000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "7b7ff42e-5b8c-4435-a2e1-0e80917671d6",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576069200000,
+          "endDate": 1576072800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 28,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "2465c64d-e886-465e-b56e-1e275978d22a",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576069800000,
+          "endDate": 1576069800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsaiso.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 20,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "145509a1-9eeb-4431-9ff7-050406befce6",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576071000000,
+          "endDate": 1576071000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "taskhostw.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 20,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "3372e572-d18d-41e3-b2bd-232979ddef94",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576072200000,
+          "endDate": 1576072200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "smss.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 20,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "6d866f9a-16e9-4011-b218-33dd3e62da8e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576069200000,
+          "endDate": 1576072800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 9,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 5,
+      "score": 76,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "a27d6719-dbe5-437d-9e6a-ccb55a20f284",
+      "name": "registry_run_keys",
+      "startDate": 1576065600000,
+      "endDate": 1576069200000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "6fe2a26d-3df8-43be-ae8e-47c269f0b092",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576065600000,
+          "endDate": 1576069200000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Successful Authentications",
+          "anomalyTypeFieldName": "high_number_of_successful_authentications",
+          "name": "Multiple Successful Authentications",
+          "anomalyValue": "29.0",
+          "dataEntitiesIds": [
+            "authentication"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 100,
+          "scoreContribution": 15,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 29,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "31aca4a6-8449-45bd-8932-5c2a2597552e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576067400000,
+          "endDate": 1576067400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injected into LSASS",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_lsass",
+          "name": "Abnormal Process Injected into LSASS",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsass.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 13,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "8de90829-11bb-465a-8cea-4395ff1fc4da",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576065600000,
+          "endDate": 1576069200000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 11,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "661d243d-205e-4620-8ac8-a7f9d06dd6e6",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576065660000,
+          "endDate": 1576065660000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Logon Time",
+          "anomalyTypeFieldName": "abnormal_logon_day_time",
+          "name": "Abnormal Logon Time",
+          "anomalyValue": "2019-12-11T12:01:00Z",
+          "dataEntitiesIds": [
+            "authentication"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T12:01:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 62,
+          "scoreContribution": 11,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "37c6eb44-bca7-45d1-be90-e1f4937f350f",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576066200000,
+          "endDate": 1576066200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "smss.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "96f6fcde-e99b-4f47-b912-908e20765c74",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576066500000,
+          "endDate": 1576066500000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program Files\\abnormal_process_x.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program Files",
+            "processFilePath": "C:\\Program Files\\abnormal_process_x.exe",
+            "registryKeyGroup": "SERVICES_IMAGE_PATH",
+            "processFileName": "abnormal_process_x.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "ceee33a9-9c52-4454-89d4-0c60faedbc0c",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576068600000,
+          "endDate": 1576068600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "services.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "77bc025a-8514-4c6c-9f13-0b2846ba664f",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576065600000,
+          "endDate": 1576065600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program Files\\abnormal_process_y.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program Files",
+            "processFilePath": "C:\\Program Files\\abnormal_process_y.exe",
+            "registryKeyGroup": "RUN_KEY",
+            "processFileName": "abnormal_process_y.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "dd83e809-0b30-497f-be98-da209725a4de",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576065600000,
+          "endDate": 1576069200000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 9,
+      "score": 95,
+      "severityCode": 1,
+      "severity": "High",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 15.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "fd3f0ba8-ef71-441b-89f3-76ceebc30265",
+      "name": "registry_run_keys",
+      "startDate": 1576062000000,
+      "endDate": 1576065600000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "19b38bb7-db3d-4129-8558-00582689a646",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576062000000,
+          "endDate": 1576065600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Successful Authentications",
+          "anomalyTypeFieldName": "high_number_of_successful_authentications",
+          "name": "Multiple Successful Authentications",
+          "anomalyValue": "60.0",
+          "dataEntitiesIds": [
+            "authentication"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 100,
+          "scoreContribution": 16,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 60,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "2a785fe9-4352-479e-8621-2a2e3cc87092",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576062000000,
+          "endDate": 1576065600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 12,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "e889698e-97ea-49e6-81fe-0f0019197362",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576062000000,
+          "endDate": 1576062000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Logon Time",
+          "anomalyTypeFieldName": "abnormal_logon_day_time",
+          "name": "Abnormal Logon Time",
+          "anomalyValue": "2019-12-11T11:00:00Z",
+          "dataEntitiesIds": [
+            "authentication"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T11:00:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 62,
+          "scoreContribution": 11,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "d2111a81-f227-4f3c-8184-e78f1401005c",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576065000000,
+          "endDate": 1576065000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "taskhostw.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 8,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "a93d0c9f-4556-4ab3-93fc-bbe229b2f3e7",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576063800000,
+          "endDate": 1576063800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsaiso.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 8,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "950ff388-0602-4338-9053-85b78313f4ff",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576062600000,
+          "endDate": 1576062600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "services.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 8,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "a3d0d379-38da-4224-8c3c-f5b960ad7a8b",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576062900000,
+          "endDate": 1576062900000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program Files\\abnormal_process_y.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program Files",
+            "processFilePath": "C:\\Program Files\\abnormal_process_y.exe",
+            "registryKeyGroup": "SERVICES_IMAGE_PATH",
+            "processFileName": "abnormal_process_y.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 7,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "c23d5df6-4801-4bc0-b450-826a0423eb8d",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576062000000,
+          "endDate": 1576062000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program File\\abnormal_process_x.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program File",
+            "processFilePath": "C:\\Program File\\abnormal_process_x.exe",
+            "registryKeyGroup": "RUN_KEY",
+            "processFileName": "abnormal_process_x.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 7,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "c1fe114d-0c01-41a2-b529-04bae4f3b6c2",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576063800000,
+          "endDate": 1576063800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program Files\\abnormal_process_x.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program Files",
+            "processFilePath": "C:\\Program Files\\abnormal_process_x.exe",
+            "registryKeyGroup": "FIREWALL_POLICY",
+            "processFileName": "abnormal_process_x.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 7,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "af71b2f7-3d57-4c28-9b8c-92f6213d6399",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576064700000,
+          "endDate": 1576064700000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program File\\abnormal_process_x.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program File",
+            "processFilePath": "C:\\Program File\\abnormal_process_x.exe",
+            "registryKeyGroup": "BAD_CERTIFICATE_WARNING_SETTING",
+            "processFileName": "abnormal_process_x.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 7,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "3e3042ce-56cc-430d-b817-1ef449c2d4a4",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576062000000,
+          "endDate": 1576065600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 11,
+      "score": 95,
+      "severityCode": 1,
+      "severity": "High",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 15.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "77b3bd66-6c52-43f8-885c-e9d9f024a971",
+      "name": "registry_run_keys",
+      "startDate": 1576058400000,
+      "endDate": 1576062000000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "a3af38be-669f-476e-ab3e-7d1b18cf6808",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576058400000,
+          "endDate": 1576062000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Successful Authentications",
+          "anomalyTypeFieldName": "high_number_of_successful_authentications",
+          "name": "Multiple Successful Authentications",
+          "anomalyValue": "46.0",
+          "dataEntitiesIds": [
+            "authentication"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 100,
+          "scoreContribution": 14,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 46,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "5a33ca2b-879c-4a5c-a7df-c86af4bdef6e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576061400000,
+          "endDate": 1576061400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injected into LSASS",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_lsass",
+          "name": "Abnormal Process Injected into LSASS",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsass.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 12,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "2a09f00b-9993-4531-94c6-b0c6b31d14cb",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576058400000,
+          "endDate": 1576062000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "685fb349-59ab-4d9e-8799-6e72da1b2ec8",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576059600000,
+          "endDate": 1576059600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Logon Time",
+          "anomalyTypeFieldName": "abnormal_logon_day_time",
+          "name": "Abnormal Logon Time",
+          "anomalyValue": "2019-12-11T10:20:00Z",
+          "dataEntitiesIds": [
+            "authentication"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T10:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 62,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "b0c5926e-1d7e-48ba-9842-9cf905b92376",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576060200000,
+          "endDate": 1576060200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "smss.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "3e08f56e-c04c-4947-b8a9-5e2e1dd6e94e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576059000000,
+          "endDate": 1576059000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "taskhostw.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "bea4b80d-a114-4320-868d-f76b22689160",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576061100000,
+          "endDate": 1576061100000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program Files\\abnormal_process_x.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program Files",
+            "processFilePath": "C:\\Program Files\\abnormal_process_x.exe",
+            "registryKeyGroup": "BAD_CERTIFICATE_WARNING_SETTING",
+            "processFileName": "abnormal_process_x.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 6,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "cd8625b2-c55e-4521-a40a-692892fbfc37",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576060200000,
+          "endDate": 1576060200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program Files\\abnormal_process_y.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program Files",
+            "processFilePath": "C:\\Program Files\\abnormal_process_y.exe",
+            "registryKeyGroup": "FIREWALL_POLICY",
+            "processFileName": "abnormal_process_y.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 6,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "d69f1c95-b135-43f7-9cef-8633f1911367",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576058400000,
+          "endDate": 1576058400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program Files\\abnormal_process_x.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program Files",
+            "processFilePath": "C:\\Program Files\\abnormal_process_x.exe",
+            "registryKeyGroup": "RUN_KEY",
+            "processFileName": "abnormal_process_x.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 6,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "bd24fcb9-0431-44b7-87cd-1e8ff3bbc412",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576059300000,
+          "endDate": 1576059300000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Modified a Registry Group",
+          "anomalyTypeFieldName": "abnormal_process_modified_registry_key_group",
+          "name": "Abnormal Process Modified a Registry Group",
+          "anomalyValue": "C:\\Program File\\abnormal_process_x.exe",
+          "dataEntitiesIds": [
+            "registry"
+          ],
+          "contexts": {
+            "processDirectory": "C:\\Program File",
+            "processFilePath": "C:\\Program File\\abnormal_process_x.exe",
+            "registryKeyGroup": "SERVICES_IMAGE_PATH",
+            "processFileName": "abnormal_process_x.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 6,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "b897777d-badb-4e9f-b1b2-f025b1169431",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576058400000,
+          "endDate": 1576062000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 3,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 11,
+      "score": 96,
+      "severityCode": 1,
+      "severity": "High",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 15.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "b384ce1e-9e64-4813-bb5e-1ad25b310d8f",
+      "name": "process_injection",
+      "startDate": 1576054800000,
+      "endDate": 1576058400000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "44ec7805-b402-4679-a587-57c74c7ea00e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576055400000,
+          "endDate": 1576055400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injected into LSASS",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_lsass",
+          "name": "Abnormal Process Injected into LSASS",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsass.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 26,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "646d4a3d-5856-4242-8b8f-f4ee17052f62",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576054800000,
+          "endDate": 1576058400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 22,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "32679d00-8963-4e94-9b7b-a12cb704e8de",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576056600000,
+          "endDate": 1576056600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "services.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 21,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "481d72be-5d3c-4f68-aa87-e48360eb963c",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576057800000,
+          "endDate": 1576057800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "lsaiso.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 21,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "5f661ab3-3022-4874-82b3-d7c8a4e695ef",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576054800000,
+          "endDate": 1576058400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 7,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 5,
+      "score": 83,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "2f5a18f9-e499-401d-b820-8a179cde2432",
+      "name": "process_injection",
+      "startDate": 1576051200000,
+      "endDate": 1576054800000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "58c09b9a-13b3-4b8b-a209-2998d960a9c5",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576051200000,
+          "endDate": 1576054800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 31,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "4608fb59-c3fb-4ce0-8ed6-6c8c73f4252e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576054200000,
+          "endDate": 1576054200000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "smss.exe",
+            "srcProcessDirectory": "D:\\Windows\\System32",
+            "srcProcessFileName": "ABNORMAL_process_2.exe",
+            "srcProcessFilePath": "D:\\Windows\\System32\\ABNORMAL_process_2.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 28,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "57d777a2-1e5a-4e0c-8883-4e5e33608457",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576053000000,
+          "endDate": 1576053000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Process Injects into Windows Process",
+          "anomalyTypeFieldName": "abnormal_process_injects_into_windows_process",
+          "name": "Abnormal Process Injects into Windows Process",
+          "anomalyValue": "C:\\Windows\\System32\\tree.exe",
+          "dataEntitiesIds": [
+            "process"
+          ],
+          "contexts": {
+            "dstProcessFileName": "taskhostw.exe",
+            "srcProcessDirectory": "C:\\Windows\\System32",
+            "srcProcessFileName": "tree.exe",
+            "srcProcessFilePath": "C:\\Windows\\System32\\tree.exe",
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 72,
+          "scoreContribution": 28,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "52a7a6fe-94c9-4dc1-b693-59236c7056f9",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576051200000,
+          "endDate": 1576054800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 10,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 4,
+      "score": 73,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "0a20b416-a89f-4afb-b150-c9c166795752",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576047600000,
+      "endDate": 1576051200000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "c0122dde-afe5-4e31-9754-76fbebe484bd",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576047600000,
+          "endDate": 1576051200000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 74,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "4705c687-6eef-456c-aa47-0aa1b4e41d48",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576047600000,
+          "endDate": 1576051200000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 25,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 2,
+      "score": 44,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "fd01c5e1-8331-4aa0-b611-8b148ac7416b",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576044000000,
+      "endDate": 1576047600000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "0365283c-9e51-4de5-8ca0-4593a5ecb078",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576044000000,
+          "endDate": 1576047600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 70,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "2619dd9a-08ab-41df-8bc3-7f12e2e4888d",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576044000000,
+          "endDate": 1576047600000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 24,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "f8712181-082a-47e2-8ba3-c088cf0b4721",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576045800000,
+          "endDate": 1576045800000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T06:30:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T06:30:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 3,
+      "score": 46,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "cc19cc6b-537a-4cc0-b31e-ecb1c3d2b28f",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576040400000,
+      "endDate": 1576044000000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "170a0d3a-30fd-47a5-8a42-1042d9fa49d5",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576040400000,
+          "endDate": 1576044000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 70,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "b2fa47cf-90e3-4152-bcbb-73f1c8bed8f3",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576040400000,
+          "endDate": 1576044000000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 24,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "ef59d568-d9c5-412b-a189-ea87f6f06cdb",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576041600000,
+          "endDate": 1576041600000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T05:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T05:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 3,
+      "score": 46,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "4c8226a0-14e4-42a7-84e5-cb935d424b77",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576036800000,
+      "endDate": 1576040400000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "12278166-f7ce-44f8-a2ee-3d413196f345",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576036800000,
+          "endDate": 1576040400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 70,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "2dbe777a-6130-4682-b8de-e3b7dde28af5",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576036800000,
+          "endDate": 1576040400000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 24,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "59c81d1f-2188-4dc5-88a3-65c6c3eecb19",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576038000000,
+          "endDate": 1576038000000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T04:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T04:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 3,
+      "score": 46,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    },
+    {
+      "id": "5c790794-b0e9-4077-b4d8-1cd601d58cf8",
+      "name": "abnormal_ad_changes",
+      "startDate": 1576033200000,
+      "endDate": 1576036800000,
+      "entityType": "userId",
+      "entityName": "Lily Anderson",
+      "entityId": "7458d4df-abad-40af-9fac-1b9d77211c76",
+      "evidences": [
+        {
+          "id": "e9b7ee7b-aaab-4e93-b45d-976ffede9d11",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576033200000,
+          "endDate": 1576036800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Active Directory Object Changes",
+          "anomalyTypeFieldName": "high_number_of_successful_object_change_operations",
+          "name": "Multiple Active Directory Object Changes",
+          "anomalyValue": "20.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 74,
+          "scoreContribution": 70,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 20,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "a2dd3d3f-9f4e-4ca4-a95d-ee727ad4b50a",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576033200000,
+          "endDate": 1576036800000,
+          "retentionDate": null,
+          "anomalyType": "Multiple Group Membership Changes",
+          "anomalyTypeFieldName": "high_number_of_group_membership_events",
+          "name": "Multiple Group Membership Changes",
+          "anomalyValue": "10.0",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson"
+          },
+          "evidenceType": "AnomalyAggregatedEvent",
+          "score": 22,
+          "scoreContribution": 24,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 10,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        },
+        {
+          "id": "09a83259-fff6-411a-af9e-22e7a7fb151e",
+          "entityType": "User",
+          "entityTypeFieldName": null,
+          "entityName": "Lily Anderson",
+          "startDate": 1576034400000,
+          "endDate": 1576034400000,
+          "retentionDate": null,
+          "anomalyType": "Abnormal Active Directory Change Time",
+          "anomalyTypeFieldName": "abnormal_active_directory_day_time_operation",
+          "name": "Abnormal Active Directory Change Time",
+          "anomalyValue": "2019-12-11T03:20:00Z",
+          "dataEntitiesIds": [
+            "active_directory"
+          ],
+          "contexts": {
+            "userId": "lily anderson",
+            "eventDate": "2019-12-11T03:20:00Z"
+          },
+          "evidenceType": "AnomalySingleEvent",
+          "score": 4,
+          "scoreContribution": 4,
+          "severity": "Critical",
+          "top3eventsJsonStr": null,
+          "top3events": null,
+          "numOfEvents": 1,
+          "timeframe": "Hourly",
+          "supportingInformation": null
+        }
+      ],
+      "evidenceSize": 3,
+      "score": 46,
+      "severityCode": 3,
+      "severity": "Low",
+      "status": "Open",
+      "feedback": "None",
+      "userScoreContribution": 1.0,
+      "userScoreContributionFlag": true,
+      "timeframe": "Hourly",
+      "dataSourceAnomalyTypePair": null
+    }
+  ],
+  "total": 19,
+  "offset": 0,
+  "warning": null,
+  "info": null
+}

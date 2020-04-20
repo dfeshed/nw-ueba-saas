@@ -1,0 +1,58 @@
+{{#if isInsightsAgent}}
+  <box class="alert-error-message insight-message">
+    {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.insightAgentRiskError" htmlSafe=true)}}
+  </box>
+{{else if (not isRespondServerOffline)}}
+  {{#if riskScoringServerError}}
+    <box class="alert-error-message">
+      {{rsa-panel-message message=(t riskScoringServerError)}}
+    </box>
+  {{else}}
+    {{#if riskScoreContext}}
+      <box>
+        <h1 class="alert-heading">{{t "investigateShared.endpoint.riskProperties.alerts.heading"}}</h1>
+      </box>
+      <box class="rsa-nav-tab-group">
+        {{#endpoint/risk-properties/alert-tab
+          tabs=tabs
+          defaultAction=defaultAction
+          riskType=riskType
+          agentId=agentId
+          belongsTo=belongsTo as |tab|}}
+          <div class="alert-count">{{tab.count}}</div>
+          <div class="label">
+            {{#if tab.color}}
+              <span class="risk-color-indicator {{tab.color}}"></span>
+            {{/if}}
+            <span class="tab-text">{{t tab.label}}</span>
+          </div>
+        {{/endpoint/risk-properties/alert-tab}}
+      </box>
+      {{#if isRiskScoreContextEmpty}}
+        <box class="alert-error-message">
+          {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.emptyContext")}}
+        </box>
+      {{else if (eq alertsLoadingStatus "loading")}}
+        {{rsa-loader size="larger" class="alerts-loading"}}
+      {{else if contexts}}
+        {{#endpoint/risk-properties/alert-context
+          contexts=contexts
+          setAlertAction=setSelectedAlert
+          selectedAlert=selectedAlert as |context|}}
+          <div class="alert-context__name">{{context.alertName}} ({{context.alertCount}})</div>
+          <div class="alert-context__event">
+            <span>{{t "investigateShared.endpoint.riskProperties.alerts.events" count=context.eventCount}}</span>
+          </div>
+        {{/endpoint/risk-properties/alert-context}}
+      {{/if}}
+    {{else}}
+      <centered>
+        {{rsa-loader size="larger"}}
+      </centered>
+    {{/if}}
+  {{/if}}
+{{else}}
+  {{error-page
+  errorDescription=(t "investigateShared.endpoint.riskProperties.errorPage.serviceDownDescription")
+  title=(t "investigateShared.endpoint.riskProperties.errorPage.serviceDown")}}
+{{/if}}

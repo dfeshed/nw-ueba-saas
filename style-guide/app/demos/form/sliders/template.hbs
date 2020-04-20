@@ -1,0 +1,91 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+  {{#spec-category title="States"}}
+    {{#spec-member title="Default"}}
+      {{range-slider
+        start=model.start
+        step=1
+        on-change=(action "onSliderChange")}}
+      {{!-- BEGIN-SNIPPET slider1
+        {{range-slider
+          start=model.start
+          step=1
+          on-change=(action "onSliderChange")}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider1.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Read Only"}}
+      {{range-slider
+        start=model.start
+        step=1
+        isReadOnly=true
+        disabled=true
+        on-change=(action "onSliderChange")}}
+      {{!-- BEGIN-SNIPPET slider2
+        {{range-slider
+          start=model.start
+          step=1
+          isReadOnly=true
+          disabled=true
+          on-change=(action "onSliderChange")}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider2.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Disabled"}}
+      {{range-slider
+        start=model.start
+        step=1
+        tooltips=false
+        disabled=true
+        on-change=(action "onSliderChange")}}
+      {{!-- BEGIN-SNIPPET slider3
+        {{range-slider
+          start=model.start
+          step=1
+          tooltips=false
+          disabled=true
+          on-change=(action "onSliderChange")}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider3.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Error"}}
+      {{range-slider
+        start=model.start
+        step=1
+        isError=true
+        on-change=(action "onSliderChange")}}
+      {{!-- BEGIN-SNIPPET slider4
+        {{range-slider
+          start=model.start
+          step=1
+          isError=true
+          on-change=(action "onSliderChange")}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider4.hbs"}}
+    {{/spec-member}}
+
+    {{#spec-member title="Single handle (single handle supports keyboard left/right arrow keys)"}}
+      {{range-slider
+        start=model.singleStart
+        step=1
+        connect=false
+        on-change=(action "onSliderChange")}}
+      {{!-- BEGIN-SNIPPET slider5
+        {{range-slider
+          start=model.singleStart
+          step=1
+          connect=false
+          on-change=(action "onSliderChange")}}
+      END-SNIPPET --}}
+      {{code-snippet name="slider5.hbs"}}
+    {{/spec-member}}
+  {{/spec-category}}
+</fill>
+</hbox>

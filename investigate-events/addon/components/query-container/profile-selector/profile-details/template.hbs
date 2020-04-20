@@ -1,0 +1,14 @@
+{{#if isEditing}}
+  {{query-container/profile-selector/profile-details/profile-form
+    columnGroups=columnGroups
+    metaGroups=metaGroups
+    profile=profile
+    profiles=profiles
+    selectedColumnGroupId=selectedColumnGroupId
+    sendToBroadcast=(action "broadcastChangedProfile")
+  }}
+{{else}}
+  {{query-container/profile-selector/profile-details/profile-view
+    profile=profile
+  }}
+{{/if}}

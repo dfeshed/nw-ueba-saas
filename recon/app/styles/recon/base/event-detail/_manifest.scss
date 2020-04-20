@@ -1,0 +1,89 @@
+@import "./files/manifest";
+@import "./packets/manifest";
+@import "./text/manifest";
+@import "./endpoint/manifest";
+@import "./emails/manifest";
+
+.recon-request-response-header {
+  color: text-color(secondary);
+  padding: 0.8rem 0 rsa-whitespace();
+  &.response {
+    text-align: right;
+  }
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .rsa-icon {
+    padding-right: rsa-whitespace(less);
+  }
+  .text {
+    @include rsa-font(header, small);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+  }
+}
+
+.recon-event-content {
+
+  .request {
+    background-color: $baseColorNoTransparency;
+  }
+
+  .response {
+    background-color: background-color(primary, darkest);
+  }
+
+  // to be double-backed to uniform width calculation when scrollbar css is
+  // in place for all non-webkit browsers (e.g. Mozilla)
+  .recon-packet-stuck-header {
+    width: calc(100% - 15px);
+    width: -webkit-calc(100% - 6px);
+  }
+
+  .is-sticky {
+    border-top: none;
+    @include rsa-layer(panels);
+  }
+
+  .scroll-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 38px;
+  }
+
+  .attachment-download-warning {
+    margin: 0.7rem 2rem 0 0.7rem;
+
+    div {
+      float: none;
+    }
+  }
+
+  .email-scroll-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+      overflow-x: auto;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+  }
+
+  // when attachment warning is shown, push the emails down to make space
+  .attachment-download-warning + .email-scroll-box {
+    top: 70px;
+  }
+
+  .rendering-more {
+    margin: rsa-whitespace(more);
+  }
+
+  .rsa-panel-message > .message > a {
+    padding: 0;
+  }
+}

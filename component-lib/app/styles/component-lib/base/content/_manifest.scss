@@ -1,0 +1,46 @@
+$contentAccordionBorderColor: border-color(primary, darkest);
+$contentAccordionHeaderBackgroundColor: background-color(primary, darker, nearly-opaque);
+$contentAccordionHeaderHoverBackgroundColor: background-color(primary, darker);
+$contentAccordionHeaderTypeColor: text-color(primary, light);
+$contentAccordionBodyTypeColor: text-color(primary, lighter);
+$contentAccordionBodyBackgroundColor: background-color(primary, dark, nearly-opaque);
+
+$contentBadgeScoreCircleColor: text-color(primary, lightest);
+$contentBadgeScoreLabelColor: text-color(primary, lightest);
+
+$contentDefinitionLabelColor: text-color(primary, lighter);
+$contentDefinitionValueColor: text-color(primary, lightest);
+
+$contentLabelColor: text-color(neutral);
+$contentLabelInvertedColor: text-color(neutral, dark);
+
+$contentSectionHeaderBackgroundColor: background-color(primary, darkest, nearly-opaque);
+$contentSectionHeaderTypeColor: text-color(primary, lightest);
+$contentSectionHeaderBorderColor: border-color(primary, darkest);
+
+$contentUpdateIndicatorBackgroundColor: background-color(secondary);
+$contentUpdateIndicatorBorderColor: border-color(primary, lightest);
+$contentUpdateIndicatorTypeColor: text-color(primary, light);
+
+@import 'chart';
+@import 'content-accordion';
+@import 'content-badge-score';
+@import 'content-datetime';
+@import 'content-definition';
+@import 'content-label';
+@import 'content-section-header';
+@import 'icons';
+@import 'loader';
+@import 'logo';
+@import 'update-indicator';
+@import 'content-tethered-panel';
+@import 'content-tethered-panel-trigger';
+@import 'data-table';
+@import 'text-with-tooltip';
+@import 'rsa-explorer/manifest';
+@import 'rsa-page-layout/manifest';
+@import 'rsa-risk-score';
+@import 'content-warn-text-box';
+@import 'editable-text';
+@import 'collapseable-actions';
+@import 'properties-panel';

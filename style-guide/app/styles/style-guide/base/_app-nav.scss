@@ -1,0 +1,20 @@
+.app-nav {
+  background: background-color(primary, darkest, translucent);
+  padding: rsa-whitespace();
+
+  header {
+    .rsa-logo {
+      h2 {
+        color: text-color(neutral);
+      }
+    }
+  }
+
+  .rsa-nav-link-list {
+    margin-bottom: rsa-whitespace();
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

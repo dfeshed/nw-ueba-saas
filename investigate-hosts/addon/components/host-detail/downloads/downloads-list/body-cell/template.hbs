@@ -1,0 +1,37 @@
+{{#if column.componentClass}}
+  <label class="rsa-form-checkbox-label {{if (is-selected selections item) "checked"}}">
+    {{rsa-form-checkbox checked=(if (is-selected selections item) true false) change=checkBoxAction}}
+  </label>
+{{else if (eq column.field "size")}}
+  {{rsa-content-memsize size=(get item column.field)}}
+{{else if (eq column.field "fileName")}}
+  <hbox class="downloaded-file-name">
+    {{#if (and (eq (get item "fileType") "Mft") (not-eq (get item "status") "Processing") (not-eq (get item "status") "Error")  )}}
+      {{#link-to "hosts.details.tab.mft" (get item "fileName") (get item "id") (query-params mftSid=(get item "serviceId"))}}
+        {{get item column.field}}
+      {{/link-to}}
+    {{else if (eq (get item "fileType") "File")}}
+      {{get item column.field}}
+    {{else}}
+      <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}>
+        {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
+      </div>
+    {{/if}}
+  </hbox>
+{{else if (eq column.field "downloadedTime")}}
+  <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}>
+    {{moment-from-now (get item column.field) locale=i18n.primaryLocale timeZone=timezone.selected.zoneId allow-empty=true}}
+  </div>
+{{else if (eq column.field "status")}}
+  {{endpoint/download-status downloadInfo=downloadInfo checksum=item.id}}
+{{else if (eq column.field "checksumSha256")}}
+  {{#if item.checksumSha256}}
+    {{get item column.field}}
+  {{else}}
+    NA
+  {{/if}}
+{{else}}
+  <div title={{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}>
+    {{get-field item column timezone dateFormat timeFormat i18n.primaryLocale}}
+  </div>
+{{/if}}

@@ -1,0 +1,1 @@
+export { default } from 'endpoint-rar/components/rar-container/rar-config/component';

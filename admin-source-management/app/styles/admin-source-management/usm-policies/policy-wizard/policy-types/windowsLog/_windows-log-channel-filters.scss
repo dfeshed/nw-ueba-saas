@@ -1,0 +1,42 @@
+.windows-log-channel-filters {
+
+  .channel-container {
+    padding-right: 0;
+    /* override the component-lib table body so there is never any vertical scrollbar */
+    .rsa-data-table-body {
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+  }
+
+  .windows-log-channel-list {
+    padding-top: rsa-whitespace(less);
+    max-width: 80%;
+    .ember-power-select-status-icon, .delete-button {
+      height: 1.25rem;
+    }
+    input {
+      height: 0.75rem;
+      box-sizing: content-box;
+    }
+  }
+
+  .add-row {
+    padding-top: rsa-whitespace(less);
+    padding-left: rsa-whitespace();
+  }
+
+  .input-error {
+    @include rsa-font(paragraph, small);
+    color: text-color(primary, lightest);
+    padding-left: rsa-whitespace(less);
+  }
+  
+  .selector-error {
+    @include rsa-input-placeholder($formInputErrorPlaceholderColor);
+    color: $formInputErrorTypeColor;
+    background-color: $formInputErrorBackgroundColor;
+    border-color: $formInputErrorBorderColor;
+  }
+
+}

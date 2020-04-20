@@ -1,0 +1,59 @@
+.context-menu {
+  @include rsa-layer(above);
+  @include border(1px, solid, primary, lightest);
+  display: inline-block;
+  background: background-color(primary, darker);
+  color: text-color(primary, lighter);
+  text-align: left;
+  box-shadow: 1px 1px 2px background-color(neutral, dark, translucent);
+
+  &--sub {
+    @extend .context-menu;
+    display: none;
+    left: 100%;
+  }
+
+  &__item {
+    cursor: default;
+    padding: rsa-whitespace(less);
+    line-height: 1.5em;
+    &:hover {
+      background-color: background-color(secondary, darker);
+      color: text-color(primary, lightest);
+    }
+    &--parent {
+      padding-right: rsa-whitespace(more);
+      &:after {
+        font-family: 'nw-icon-library-all-1';
+        content: $rsa-icon-arrow-right-12;
+        top: rsa-whitespace(less);
+        font-size: small;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        right: rsa-whitespace(least);
+        color: text-color(primary, lighter);
+      }
+    }
+  }
+
+  // This is to render the context-menu to the left side
+  &--left {
+    right: 0;
+
+    .context-menu__item {
+      padding: rsa-whitespace(less);
+      padding-bottom: 5px;
+      &--parent {
+        .context-menu__item__label {
+          padding-left: rsa-whitespace();
+        }
+        &:after {
+          font-family: 'nw-icon-library-all-1';
+          content: $rsa-icon-arrow-left-12;
+          left: rsa-whitespace(less);
+          right: initial;
+        }
+      }
+    }
+  }
+}

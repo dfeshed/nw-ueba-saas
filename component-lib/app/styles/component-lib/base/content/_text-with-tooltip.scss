@@ -1,0 +1,65 @@
+$panel-width: 200px;
+$panel-max-width: 500px;
+$panel-max-height: 450px;
+
+.tool-tip-value {
+  @include rsa-font(body);
+  padding: rsa-whitespace();
+  min-width: $panel-width;
+  max-width: $panel-max-width;
+  line-height: 1.25rem;
+  word-wrap: break-word;
+  max-height: $panel-max-height;
+  overflow: auto;
+  .copy-icon {
+    float: right;
+  }
+  .tool-tip-note {
+    @include border-top(1px, solid, neutral, base, somewhat-opaque);
+    padding-top: rsa-whitespace(less);
+    display: flex;
+    .rsa-icon {
+      padding-right: rsa-whitespace(least);
+      padding-top: 0.1rem;
+    }
+    span {
+      @include rsa-font(bold);
+      display: contents;
+    }
+  }
+  pre {
+    font-family: "Lucida Console", Monaco, monospace;
+  }
+}
+
+.tooltip-text {
+  @include rsa-font(body);
+  color: text-color(primary, lightest);
+  line-height: 1.25rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-top: 0.25rem;
+  span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.rsa-form-label .tooltip-text {
+  font: inherit;
+  color: inherit;
+}
+
+.ember-power-select-trigger .tooltip-text, .ember-power-select-options .tooltip-text {
+  /* fixes spacing of #rsa-text-with-tooltip components inside #power-select components */
+  position: relative;
+  display: inline;
+
+  /* allows tooltips to work inside disabled #power-select options */
+  pointer-events: auto;
+}

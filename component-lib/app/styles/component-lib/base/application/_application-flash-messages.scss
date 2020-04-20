@@ -1,0 +1,47 @@
+.rsa-flash-messages {
+  @include rsa-layer(above);
+  position: absolute;
+  top: rsa-whitespace();
+  left: 33%;
+  right: 33%;
+
+  .alert {
+    position: relative;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: rsa-whitespace() 0;
+    margin-bottom: rsa-whitespace();
+
+    &.alert-info {
+      @include border(1px, solid, secondary);
+      background-color: background-color(secondary, base, nearly-opaque);
+    }
+
+    &.alert-success {
+      @include border(1px, solid, accentTwo);
+      background-color: background-color(accentTwo, base, nearly-opaque);
+    }
+
+    &.alert-warning {
+      @include border(1px, solid, accentFour);
+      background-color: background-color(accentFour, base, nearly-opaque);
+    }
+
+    &.alert-error {
+      @include border(1px, solid, accentOne);
+      background-color: background-color(accentOne, base, nearly-opaque);
+    }
+
+    .message {
+      @include rsa-font(paragraph);
+      color: text-color(primary, lightest);
+      word-wrap: break-word;
+    }
+
+    .rsa-icon {
+      color: text-color(primary, lightest);
+      display: inline-block;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{{#rsa-context-menu contextItems=contextItems contextDetails=this contextSelection=item beforeContextMenuShow=beforeContextMenuShow}}
+  {{#if table.columnsDefinedDeclaratively}}
+    {{yield item index null}}
+  {{else}}
+    {{#each table.visibleColumns as |column|}}
+      {{yield item index column}}
+    {{/each}}
+  {{/if}}
+{{/rsa-context-menu}}

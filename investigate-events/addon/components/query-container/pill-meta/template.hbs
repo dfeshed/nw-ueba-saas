@@ -1,0 +1,46 @@
+{{#if isActiveWithOptions}}
+  {{#power-select-typeahead
+    afterOptionsComponent=(
+      component optionsComponent
+      activePillTab=(readonly activePillTab)
+      canPerformTextSearch=(readonly canPerformTextSearch)
+      hasTextPill=(readonly hasTextPill)
+      options=(readonly _groomedAfterOptionsMenu.list)
+      sendMessage=(action "handleMessage")
+    )
+    allowClear=false
+    calculatePosition=_calculatePosition
+    defaultHighlighted=_highlighter
+    dropdownClass="investigate-query-dropdown meta-tab"
+    extra=(hash labelPath="metaName")
+    initiallyOpened=false
+    matchTriggerWidth=false
+    noMatchesMessage=(t "queryBuilder.metaNoMatch")
+    onchange=(action "onChange")
+    onfocus=(action "onFocus")
+    oninput=(action "onInput")
+    onkeydown=(action "onKeyDown")
+    options=metaOptions
+    search=(action "onSearch")
+    optionsComponent=(
+      component "query-container/power-select-options"
+      onmousedown=(action "onOptionMouseDown")
+      onmouseenter=(action "onOptionMouseEnter")
+    )
+    placeholder=pillPlaceholder
+    preventScroll=true
+    selected=selection
+    triggerComponent="query-container/power-select-resizable-input"
+    as |meta|
+  }}
+    {{rsa-icon
+      name=meta.iconName
+      class=meta.iconClass
+      title=meta.iconTitle
+    }}
+    <span class="value">{{meta.metaName}}</span>
+    <span class="description" title={{meta.displayName}}>{{meta.displayName}}</span>
+  {{/power-select-typeahead}}
+{{else}}
+  {{selection.metaName}}
+{{/if}}

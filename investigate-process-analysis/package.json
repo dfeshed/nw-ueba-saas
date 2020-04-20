@@ -1,0 +1,90 @@
+{
+  "name": "investigate-process-analysis",
+  "version": "0.0.1",
+  "description": "Process Analysis",
+  "keywords": [
+    "ember-addon",
+    "ember-engine"
+  ],
+  "license": "RSA Proprietary",
+  "author": "",
+  "directories": {
+    "doc": "doc",
+    "test": "tests"
+  },
+  "repository": "",
+  "scripts": {
+    "build": "ember build",
+    "start": "ember server",
+    "test": "ember try:each"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-decorators": "7.4.4",
+    "@babel/plugin-proposal-do-expressions": "7.5.0",
+    "@babel/plugin-proposal-export-default-from": "7.5.2",
+    "@babel/plugin-proposal-export-namespace-from": "7.5.2",
+    "@babel/plugin-proposal-function-sent": "7.5.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "7.2.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "7.4.4",
+    "@babel/plugin-proposal-numeric-separator": "7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "7.2.0",
+    "@babel/plugin-proposal-partial-application": "7.4.4",
+    "@babel/plugin-proposal-pipeline-operator": "7.5.0",
+    "@babel/plugin-proposal-throw-expressions": "7.2.0",
+    "@babel/plugin-syntax-import-meta": "7.2.0",
+    "@html-next/flexi-config": "2.2.0",
+    "@html-next/flexi-default-styles": "2.2.0",
+    "@html-next/flexi-dsl": "2.2.0",
+    "@html-next/flexi-layouts": "2.2.2",
+    "ember-cli-app-version": "3.2.0",
+    "ember-cli-babel": "7.13.2",
+    "ember-cli-htmlbars": "4.2.2",
+    "ember-cli-seamless-immutable-shim": "1.0.0",
+    "ember-classic-decorator": "1.0.3",
+    "ember-d3": "0.5.1",
+    "ember-dependency-lookup": "2.0.0",
+    "ember-lodash-shim": "4.0.0",
+    "ember-math-helpers": "2.7.1",
+    "ember-moment": "8.0.0",
+    "ember-redux": "6.0.0",
+    "ember-redux-saga-shim": "2.0.2",
+    "flexi": "2.0.1",
+    "redux-saga": "0.16.0",
+    "seamless-immutable": "7.1.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "10.0.3",
+    "ember-classic-decorator": "1.0.3",
+    "ember-cli": "3.15.2",
+    "ember-cli-code-coverage": "1.0.0-beta.8",
+    "ember-cli-dependency-checker": "3.2.0",
+    "ember-cli-eslint": "5.1.0",
+    "ember-cli-inject-live-reload": "2.0.1",
+    "ember-cli-sass": "10.0.0",
+    "ember-cli-template-lint": "1.0.0-beta.3",
+    "ember-decorators":"6.1.0",
+    "ember-engines": "0.8.2",
+    "ember-exam": "1.0.0",
+    "ember-load-initializers": "2.1.1",
+    "ember-qunit": "4.6.0",
+    "ember-resolver": "7.0.0",
+    "ember-sinon": "4.0.0",
+    "ember-source": "3.16.0",
+    "eslint-plugin-ember-suave": "^1.0.0",
+    "loader.js": "4.7.0",
+    "sass": "1.17.2"
+  },
+  "engines": {
+    "node": "12.14.1"
+  },
+  "ember-addon": {
+    "configPath": "tests/dummy/config",
+    "paths": [
+      "../test-helpers",
+      "../component-lib",
+      "../streaming-data",
+      "../investigate-shared"
+    ]
+  },
+  "private": true
+}

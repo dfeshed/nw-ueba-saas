@@ -1,0 +1,26 @@
+{{rsa-logo animated=false}}
+
+{{#if session.isAuthenticated}}
+  {{yield}}
+{{/if}}
+
+<div class="global">
+  {{#if contextualHelp.module}}
+    {{#rsa-form-button
+      isIconOnly=true
+      class="global-contextual-help"
+      defaultAction=(action "goToGlobalHelp")}}
+      {{rsa-icon name="help-circle"}}
+    {{/rsa-form-button}}
+  {{/if}}
+
+  {{#if (and session.isAuthenticated displayPreferences)}}
+    {{#rsa-form-button
+      defaultAction=(action "toggleUserPreferences")
+      class=(if layoutService.userPreferencesActive "user-preferences-trigger is-active" "user-preferences-trigger ")}}
+      <span class="username">{{username}}</span>
+      {{rsa-icon name="arrow-down-12"}}
+    {{/rsa-form-button}}
+  {{/if}}
+
+</div>

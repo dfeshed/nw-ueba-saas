@@ -1,0 +1,41 @@
+<div class="rsa-context-panel__tabs">
+  {{#if isReady}}
+    {{context-panel/tabs}}
+  {{else}}
+    <div class="rsa-context-panel__tabs__empty"></div>
+  {{/if}}
+</div>
+<div class="rsa-context-panel__body_layout">
+  {{#context-panel/header as |header|}}
+    {{header.title}}
+    {{header.icons closePanel=(action "closePanel")}}
+  {{/context-panel/header}}
+  {{#if isReady}}
+    {{#if errorMessage}}
+      <hbox class="rsa-context-panel__loader">
+        <span class="rsa-context-panel__error-text">
+          {{rsa-icon name="report-problem-triangle"}}
+          <span> {{t errorMessage}} </span>
+        </span>
+      </hbox>
+    {{else}}
+      {{context-panel/header/actionbar}}
+      <div class="rsa-context-panel__layout">
+        <hbox class="rsa-context-panel__body_size">
+          {{context-panel/body contextData=model.contextData model=model }}
+        </hbox>
+        <hbox>
+          {{context-panel/live-connect/feedback model=model}}
+        </hbox>
+      </div>
+      {{context-panel/footer}}
+    {{/if}}
+  {{else}}
+    <hbox class="rsa-context-panel__loader">
+      <div class="rsa-loader is-largest">
+        <div class="rsa-loader__wheel"></div>
+        <div class="rsa-loader__text"></div>
+      </div>
+    </hbox>
+  {{/if}}
+</div>

@@ -1,0 +1,194 @@
+$zoneBorderColor: border-color(primary, darker, nearly-transparent);
+$filterPanelMinWidth: 250px;
+$risk-panel-width: 500px;
+@import "service-modal";
+@import "certificates-container";
+
+.rsa-investigate-files {
+  height: 100%;
+  .save-files-iframe {
+    height: 0;
+    display: none;
+  }
+  .certificates-container, .files-content {
+    width: 100%;
+    height: 100%;
+  }
+
+  .liquid-container,
+  .liquid-child {
+    height: 100%;
+    width: 100%;
+  }
+
+  .content-context-menu {
+    display: inherit;
+  }
+
+  .rsa-data-table-body-cell.score {
+    padding: 3px 7px 0 7px;
+  }
+  @include rsa-vendor-prefix(transition-property, background-color, color);
+  @include rsa-vendor-prefix(transition-duration, 0.3s);
+  .main-zone {
+    overflow: hidden;
+    flex-wrap: nowrap;
+  }
+
+  .file-name {
+    text-decoration: underline;
+    color: text-color(secondary, light);
+    cursor: pointer;
+  }
+  .rsa-data-filters {
+    .content-body {
+      height: calc(100vh - 280px);
+    }
+  }
+
+  .file-list, .rsa-data-table {
+    height: 100%;
+    .rsa-data-table-body-row .rsa-form-checkbox {
+      position: inherit;
+    }
+  }
+  .rsa-data-table-header {
+    border-bottom: 1px solid border-color(primary, dark);
+  }
+  .rsa-data-table-header-cell {
+    button {
+      cursor: pointer;
+      &.column-sort {
+        position: absolute;
+        right: 7px;
+      }
+    }
+  }
+  .rsa-data-table-body-row {
+    width: fit-content;
+    min-width: 98%;
+    &.is-selected {
+      .file-name {
+        color: text-color(secondary,lightest);
+      }
+    }
+  }
+
+  .investigate-file-tab {
+    .rsa-nav-tab {
+      margin-bottom: 0px;
+      padding-bottom: 8px;
+      .label {
+        font-family: "Lato";
+        font-style: normal;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        display: inline-block;
+        margin: 0px;
+      }
+    }
+    h3 {
+      text-align: center;
+      width: 230px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-left: 5rem;
+      padding-right: 5rem;
+      font-size: 1rem;
+      position: relative;
+      top: 0.8rem;
+    }
+    .close-zone {
+      padding-top: 1.4rem;
+    }
+  }
+  .count-info {
+    padding-bottom: rsa-whitespace()
+  }
+  .info-icon{
+    vertical-align: middle;
+  }
+  .score-detail{
+    margin-right: rsa-whitespace(more);
+    vertical-align: middle;
+  }
+  .files-host-list {
+    color: text-color(primary, lightest);
+    padding: rsa-whitespace();
+    display: inline-block;
+    .divider {
+      @include border-left(1px, solid, primary);
+      border-top: 0;
+      height: 2rem;
+      margin: .1rem 0 .25rem 0;
+    }
+    .rsa-form-button {
+      .rsa-icon-expand-6, .rsa-icon-download-2 {
+        cursor: pointer;
+        padding-bottom: rsa-whitespace(less);
+      }
+    }
+    .host_details_link {
+      display: inline-block;
+      width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      a {
+        color: text-color(secondary);
+      }
+    }
+    .loader_icon {
+      height: 70vh;
+    }
+  }
+  .left-zone {
+    .rsa-header {
+      padding-bottom: 1rem;
+      padding-right: 3px;
+      padding-left: 0;
+      padding-top: 0.7rem;
+    }
+    .close-zone {
+      padding-right: 0.8rem;
+    }
+  }
+  .right-zone {
+    height: 100%;
+    .risk-properties {
+      height: calc(100% - 100px);
+    }
+  }
+  .filter-wrapper .filter-controls .noUi-connects .noUi-connect{
+    background-color: background-color(secondary, dark);
+  }
+  .files-footer {
+    max-height: 2rem;
+    background-color: background-color(primary, darker, somewhat-opaque);
+    color: text-color(primary, lightest);
+    border-top: 1px solid $zoneBorderColor;
+  }
+}
+
+.files-route {
+  height: calc(100vh - 90px);
+  .liquid-container,
+  .liquid-child {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+
+.license-banner.shown + .files-route {
+  height: calc(100vh - 126px);
+  width: 100%;
+  .content-body {
+    height: calc(100vh - 296px);
+  }
+}
+
+.rsa-data-table-body-row.is-row-checked {
+  background-color: background-color(primary, darker);
+}

@@ -1,0 +1,31 @@
+<div class="action-control add-new-log-parser">
+  {{#rsa-form-button
+    isDisabled=(not accessControl.canManageLogParsers)
+    defaultAction=(action "showModal" "add-log-parser")}}
+    {{t "configure.logsParser.addParser.addNew"}}
+  {{/rsa-form-button}}
+</div>
+{{#if cannotDeleteParser}}
+  <div class="toolTipMask" {{action "toolTip" true}}{{action "toolTip" true on="mouseEnter"}}{{action "toolTip" false on="mouseLeave"}}> </div>
+{{/if}}
+<div class="action-control delete-log-parser">
+  {{#rsa-button-with-confirmation
+    title=(t "configure.logsParser.modals.deleteParser.title")
+    confirmationMessage=(t "configure.logsParser.modals.deleteParser.confirm" parserName=(or selectedLogParser.displayName selectedLogParser.name))
+    confirmButtonLabel=(t "configure.logsParser.modals.deleteParser.ok")
+    isDisabled=cannotDeleteParser
+    cancelButtonLabel=(t "configure.logsParser.modals.cancel")
+    onConfirm=(action "deleteLogParser" selectedLogParser)}}
+    {{t "configure.logsParser.buttons.delete"}}
+  {{/rsa-button-with-confirmation}}
+</div>
+{{#if showToolTip}}
+  <div class="toolTip">{{t "configure.logsParser.modals.deleteParser.outOfBox"}}</div>
+{{/if}}
+{{#if (eq activeModalId "add-log-parser")}}
+  {{#rsa-application-modal eventId="add-log-parser" label="Add Dynamic Log Parser" style="standard add-log-parser-modal"}}
+    <div class="modal-content">
+      {{content/log-parser-rules/log-parsers/add-log-parser onLogParserAdded=(action "closeModal" "add-log-parser")}}
+    </div>
+  {{/rsa-application-modal}}
+{{/if}}

@@ -1,0 +1,12 @@
+{{#if alertsTimeline}}
+  <div class="user-overview-tab_alerts_timeline_graph" id="chartdivForAlerts">
+  </div>      
+{{else}}
+  <center class="center">
+    {{#if alertsForTimelineError}}
+      {{t (concat "investigateUsers.errorMessages." alertsForTimelineError)}}
+    {{else}}
+      {{rsa-loader size="medium" label=(t "investigate.loading")}}
+    {{/if}}
+  </center>
+{{/if}}

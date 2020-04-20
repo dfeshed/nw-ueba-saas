@@ -1,0 +1,37 @@
+// Wrapper
+.hw-container {
+  .rsa-panel-message,
+  .rsa-loader {
+    margin: 20% auto
+  }
+
+  width: 100%;
+  .hw-list {
+    padding-top: rsa-whitespace();
+
+    .hw-table {
+      .rsa-data-table {
+        height: calc(100vh - 40px);
+      }
+      .suppression-not-applied,
+      .rsa-green-color,
+      .cell-alignment{
+        padding: 10px;
+      }
+    }
+  }
+
+  .action-bar {
+
+    padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
+
+    .notification-button {
+      padding-right: rsa-whitespace();
+    }
+
+    .pivot-button {
+      padding-left: rsa-whitespace();
+    }
+  }
+
+}

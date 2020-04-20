@@ -1,0 +1,20 @@
+<section class="rsa-explorer-toolbar__filters">
+  <hbox>
+    <div class="toolbar-button more-filters-button" {{action toggleFilterPanel}}>
+      {{rsa-icon name="filter-2" title=(t "rsaExplorer.filters.label")}}
+    </div>
+  </hbox>
+</section>
+
+<section class="rsa-explorer-toolbar__btns">
+  {{yield (hash toolbarControls=(component toolbarControlsComponent
+    isFilterPanelOpen=isFilterPanelOpen
+    itemsSelected=itemsSelected
+    hasNoSelections=hasNoSelections
+    selectionCount=selectionCount
+    toggleFilterPanel=toggleFilterPanel
+    deleteItem=deleteItem
+    confirm=confirm
+    updateItem=updateItem))}}
+</section>
+

@@ -1,0 +1,38 @@
+{{#if hasOperations}}
+  <label class="rsa-form-label power-select">
+    <div class="label-text">
+      Operations
+    </div>
+
+    {{#power-select
+      placeholder="Select operation"
+      options=filteredOperationNames
+      selected=selectedOperation.name
+      searchPlaceholder="Type to filter operations"
+      onchange=(action "selectOperation") as |option|}}
+      {{option}}
+    {{/power-select}}
+  </label>
+
+  {{#if selectedOperation}}
+    {{tree-view-operation-panel}}
+  {{else}}
+    {{#if folderManual}}
+      <div {{! template-lint-disable-tree "no-triple-curlies" }} class="top-margin">
+        {{{folderManual}}}
+      </div>
+    {{/if}}
+  {{/if}}
+
+  {{#if responses.error}}
+    <br>
+    {{rsa-form-textarea value=responses.error label="Error" isError=true isReadOnly=true}}
+  {{/if}}
+  {{#if responses.hasPendingOperation}}
+    {{rsa-loader size="medium" label=(concat responses.progress responses.status)}}
+  {{/if}}
+
+  <div class="scroll-box response-panel padding">
+    {{tree-view-responses}}
+  </div>
+{{/if}}

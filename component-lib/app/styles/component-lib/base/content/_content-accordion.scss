@@ -1,0 +1,34 @@
+.rsa-content-accordion {
+  outline: none;
+
+  h3 {
+    outline: none;
+    @include rsa-font(header);
+    padding: rsa-whitespace();
+    color: text-color(primary, lighter);
+    background-color: background-color(primary, darkest);
+    @include border-bottom(1px, solid, primary, dark);
+
+    .rsa-icon-arrow-down-12,
+    .rsa-icon-arrow-right-12 {
+      margin-right: rsa-whitespace(less);
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .content {
+    padding: rsa-whitespace();
+    padding-left: calc(#{rsa-whitespace(more)} + #{rsa-whitespace(less)});
+    padding-bottom: rsa-whitespace();
+    color: text-color(primary, lightest);
+  }
+
+  &.is-collapsed {
+    .content {
+      display: none;
+    }
+  }
+}

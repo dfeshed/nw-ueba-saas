@@ -1,0 +1,104 @@
+$footer-height: 25px;
+$footer-bottom: 10px;
+$header-height: 40px;
+
+.explorer-filters {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+
+  .header {
+    @include rsa-font(header, large);
+    text-transform: inherit;
+    padding: rsa-whitespace();
+    .rsa-icon {
+      margin-right: rsa-whitespace(less);
+    }
+  }
+
+  .body {
+    height: calc(100% - #{$footer-height} - #{$footer-bottom} - #{$header-height} - #{rsa-whitespace(less)});
+    width: 100%;
+    position: absolute;
+    bottom: 40px;
+    top: $header-height;
+    box-sizing: border-box;
+    overflow: auto;
+    padding: rsa-whitespace();
+    @include border(1px, solid, primary, lightest, nearly-transparent);
+    border-right: none;
+  }
+
+  footer {
+    width: 100%;
+    height: $footer-height;
+    position: absolute;
+    bottom: $footer-bottom;
+    top:auto;
+
+    .rsa-form-button-wrapper {
+      margin: 0 rsa-whitespace(less);
+    }
+  }
+
+  .filter-option {
+    padding-bottom: rsa-whitespace();
+    label {
+      margin: rsa-whitespace(least) 0 0 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &.rsa-form-radio-label {
+        display: initial;
+        margin: rsa-whitespace(less) 0 0 rsa-whitespace(less);
+      }
+    }
+    .rsa-form-checkbox-label span {
+      vertical-align: text-bottom;
+      line-height: 1.3rem;
+    }
+  }
+
+  .filter-option.created-filter {
+    h2 {
+      padding-top: rsa-whitespace(least);
+    }
+    label {
+      margin: 0;
+    }
+    .liquid-container {
+      padding: rsa-whitespace(least) 0 0 0;
+    }
+    .rsa-form-input {
+      margin: rsa-whitespace() rsa-whitespace(least) 0 rsa-whitespace(least);
+    }
+    .x-toggle-component {
+      position: absolute;
+      right: rsa-whitespace();
+      label {
+        max-width: 125px;
+      }
+    }
+  }
+
+  .filter-option.id-filter {
+    span.id-prefix-wrapper {
+      input {
+        padding-left: 0;
+      }
+      .id-prefix {
+        color: text-color(primary, light);
+        line-height: 1.45;
+        padding: 0.5rem 0;
+      }
+      display: flex;
+    }
+  }
+
+  h2 {
+    @include rsa-font(header, small);
+    padding: rsa-whitespace() 0 rsa-whitespace(less) 0;
+    color: text-color(primary, light);
+  }
+}

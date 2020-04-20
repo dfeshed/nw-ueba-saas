@@ -1,0 +1,25 @@
+<h2 class="filter-text">{{options.label}}</h2>
+<hbox class="text-filter-content">
+  {{#power-select
+    tagName="div"
+    class="operators"
+    options=options.operators
+    selected=filterValue.operator
+    searchEnabled=false
+    onchange=(action "changeOperator") as |option|}}
+    {{t option.label}}
+  {{/power-select}}
+  <label class="file-name-input rsa-form-input {{if isError "is-error"}}">
+    {{input
+      type="text"
+      value=(readonly filterValue.value)
+      placeholder=filterValue.placeholderText
+      key-up=(action "handleKeyUp")}}
+
+    {{#if (and isError errorMessage)}}
+      <div class="input-error">
+        {{t errorMessage}}
+      </div>
+    {{/if}}
+  </label>
+</hbox>

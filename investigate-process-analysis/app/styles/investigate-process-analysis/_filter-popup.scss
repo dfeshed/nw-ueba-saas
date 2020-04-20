@@ -1,0 +1,59 @@
+.process-filter-popup {
+  width: 700px;
+  height: 400px;
+  &__search {
+    float: right;
+  }
+  &__header {
+    height: 46px;
+    background-color: text-color(primary, darker);
+    @include border-bottom(1px, solid, secondary);
+    .rsa-nav-tab-group {
+      padding: 0 rsa-whitespace();
+      .event-tab-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+      .rsa-nav-tab.is-left-aligned-secondary {
+        margin: 10px;
+      }
+    }
+    &__label {
+      padding: 0 rsa-whitespace(less);
+      .icon-count {
+        margin-left: 1px;
+        text-transform: capitalize;
+      }
+    }
+  }
+  &__content {
+    padding-top: rsa-whitespace(less);
+    height: 314px;
+  }
+  &__footer {
+    background-color: text-color(primary, darker);
+    bottom: 0;
+    height: 40px;
+    position: absolute;
+    width: 100%;
+    @include border-top(1px, solid, secondary);
+    box {
+      padding: rsa-whitespace(least) rsa-whitespace();
+      span {
+        width: 181px;
+        margin: rsa-whitespace(less) 0;
+      }
+    }
+    .buttons {
+      padding-top: rsa-whitespace(least);
+      right: 0;
+      position: absolute;
+      div {
+        padding-right: rsa-whitespace(less);
+      }
+      .cancel-popup {
+        margin-right: rsa-whitespace(less)
+      }
+    }
+  }
+}

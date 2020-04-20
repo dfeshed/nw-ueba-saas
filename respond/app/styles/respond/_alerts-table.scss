@@ -1,0 +1,352 @@
+$alertsTableDarkBgColor: background-color(primary, light, translucent);
+$alertsTableDarkerBgColor: background-color(primary, light, nearly-transparent);
+$alertsTableSeverityRadius: 1rem;
+$alertsTableLineHeight: 1.5;
+$alertsTableHeadingSize: 1rem;
+$alertsTableSeverityOffset: -1 * $alertsTableSeverityRadius + $alertsTableHeadingSize * $alertsTableLineHeight / 2;
+$alertsTableConnectorWidth: $alertsTableSeverityRadius * 2;
+$alertsTableConnectorPaddingX: rsa-whitespace(less);
+$alertsTableConnectorOuterWidth: $alertsTableConnectorPaddingX * 2 + $alertsTableConnectorWidth;
+$alertsTableDotSize: 5px;
+
+/* Lays out a "connector" element that contains a vertical line that "connects" sibling alerts. */
+@mixin rsa-alerts-table-connector-and-line() {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  padding: 0 $alertsTableConnectorPaddingX;
+  width: $alertsTableConnectorWidth;
+
+  .line {
+    /* Renders a vertical line, horizontally aligned with center of score. */
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 1px;
+  }
+}
+
+.rsa-alerts-table {
+}
+
+.rsa-alerts-table-alert-header {
+  cursor: default;
+  line-height: $alertsTableLineHeight;
+
+  h3 {
+    @include rsa-font(light);
+    font-size: $alertsTableHeadingSize;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .p {
+    @include rsa-font(body, small);
+  }
+
+  .respond-ueba-link span a {
+    color: text-color(secondary, light);
+  }
+
+  .content {
+    margin-left: $alertsTableConnectorOuterWidth;
+  }
+
+  .connector {
+    @include rsa-alerts-table-connector-and-line();
+
+    .severity {
+      /* Overlays severity on top of vertical line element. */
+      position: absolute;
+      z-index: 2;
+      top: $alertsTableSeverityOffset;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+
+      $alertsTableSeverityRadius: 1rem;
+
+      /* Renders a circle with centered text inside. */
+      width: $alertsTableSeverityRadius * 2;
+      height: $alertsTableSeverityRadius * 2;
+      border-radius: $alertsTableSeverityRadius * 2;
+      @include rsa-font(body,small);
+      line-height: $alertsTableSeverityRadius * 2;
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
+
+  .header,
+  .main {
+    position: relative;
+  }
+
+  .header {
+    .line {
+      bottom: -1 * $alertsTableSeverityOffset;
+    }
+    .content {
+      padding: rsa-whitespace(less) rsa-whitespace() 0 0;
+    }
+  }
+
+  .main {
+    .line {
+      top: $alertsTableSeverityRadius * 2 + $alertsTableSeverityOffset;
+    }
+    .content {
+      padding: 0 rsa-whitespace() rsa-whitespace(less) 0;
+
+      nav {
+        @include rsa-font(body, small);
+        margin-top: rsa-whitespace(least);
+      }
+    }
+  }
+
+  .tab {
+    cursor: pointer;
+    display: inline-block;
+    white-space: nowrap;
+    @include border(1px, solid, primary, base, transparent);
+    padding: 0 rsa-whitespace(less);
+
+    .rsa-icon {
+      margin: 0 rsa-whitespace(least);
+      @include rsa-vendor-prefix(transition, transform linear 0.3s);
+    }
+  }
+}
+
+.rsa-alerts-table-alert-item-cell {
+  cursor: default;
+  @include rsa-font(body, small);
+  text-align: left;
+  line-height: 1.5;
+  height: 2 * (.85rem * 1.5 + (rsa-whitespace(least) + rsa-whitespace(least))); /* = 2 lines of text x font-size x line-height + vertical padding*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+
+  .connector {
+    @include rsa-alerts-table-connector-and-line();
+
+    .dot {
+      position: absolute;
+      height: $alertsTableDotSize;
+      width: $alertsTableDotSize;
+      border-radius: $alertsTableDotSize;
+      overflow: hidden;
+      margin: auto;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+    }
+  }
+
+  .enrichment,
+  .event {
+    padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(least) $alertsTableConnectorOuterWidth;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .event {
+
+    /* Renders an "indented" bottom border for event. */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: $alertsTableConnectorOuterWidth;
+      right: 0;
+      height: 1px;
+    }
+
+    &-content {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sep {
+      margin: 0 rsa-whitespace(least);
+
+      &:last-of-type {
+        display: none;
+      }
+    }
+
+    .arrow {
+      margin: 0 rsa-whitespace(least);
+    }
+  }
+
+  .has-context-data {
+    @include rsa-has-context-data();
+  }
+}
+
+.rsa-alerts-table-alert-item {
+  &:last-of-type {
+    .rsa-alerts-table-alert-item-cell {
+      .event {
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.rsa-alerts-table-alert-header.is-first {
+  .header .line {
+    display: none;
+  }
+}
+
+.rsa-alerts-table-alert-header.is-last.is-not-open {
+  .main .line {
+    display: none;
+  }
+}
+
+.rsa-alerts-table-alert.is-last {
+  .rsa-alerts-table-alert-item:last-of-type {
+    .connector .line {
+      bottom: 50%;
+    }
+  }
+}
+
+/* colors */
+
+.rsa-alerts-table-alert-header,
+.rsa-alerts-table-alert-item {
+
+  .line {
+    background-color: $alertsTableDarkBgColor;
+  }
+}
+
+.rsa-alerts-table {
+  .rsa-group-table-group {
+    @include border-bottom(1px, solid, primary, base, translucent);
+    transition: top linear 0.1s;
+  }
+}
+
+.rsa-alerts-table-alert-header {
+  background-color: $respondBackgroundColor;
+
+  &.is-selected {
+    background: background-color(secondary, dark);
+
+    .rsa-alerts-table-alert-header__events.tab {
+      &:not(.active) {
+        border-color: border-color(primary, lightest);
+        color: text-color(primary, lightest);
+      }
+    }
+  }
+
+  .p {
+    color: text-color(primary, lighter);
+  }
+
+  .tab {
+    border-color: border-color(secondary);
+    color: text-color(secondary);
+
+    &.active,
+    &:hover {
+      border-color: border-color(secondary, light);
+      background-color: background-color(secondary,light);
+      color: text-color(primary,darker);
+    }
+
+    & span.event-analysis-supported {
+      border: 0;
+      height: 15.5px;
+      padding-top: 2px;
+      padding-right: 3px;
+      padding-left: 3px;
+      margin-left: -7px;
+      margin-right: 2px;
+      margin-bottom: -4px;
+      vertical-align: top;
+      display:inline-block;
+      @include rsa-font(regular, smaller);
+
+      &.off {
+        color: text-color(primary);
+        background-color: background-color(primary, dark);
+      }
+
+      &.on {
+        color: text-color(secondary, lighter);
+        background-color: background-color(secondary, darkest, translucent);
+      }
+    }
+  }
+
+  .severity {
+    background-color: $alertsTableDarkBgColor;
+  }
+}
+
+.rsa-alerts-table-alert-item {
+  color: text-color(primary, lightest);
+
+  .sep {
+    color: text-color(primary, lighter);
+  }
+
+  .event .event-header span a {
+    color: text-color(secondary, light);
+  }
+
+  &.is-selected {
+    background: background-color(secondary, dark);
+
+    .event .event-header {
+      span {
+        color: text-color(primary, lightest);
+        a {
+          color: text-color(secondary, light);
+        }
+      }
+    }
+
+    .event {
+      &::after {
+        background-color: transparent;
+      }
+    }
+  }
+
+  .dot {
+    background-color: background-color(primary);
+  }
+
+  .event {
+    &-header {
+      color: text-color(primary, lighter);
+    }
+
+    &::after {
+      background-color: $alertsTableDarkerBgColor;
+    }
+  }
+}
+

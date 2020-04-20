@@ -1,0 +1,30 @@
+{{#rsa-data-table
+  class="rsa-incident-events-table"
+  items=items
+  columnsConfig=columnsConfig
+  fitToWidth=false
+  lazy=true
+  selectedIndex=selectedIndex
+  onRowClick=(action "onRowClick")
+}}
+  {{rsa-data-table/body rowComponentClass="rsa-incident/events-table-row"}}
+{{/rsa-data-table}}
+
+{{#rsa-application-modal eventId=eventDetailsPanelId label=(t "respond.eventDetails.title") style="standard rsa-incident-event-details-modal"}}
+  <vbox class="modal-content">
+    <box fill class="modal-content-body">
+      {{rsa-property-tree
+        class="rsa-incident-event-details-modal__tree"
+        model=(or eventDetailsModel.normalized eventDetailsModel)
+        autoHighlightEntities=true
+      }}
+    </box>
+    <box fit class="modal-content-footer">
+      <hbox justify="end">
+        {{#rsa-form-button style="primary" defaultAction=(action "hideEventDetails")}}
+          {{t "forms.ok"}}
+        {{/rsa-form-button}}
+      </hbox>
+    </box>
+  </vbox>
+{{/rsa-application-modal}}

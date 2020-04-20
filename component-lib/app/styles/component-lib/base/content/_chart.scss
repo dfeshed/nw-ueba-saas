@@ -1,0 +1,104 @@
+.rsa-chart {
+  /* Default sizes. These are copied from component.js but can be overwritten as needed. */
+  width: 600px;
+  height: 150px;
+
+  .grids {
+    line {
+      stroke: text-color(primary, lightest);
+      stroke-opacity: 0.5;
+      shape-rendering: crispEdges;
+    }
+    path {
+      stroke-width: 0;
+    }
+  }
+
+  /* Disable SVG pointer events by default */
+  circle,
+  line,
+  text,
+  rect,
+  path {
+    pointer-events: none;
+  }
+
+  .domain {
+    stroke: text-color(neutral);
+    shape-rendering: crispEdges;
+  }
+
+  .tick {
+    line,
+    text {
+      fill: text-color(neutral);
+      stroke: text-color(neutral);
+      shape-rendering: crispEdges;
+      text-rendering: geometricPrecision;
+      text-anchor: end;
+    }
+  }
+}
+
+.rsa-chart-background {
+  fill: text-color(primary, darkest);
+}
+
+.rsa-line-series {
+  fill: none;
+  stroke-width: 1;
+  &.series-0 {
+    stroke: text-color(secondary);
+  }
+  &.series-1 {
+    stroke: text-color(secondary, darker);
+  }
+  &.series-2 {
+    stroke: text-color(secondary, darkest);
+  }
+  &.symbol {
+    stroke: none;
+    &.series-0 {
+      fill: text-color(secondary);
+    }
+    &.series-1 {
+      fill: text-color(secondary, darker);
+    }
+    &.series-2 {
+      fill: text-color(secondary, darkest);
+    }
+  }
+}
+
+.rsa-area-series {
+  &.series-0 {
+    fill: text-color(secondary);
+  }
+  &.series-1 {
+    fill: text-color(secondary, darker);
+  }
+  &.series-2 {
+    fill: text-color(secondary, darkest);
+  }
+}
+.donut-chart {
+  .column-name {
+    fill: text-color(primary, lightest);
+    font-family: Lato;
+    font-size: 16px;
+    font-weight: 300;
+  }
+  .legend-name {
+    text-transform: uppercase;
+    font-family: Lato, serif;
+    font-size: 10px;
+    font-weight: 900;
+    fill: text-color(neutral);
+  }
+  .legend-count {
+    font-family: Lato, serif;
+    font-size: 20px;
+    font-weight: 300;
+    fill: text-color(primary, lightest);
+  }
+}

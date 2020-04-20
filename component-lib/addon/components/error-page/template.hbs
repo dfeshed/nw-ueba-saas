@@ -1,0 +1,52 @@
+<box xs="12">
+  <vbox>
+    {{#if title}}
+      <h1 class="title">{{title}}</h1>
+      {{#if subtitle}}
+        <h2 class="subtitle">{{subtitle}}</h2>
+      {{/if}}
+    {{else}}
+      <h1 class="title">{{subtitle}}</h1>
+    {{/if}}
+  </vbox>
+
+  <vbox>
+    <hbox class="error-description">
+      <box xs="12">
+        <h3>{{t "errorPages.errorLabel"}}</h3>
+      </box>
+      <box xs="12">
+        <p>{{errorDescription}}</p>
+        {{yield}}
+      </box>
+    </hbox>
+  </vbox>
+
+  <vbox>
+    <hbox>
+      <box>
+        <p>{{t "errorPages.viewOnlineDocs"}}</p>
+      </box>
+    </hbox>
+  </vbox>
+
+  <vbox>
+    <hbox class="bottom-links">
+      {{#if back}}
+        <box fit {{action "back"}}>
+          <span>{{rsa-icon name="arrow-left-9"}} {{t "errorPages.back"}}</span>
+        </box>
+      {{/if}}
+      <box fit>
+        <a href="https://community.rsa.com/docs/DOC-40370" target="_blank" rel="noopener noreferrer">
+          <span>{{rsa-icon name="help-circle"}} {{t "errorPages.documentation"}}</span>
+        </a>
+      </box>
+      <box fit>
+        <a href="https://community.rsa.com/docs/DOC-1294" target="_blank" rel="noopener noreferrer">
+          <span>{{rsa-icon name="headphone"}} {{t "errorPages.support"}}</span>
+        </a>
+      </box>
+    </hbox>
+  </vbox>
+</box>

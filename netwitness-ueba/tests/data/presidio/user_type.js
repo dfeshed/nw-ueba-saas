@@ -1,0 +1,24 @@
+export default {
+  'controlId': 'user_types',
+  'type': 'checklist',
+  'label': 'Only',
+  'suffix': 'accounts',
+  'text': {
+    'all': 'All accounts'
+  },
+  'param': 'user_types',
+  'settings': {
+    'allowNone': false,
+    'defaultValue': false,
+    'items': [{
+      'label': 'Administrator',
+      'value': 'isuseradministrator'
+    }, {
+      'label': 'Executive',
+      'value': 'isuserexecutive'
+    }, {
+      'label': 'Service',
+      'value': 'isuseraccountservice'
+    }]
+  }
+};

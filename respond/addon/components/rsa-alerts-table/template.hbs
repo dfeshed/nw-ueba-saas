@@ -1,0 +1,30 @@
+{{#rsa-group-table
+  class="rsa-alerts-table"
+  groups=groups
+  columnsConfig=columnsConfig
+  selections=selections
+  groupClickAction=(action "groupClickAction")
+  groupCtrlClickAction=(action "groupCtrlClickAction")
+  groupShiftClickAction=(action "groupShiftClickAction")
+  itemClickAction=(action "itemClickAction")
+  itemCtrlClickAction=(action "itemCtrlClickAction")
+  itemShiftClickAction=(action "itemShiftClickAction")
+  as |table|
+}}
+  {{#table.body
+    groupComponentClass="rsa-alerts-table/alert"
+    stickyHeaderComponentClass="rsa-alerts-table/alert-header"
+    closeOverlay=closeOverlay
+    as |body|
+  }}
+    {{body.stickyHeader}}
+    {{#body.group
+      headerComponentClass="rsa-alerts-table/alert-header"
+      itemComponentClass="rsa-alerts-table/alert-item"
+      as |group|
+    }}
+      {{group.header}}
+      {{group.item}}
+    {{/body.group}}
+  {{/table.body}}
+{{/rsa-group-table}}

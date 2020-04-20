@@ -1,0 +1,25 @@
+{{#if (or isDecoder isLogDecoder)}}
+  {{card-capture isLogDecoder=isLogDecoder}}
+  {{card-packet-db}}
+  {{card-meta-db}}
+  {{card-session-db}}
+  {{card-index-db}}
+{{/if}}
+{{#if (or isConcentrator isBroker)}}
+  {{card-devices moduleName=moduleName}}
+  {{card-aggregation moduleName=moduleName}}
+  {{card-index-db isBroker=isBroker}}
+{{/if}}
+{{#if isConcentrator}}
+  {{card-session-db}}
+  {{card-meta-db}}
+{{/if}}
+{{#if moduleName}}
+  {{card-system}}
+{{/if}}
+{{#if isLogCollector}}
+  {{card-lc}}
+  {{eventsources-card}}
+  {{log-collector-chart}}
+{{/if}}
+<div id="modalDestination"></div>

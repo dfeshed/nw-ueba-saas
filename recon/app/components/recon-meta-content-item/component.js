@@ -1,0 +1,1 @@
+export { default } from 'recon/components/recon-meta-content-item/component';

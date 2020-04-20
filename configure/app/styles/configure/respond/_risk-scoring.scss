@@ -1,0 +1,69 @@
+.risk-scoring {
+  overflow: hidden;
+  padding: 0 rsa-whitespace();
+  padding-bottom: rsa-whitespace(more);
+
+  h1 {
+    @include rsa-font(header);
+    font-size: 14px;
+    line-height: 14px;
+    text-transform: uppercase;
+    padding-top: rsa-whitespace();
+    color: text-color(primary, lightest);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .risk-scoring-loader {
+    padding-left: 108px;
+  }
+
+  .risk-scoring-error {
+    color: text-color(primary, lighter);
+  }
+
+  .risk-scoring-loader, .risk-scoring-error {
+    padding-top: 20px;
+  }
+
+  form {
+    padding-left: rsa-whitespace();
+  }
+
+  input {
+    width: 55px;
+  }
+
+  .time-window {
+    display: flex;
+
+    .form-validation:first-child {
+      label, ul > li {
+        white-space: nowrap;
+        max-width: 0;
+      }
+    }
+
+    .form-validation:nth-child(even) {
+      align-self: flex-start;
+      padding-top: 2.15em;
+      margin-left: rsa-whitespace(less);
+    }
+  }
+
+  .form-save-controls {
+    padding-top: rsa-whitespace();
+    button {
+      margin-right: rsa-whitespace();
+    }
+  }
+
+  .ember-power-select-trigger {
+    &--active {
+      margin-top: -1px;
+      margin-left: -1px;
+    }
+  }
+}

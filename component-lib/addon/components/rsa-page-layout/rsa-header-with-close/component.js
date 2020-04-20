@@ -1,0 +1,20 @@
+import Component from '@ember/component';
+import layout from './template';
+
+export default Component.extend({
+  layout,
+
+  tagName: 'hbox',
+
+  classNames: ['rsa-header', 'flexi-fit'],
+
+  title: 'Title',
+
+  showHeaderIcon: true,
+
+  actions: {
+    closeZone() {
+      this.closeAction();
+    }
+  }
+});

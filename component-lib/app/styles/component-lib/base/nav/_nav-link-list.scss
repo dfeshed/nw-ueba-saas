@@ -1,0 +1,27 @@
+.rsa-nav-link-list {
+  h3 {
+    margin-bottom: rsa-whitespace();
+    color: $navLinkListHeaderTypeColor;
+  }
+  
+  ul {
+    list-style: none;
+
+    li {
+      a {
+        display: block;
+        padding: rsa-whitespace(less) rsa-whitespace();
+        text-decoration: none;
+        color: $navLinkListAnchorTypeColor;
+        
+        &:hover {
+          cursor: pointer;
+        }
+
+        &:hover, &.active {
+          background: $navLinkListAnchorHoverTypeColor;
+        }
+      }
+    }
+  }
+}

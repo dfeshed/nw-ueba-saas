@@ -1,0 +1,7 @@
+.rsa-fast-force {
+  position: relative;
+
+  &__wait {
+    @include rsa-fill-abs();
+  }
+}

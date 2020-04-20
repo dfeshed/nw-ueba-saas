@@ -1,0 +1,171 @@
+// investigate related styles
+
+@import 'investigate-query-container';
+@import 'investigate-events-table';
+@import 'investigate-meta';
+@import 'investigate-meta-key-values';
+@import 'investigate-meta-values-panel';
+@import 'investigate-progress-bar';
+@import 'investigate-timeline';
+
+
+// dropdown overwrites
+
+.rsa-investigate-query-container__profile-selector {
+  .list-menu-trigger {
+    i {
+      width: 2.5rem!important;
+    }
+  }
+}
+
+.rsa-investigate-query-container__profile-selector,
+.rsa-investigate-query-container__service-selector,
+.rsa-investigate-query-container__time-selector {
+  .rsa-form-button-wrapper {
+    button,
+    button:focus {
+      border-color: border-color(primary, lighter)!important;
+    }
+
+    &.is-active {
+      button {
+        border-color: border-color(primary, lighter)!important;
+      }
+    }
+    &:hover {
+      button {
+        border-color: border-color(primary, lighter)!important;
+      }
+    }
+  }
+}
+
+.panel-content {
+  &.service-selector-panel,
+  &.timerange-selector-panel {
+    background-color: background-color(primary, darker);
+    border-color: border-color(primary, lighter)!important;
+
+    li {
+      font-size: 14px!important;
+      font-weight: 100!important;
+      line-height: 30px;
+      height: 30px;
+      padding: 0 rsa-whitespace(less)!important;
+    }
+  }
+}
+
+.investigate-query-dropdown {
+  .ember-power-select-options,
+  .border-advanced-options-separater-box,
+  .power-select-tabs li {
+    background-color: background-color(primary, darker)!important;
+    border-color: border-color(primary, lighter)!important;
+  }
+}
+
+.rsa-investigate-events-table__header__downloadEvents {
+  &:not(.is-disabled) {
+    .ember-power-select-trigger {
+      border-color: border-color(primary, lighter)!important;
+      &:hover {
+        border-color: border-color(primary, lighter)!important;
+      }
+
+      .ember-power-select-selected-item {
+        margin-left: rsa-whitespace(less);
+      }
+      .ember-power-select-status-icon {
+        color: text-color(primary, lighter);
+        font-weight: bolder;
+      }
+
+      &:hover {
+        .ember-power-select-status-icon {
+          color: text-color(primary, lighter);
+          font-weight: bolder;
+        }
+      }
+    }
+  }
+}
+
+.ember-power-select-dropdown.download-dropdown,
+.ember-power-select-dropdown.investigate-query-dropdown {
+  .ember-power-select-group-name {
+    font-size: 12px;
+    text-transform: uppercase;
+    padding-left: rsa-whitespace(less);
+  }
+
+  .border-advanced-options-separater-box {
+    background-color: background-color(primary, darker);
+    border-color: border-color(primary, lighter)!important;
+  }
+  .ember-power-select-options {
+    background-color: background-color(primary, darker);
+    border-color: border-color(primary, lighter)!important;
+
+    .ember-power-select-option {
+      padding-left: rsa-whitespace(less);
+      font-weight: 100;
+      height: 30px;
+      line-height: 30px;
+    }
+  }
+}
+
+.ember-power-select-dropdown.investigate-query-dropdown {
+  .ember-power-select-group-name {
+    font-size: 12px;
+    text-transform: uppercase;
+    padding-left: rsa-whitespace(less);
+  }
+}
+
+.rsa-investigate-events-table__header__manageIncident {
+  .rsa-button-menu {
+    background-color: background-color(primary, darker);
+    border-color: border-color(primary, lighter)!important;
+
+    li a {
+      font-size: 14px!important;
+      font-weight: 100!important;
+      line-height: 30px;
+      height: 30px;
+      padding: 0 rsa-whitespace(less)!important;
+    }
+  }
+  .incident-dropdown {
+    .rsa-button-group {
+      i {
+        font-weight: bolder;
+      }
+      > div:first-child {
+        button {
+          padding-left: rsa-whitespace(less);
+        }
+      }
+      .rsa-form-button-wrapper:not(.is-disabled) {
+        button {
+          border-color: border-color(primary, lighter)!important;
+
+          i {
+            color: text-color(primary, lighter);
+          }
+        }
+        &:hover {
+          button {
+            border-color: border-color(primary, lighter)!important;
+
+            i {
+              color: text-color(primary, lighter)!important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

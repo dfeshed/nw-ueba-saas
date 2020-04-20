@@ -1,0 +1,20 @@
+.two-column-layout {
+  padding: rsa-whitespace(most) rsa-whitespace(more) rsa-whitespace(most) rsa-whitespace(more);
+  height: 1300px;
+  min-height: 0px;
+  flex-wrap: nowrap;
+  .column-one {
+    flex-grow: 1;
+    flex-wrap: wrap;
+    overflow: hidden;
+  }
+  .column-two {
+    flex-wrap: wrap;
+    margin-left: rsa-whitespace(more);
+    flex-grow: 2;
+  }
+}
+
+.layout-row {
+  row-gap: 28px;
+}

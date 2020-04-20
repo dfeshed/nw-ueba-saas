@@ -1,0 +1,17 @@
+{{#if (or isRiskScoreContextEmpty riskScoringServerError)}}
+  {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.noEvents")}}
+{{else if isInsightsAgent}}
+  <box>
+    {{rsa-panel-message message=(t "investigateShared.endpoint.riskProperties.error.insightAgentRiskError" htmlSafe=true)}}
+  </box>
+{{else}}
+  <div class="events-info-message">
+    {{rsa-icon name="information-circle"}}{{t "investigateShared.endpoint.riskProperties.infoMessage"}}
+  </div>
+  {{events-list
+    items=events
+    services=listOfServices
+    expandedId=expandedEventId
+    loadingStatus=eventsLoadingStatus
+    expandStorylineEvent=expandEvent}}
+{{/if}}

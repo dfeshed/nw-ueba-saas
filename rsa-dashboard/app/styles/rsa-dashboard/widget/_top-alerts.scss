@@ -1,0 +1,29 @@
+$background-color: background-color(primary, darker);
+
+.top-alerts {
+  background-color: $background-color;
+  .top-alert-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-column-gap: 28px;
+    padding-right: 21px;
+    padding-left: 21px;
+  }
+  .top-alert-item {
+    @include border-bottom(1px, solid, primary, dark);
+    display: flex;
+    flex-flow: column;
+    height: 107px;
+    padding: 20px 0 20px 0;
+  }
+  .more-action {
+    .alert-severity {
+      @include rsa-font(regular, larger);
+      color: #ffff;
+    }
+  }
+}
+
+@media screen and (min-width: 1650px) {
+ // Place holder for breakpoint changes
+}

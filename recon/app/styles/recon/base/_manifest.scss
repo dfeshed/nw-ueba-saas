@@ -1,0 +1,53 @@
+@import "./event-header/manifest";
+@import "./event-detail/manifest";
+@import "./meta-content/manifest";
+@import "./pager/manifest";
+@import "./button-menu/manifest";
+
+.recon-container {
+  flex: 1 1 auto;
+  overflow: hidden;
+  margin-left: 1px; /* let a sliver of background shows thru as a border */
+
+  &.loading {
+    background-color: $baseColorNoTransparency;
+  }
+
+  .fatal-error-icons {
+    display: flex;
+    justify-content: flex-end;
+    z-index: 3;
+  }
+
+  .fatal-error-close-button, .fatal-error-toggle-button {
+    padding: rsa-whitespace() rsa-whitespace() 0 0;
+    margin: rsa-whitespace() rsa-whitespace() 0 0;
+    color: text-color(primary, light);
+    cursor: pointer;
+    &:hover {
+      color: text-color(primary, lightest);
+    }
+  }
+}
+
+.recon-event-content {
+  background-color: background-color(primary, darkest);
+}
+
+.event-content-box {
+  background-color: background-color(primary, darkest);
+}
+
+.recon-noscroll {
+  overflow-y: hidden;
+}
+
+.recon-loader {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  @include rsa-col(center, middle);
+  text-align: center;
+}

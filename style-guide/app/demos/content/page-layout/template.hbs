@@ -1,0 +1,130 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <fill block class="scroll-box">
+    {{#spec-category title="Examples"}}
+      {{#spec-member title="Layout with left, center and right zone"}}
+        {{#rsa-page-layout as |layout|}}
+          {{#layout.left as |left|}}
+            {{left.header}}
+          {{/layout.left}}
+          {{#layout.center}}
+            <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+              <hbox>
+                <hbox>
+                  <h2>Panel Title <span class="count">(1234)</span></h2>
+                </hbox>
+              </hbox>
+
+              <hbox>
+                <hbox class="controls">
+                  <hbox class="panel-control-group" fit>
+                    <hbox class="rsa-button-group">
+                      {{#rsa-form-button isIconOnly=true defaultAction=(action layout.open 'left')}}
+                        Open Left Panel
+                      {{/rsa-form-button}}
+                    </hbox>
+
+                    <hbox class="rsa-button-group">
+                      {{#rsa-form-button defaultAction=(action layout.open 'right')}}
+                        Open Right Panel
+                      {{/rsa-form-button}}
+                    </hbox>
+                  </hbox>
+                </hbox>
+              </hbox>
+            </vbox>
+
+            <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+              <p>Text</p>
+            </vbox>
+          {{/layout.center}}
+          {{#layout.right as |right|}}
+            {{right.header}}
+          {{/layout.right}}
+        {{/rsa-page-layout}}
+        {{!-- BEGIN-SNIPPET pagelayout1
+        {{#rsa-page-layout as |layout|}}
+          {{#layout.left as |left|}}
+            {{left.header}}
+          {{/layout.left}}
+          {{#layout.center}}
+            <vbox class="rsa-application-layout-panel-header" xs="12" fit>
+              <hbox>
+                <hbox>
+                  <h2>Panel Title <span class="count">(1234)</span></h2>
+                </hbox>
+              </hbox>
+
+              <hbox>
+                <hbox class="controls">
+                  <hbox class="panel-control-group" fit>
+                    <hbox class="rsa-button-group">
+                      {{#rsa-form-button isIconOnly=true defaultAction=(action layout.open 'left')}}
+                        Open Left Panel
+                      {{/rsa-form-button}}
+                    </hbox>
+
+                    <hbox class="rsa-button-group">
+                      {{#rsa-form-button defaultAction=(action layout.open 'right')}}
+                        Open Right Panel
+                      {{/rsa-form-button}}
+                    </hbox>
+                  </hbox>
+                </hbox>
+              </hbox>
+            </vbox>
+
+            <vbox class="rsa-application-layout-panel-content scroll-box" xs="12">
+              <p>Text</p>
+            </vbox>
+          {{/layout.center}}
+          {{#layout.right as |right|}}
+            {{right.header}}
+          {{/layout.right}}
+        {{/rsa-page-layout}}
+        END-SNIPPET --}}
+        {{code-snippet name="pagelayout1.hbs"}}
+
+      {{/spec-member}}
+
+      {{#spec-member title="Layout with custom header"}}
+        {{#rsa-page-layout as |layout|}}
+          {{#layout.center}}
+            {{#rsa-form-button defaultAction=(action layout.open 'right')}}
+              Show Right Panel
+            {{/rsa-form-button}}
+            <br>
+            {{#rsa-form-button defaultAction=(action layout.close 'right')}}
+              Close Right Panel
+            {{/rsa-form-button}}
+          {{/layout.center}}
+          {{#layout.right}}
+            <h1>Custom Title</h1>
+            <div>Description</div>
+          {{/layout.right}}
+        {{/rsa-page-layout}}
+        {{!-- BEGIN-SNIPPET pagelayout2
+        {{#rsa-page-layout as |layout|}}
+          {{#layout.center}}
+            {{#rsa-form-button defaultAction=(action layout.open 'right')}}
+              Show Right Panel
+            {{/rsa-form-button}}
+            <br>
+            {{#rsa-form-button defaultAction=(action layout.close 'right')}}
+              Close Right Panel
+            {{/rsa-form-button}}
+          {{/layout.center}}
+          {{#layout.right}}
+            <h1>Custom Title</h1>
+            <div>Description</div>
+          {{/layout.right}}
+        {{/rsa-page-layout}}
+        END-SNIPPET --}}
+        {{code-snippet name="pagelayout2.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+  </fill>
+</hbox>

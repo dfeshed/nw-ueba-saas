@@ -1,0 +1,17 @@
+<div class="users-tab_filter_user_row">
+  <a href="#" onclick={{action "applyFilter" "risky"}} onkeypress={{action "applyFilter" "risky"}} class="rsa-form-checkbox-label {{if isRisky "checked"}} list-filter-option">
+    {{rsa-form-checkbox
+      checked=sortOnTrending
+      change=(action "applyFilter" "risky")}}
+    {{t "investigateUsers.users.filters.riskyUsers"}} ({{riskyUserCount}})
+  </a>
+</div>
+<div class="users-tab_filter_user_row">
+  <a href="#" onclick={{action "applyFilter" "watched"}} onkeypress={{action "applyFilter" "watched"}} class="rsa-form-checkbox-label {{if isWatched "checked"}} list-filter-option">
+    {{rsa-form-checkbox
+      checked=sortOnTrending
+      change=(action "applyFilter" "watched")}}
+    {{t "investigateUsers.users.filters.watchlistUsers"}} ({{watchedUserCount}})
+  </a>
+</div>
+

@@ -1,0 +1,130 @@
+$zoneBorderColor: border-color(primary, darker, nearly-transparent);
+.certificates-container {
+  background-color: text-color(primary, darkest);
+  overflow: hidden;
+  flex-wrap: nowrap;
+  position: absolute;
+  top: 0px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  .certificates-action-bar {
+    padding: 19px 7px 19px 18px;
+    .padding-right {
+      padding-right: 1rem;
+    }
+    .padding-left {
+      padding-left: 1rem;
+    }
+    .divider {
+      @include border-left(1px, solid, primary);
+      border-top: 0;
+      height: 2rem;
+      margin: .1rem 0 .25rem 0;
+    }
+    .certificate-label {
+      padding: 6px 4px 1px 0;
+      font-size: 1.28rem;
+      font-weight: 100;
+    }
+    .back-to-file {
+      i {
+        font-size: 9.8px;
+      }
+    }
+    .close-certificate-view-button {
+      position: absolute;
+      right: 0;
+      i {
+        font-size: 14px;
+        color: text-color(primary);
+        cursor: pointer;
+        margin: 0 rsa-whitespace(least);
+        padding: 0 rsa-whitespace(least);
+        &:hover {
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+    .close-zone {
+      margin-right: 0.5rem;
+      .rsa-form-button i {
+        font-size: 1rem;
+      }
+    }
+    .certificate-status-button {
+      margin-right: 7px;
+      button i {
+        font-size: 1rem;
+      }
+    }
+    .pivot-to-event-analysis {
+      height: 30px;
+    }
+    .button-menu.expanded {
+      display: block;
+      min-width: 176px;
+    }
+  }
+  .certificates-footer {
+    max-height: 2rem;
+    background-color: background-color(primary, darker, somewhat-opaque);
+    color: text-color(primary, lightest);
+    border-top: 1px solid $zoneBorderColor;
+    .certificates-info {
+      position: absolute;
+      top: 0.5rem;
+      /* left: 1rem; */
+      text-align: center;
+      width: 97%;
+    }
+  }
+  .left-zone {
+    .close-zone {
+      margin-right: -7px;
+    }
+  }
+  .show-left-zone {
+    .title-header {
+      display: none;
+    }
+  }
+  .certificates-body {
+    .rsa-data-table {
+      height: 100vh;
+      .certificate-radio {
+        font-size: 17px;
+        position: inherit;
+      }
+      .rsa-data-table-body-row.is-selected {
+        background-color: text-color(primary, darker);
+        border-top-color: text-color(primary, dark);
+        .rsa-data-table-body-cell {
+          background-color: text-color(primary, darker);
+        }
+      }
+
+      .rsa-data-table-body-row {
+        width: fit-content;
+        min-width: 98%;
+        line-height: 1.3rem;
+      }
+      .content-context-menu {
+        display: inherit;
+      }
+      .rsa-data-table-header {
+        .sort.rsa-icon {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+  @include rsa-vendor-prefix(transition-property, width);
+  @include rsa-vendor-prefix(transition-duration, 0.3s);
+}
+
+.license-banner.shown + .certificates-container {
+  // When license banner is shown, the absolute top position has to be adjusted
+  top: 86px;
+}

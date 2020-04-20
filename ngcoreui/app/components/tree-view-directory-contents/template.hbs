@@ -1,0 +1,8 @@
+{{#if isNotRoot}}
+  <div class="directory-item">{{#link-to "tree" pathParentToUrlSegment activeClass="ember-active"}}<a class="large">{{rsa-icon name="arrow-previous"}}</a>{{/link-to}}</div>
+{{/if}}
+<vbox>
+  {{#each currentDirectoryContents as |item|}}
+    {{tree-view-directory-item node=item}}
+  {{/each}}
+</vbox>

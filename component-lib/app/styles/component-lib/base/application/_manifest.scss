@@ -1,0 +1,107 @@
+$applicationHeaderHeight: 40px;
+$applicationHeaderBackground: background-color(navigation, menu);
+$applicationHeaderLinkColor: text-color(primary, light);
+$applicationHeaderLinkHoverColor: text-color(primary, lightest);
+$applicationHeaderLinkActiveColor: text-color(neutral);
+$applicationHeaderLinkActiveArrowColor: #BE3A34;
+$applicationHeaderLinkActiveArrowSize: 5px;
+$applicationHeaderActiveButtonColor: border-color(secondary);
+
+$userPreferencesPanelHeaderBackgroundColor: background-color(secondary);
+
+$applicationContentBlur: rsa-whitespace(least);
+
+$applicationModalBackgroundColor: background-color(primary, darkest);
+$applicationModalTypeColor: text-color(primary, lightest);
+$applicationModalBorderColor: border-color(secondary);
+$applicationModalOverlayColor: background-color(primary, darkest, translucent);
+$applicationModalCloseLinkColor: text-color(primary, lightest);
+
+$applicationLoginHeaderLogoWidth: 3.5rem;
+
+$applicationLoaderColor: text-color(primary, darker);
+$applicationLoaderColorAlt: text-color(secondary);
+$applicationLoaderLabelColor: text-color(primary, lightest);
+$applicationBodyBackgroundColor: background-color(primary, darkest);
+
+@mixin global-nav() {
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: $applicationBodyBackgroundColor;
+
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+
+  .rsa-application-loading {
+    &.rsa-loader {
+      margin: 0 auto;
+      display: block;
+      position: relative;
+      top: 40vh;
+      @include rsa-layer(above);
+
+      .rsa-loader__wheel {
+        border-color: $applicationLoaderColor;
+        border-top-color: $applicationLoaderColorAlt;
+        @include rsa-layer(above);
+      }
+
+      &.hide {
+        display: none;
+      }
+    }
+  }
+}
+
+@import 'application-header';
+@import 'application-content';
+@import 'application-modal';
+@import 'application-layout-manager';
+@import 'routable-login';
+@import 'user-preferences-panel';
+@import 'application-flash-messages';
+@import 'application-panels';
+@import 'application-error-page';
+@import 'application-panel-message';
+
+page, screen {
+  min-height: calc(100vh - #{$applicationHeaderHeight});
+}
+
+page {
+  min-width: 100vw;
+}
+
+.col {
+  &-xs,
+  &-sm,
+  &-md,
+  &-lg {
+    &-1,
+    &-2,
+    &-3,
+    &-4,
+    &-5,
+    &-6,
+    &-7,
+    &-8,
+    &-9,
+    &-10,
+    &-11,
+    &-12 {
+      padding: 0;
+    }
+  }
+}

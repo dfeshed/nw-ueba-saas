@@ -1,0 +1,36 @@
+<div class="user-overview-tab_alerts_alerts_container_pill_rating" {{action "initiateUser" (hash userId=alert.entityId alertId=alert.id)}}>
+  <div class="user-overview-tab_alerts_alerts_container_pill_rating_severity">
+    <div class="user-overview-tab_alerts_alerts_container_pill_rating_score {{alert.severity}}">
+    </div>
+    <div class="user-overview-tab_alerts_alerts_container_pill_rating_text" title="Score: {{alert.score}}">
+      {{alert.severity}}
+    </div>
+  </div>
+  <div class="user-overview-tab_alerts_alerts_container_pill_details">
+    <div class="user-overview-tab_alerts_alerts_container_pill_details_name">
+      <div class="user-overview-tab_alerts_alerts_container_pill_details_name_text">
+        {{t (concat "investigateUsers.alerts.alertNames." alert.name ".name")}}
+      </div>
+    </div>
+    <div class="user-overview-tab_alerts_alerts_container_pill_details_time">
+      <span>
+        {{rsa-content-datetime timestamp=(get alert "startDate") displayMilliseconds=false}} 
+      </span>
+      <span>
+        |
+      </span>
+      <span>
+        {{t (concat "investigateUsers.entityTypes." alert.entityType)}}
+      </span>
+      <span>
+        |
+      </span>
+      <span class="user-overview-tab_alerts_alerts_container_pill_details_time_name" title={{alert.entityName}}>
+        {{alert.entityName}}
+      </span>
+    </div>
+  </div>
+</div>
+<div class="user-overview-tab_alerts_alerts_container_pill_indicator">
+  {{overview-tab/alerts/pill/indicator userId=alert.entityId alertId=alert.id indicators=alert.evidences}}
+</div>

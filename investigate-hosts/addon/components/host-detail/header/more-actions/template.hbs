@@ -1,0 +1,160 @@
+{{#rsa-content-tethered-panel-trigger
+  panel="host-details-more-actions"
+  triggerEvent="click"
+}}
+  {{#rsa-form-button
+    isIconOnly=true
+    title=(t "investigateShared.endpoint.fileActions.moreActions")
+    withDropdown=false
+    class="more-action-button"}}
+    {{rsa-icon name="navigation-show-more-2" size="small"}}
+  {{/rsa-form-button}}
+{{/rsa-content-tethered-panel-trigger}}
+
+{{#rsa-content-tethered-panel
+  panelClass="host-details-more-actions"
+  displayCloseButton=false
+  isPopover=true
+  panelId="host-details-more-actions"
+  position="bottom-right"}}
+  <ul class="host-details_dropdown-action-list">
+    {{#each moreOptions as |moreOption|}}
+      {{#if (eq moreOption.buttonId "startScan-button")}}
+        <li class={{if isScanStartButtonDisabled "disabled"}}>
+          {{host-scan/scan-command
+      modalTitle=(t "investigateHosts.hosts.initiateScan.modal.modalTitle" name=hostName)
+      command="START_SCAN"
+      isStartScanIconDisplayed=false }}
+        </li>
+      {{else if (eq moreOption.buttonId "export-button")}}
+        <li class="export-button {{if isExportDisabled "disabled"}}">
+          {{#if isJsonExportCompleted}}
+            <span title={{t "investigateHosts.hosts.button.exportTooltip"}}>
+              {{#rsa-form-button
+                click=(action "exportHostDetails")
+                isDisabled=isExportDisabled}}
+                {{t "investigateHosts.hosts.button.export"}}
+              {{/rsa-form-button}}
+            </span>
+          {{else}}
+            {{#rsa-form-button isDisabled=true}}
+              {{rsa-loader}} {{t "investigateHosts.hosts.button.downloading"}}
+            {{/rsa-form-button}}
+          {{/if}}
+        </li>
+      {{else if moreOption.subItems}}
+        <li class="isolate-button{{if moreOption.divider " divider"}}">
+          {{#rsa-content-tethered-panel-trigger
+            panel=moreOption.panelId
+            displayDelay=200
+            hideDelay=100
+            isDisabled=isAgentMigrated
+          }}
+            {{#rsa-form-button
+              isDisabled=isAgentMigrated}}
+              <span class="network-isolation">
+                {{t moreOption.name}}
+              </span>
+              {{rsa-icon name="arrow-right-12"}}
+            {{/rsa-form-button}}
+          {{/rsa-content-tethered-panel-trigger}}
+
+          {{#rsa-content-tethered-panel
+            panelClass="machine-isolation-selector"
+            displayCloseButton=false
+            isPopover=true
+            panelId=moreOption.panelId
+            position="right-bottom"
+          }}
+            <ul class="rsa-dropdown-action-list">
+              {{#each moreOption.subItems as |subItem|}}
+                <li class={{if subItem.isDisabled "disabled"}}>
+                  {{#rsa-form-button
+                    defaultAction=(action "onshowIsolationModal" subItem.modalName)
+                    isDisabled=subItem.isDisabled}}
+                    {{t subItem.name}}
+                  {{/rsa-form-button}}
+                </li>
+              {{/each}}
+            </ul>
+          {{/rsa-content-tethered-panel}}
+        </li>
+      {{else if (eq moreOption.buttonId "downloadMFT-button")}}
+        <li class="downloadMFT-button{{if moreOption.divider " divider"}}">
+          {{#rsa-form-button
+            defaultAction=(action "requestMFTDownload")
+            isDisabled=isAgentMigrated}}
+            {{t moreOption.name}}
+          {{/rsa-form-button}}
+        </li>
+      {{else if (eq moreOption.buttonId "downloadSystemDump-button")}}
+        <li class="download-sys-dump-button " >
+          {{#rsa-form-button
+            defaultAction=(action "requestSystemDumpDownload")
+            isDisabled=isAgentMigrated}}
+            {{t moreOption.name}}
+          {{/rsa-form-button}}
+        </li>
+      {{else if (eq moreOption.buttonId "manualFileDownload-button")}}
+        <li class="manual-file-download-button">
+          {{#rsa-form-button
+            defaultAction=(action "onShowManualFileDownloadModal")
+            isDisabled=isAgentMigrated}}
+            {{t moreOption.name}}
+          {{/rsa-form-button}}
+        </li>
+      {{/if}}
+    {{/each}}
+  </ul>
+{{/rsa-content-tethered-panel}}
+
+{{#if isManualFileDownloadModalVisible}}
+  {{utils/manual-file-download
+    closeConfirmModal=(action "hideManualFileDownloadModal")
+    agentId=agentId
+    serverId=hostDetails.serviceId}}
+{{/if}}
+
+{{#if showIsolationModal}}
+  {{utils/machine-isolation-modal
+    closeConfirmModal=(action "hideIsolationModal")
+    agentId=agentId
+    serverId=hostDetails.serviceId
+    selectedModal=selectedModal}}
+{{/if}}
+
+{{#if showDownloadModal}}
+  {{#rsa-application-modal
+    eventId="download-warning-modal"
+    style="standard download-warning-modal"
+    autoOpen=true
+    onClose=(action "hideDownloadMsgModal")
+    label=(t "investigateHosts.downloads.downloadWarningModal.title")}}
+    <div class="modal-content">
+      <div class="download-warning-message">
+        {{t "investigateHosts.downloads.downloadWarningModal.message"}}
+      </div>
+      <span class="download-warning-doNotShow">
+        <label class="rsa-form-checkbox-label {{if downloadModalCheckbox "checked"}}">
+          {{rsa-form-checkbox
+            checked=downloadModalCheckbox
+            change=(action "toggleShowDownloadMsg")}}
+          {{t "investigateHosts.downloads.downloadWarningModal.doNotShow"}}
+        </label>
+      </span>
+
+      <footer>
+        <hbox class="modal-footer-buttons">
+          {{#rsa-form-button class="close-modal cancel" click=(action "hideDownloadMsgModal")}}
+            {{t "investigateHosts.downloads.downloadWarningModal.button.cancel"}}
+          {{/rsa-form-button}}
+
+          {{#rsa-form-button class="close-modal continue" style="primary" click=(action "continueDownload")}}
+            {{t "investigateHosts.downloads.downloadWarningModal.button.continue"}}
+          {{/rsa-form-button}}
+        </hbox>
+      </footer>
+    </div>
+
+  {{/rsa-application-modal}}
+{{/if}}

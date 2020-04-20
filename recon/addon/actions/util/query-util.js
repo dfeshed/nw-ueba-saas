@@ -1,0 +1,183 @@
+import { lookup } from 'ember-dependency-lookup';
+
+const _addFilter = (query, field, value, valueKey = 'value') => {
+  if (!query.filter) {
+    query.filter = [];
+  }
+
+  const obj = { field };
+  obj[valueKey] = value;
+
+  query.filter.push(obj);
+  return query;
+};
+
+const endpointFilter = (endpointId) => {
+  const query = {
+    filter: [{
+      field: 'endpointId',
+      value: endpointId
+    }]
+  };
+
+  return query;
+};
+
+const buildBaseQuery = (endpointId, eventId) => {
+  const query = endpointFilter(endpointId);
+  query.filter.push({
+    field: 'sessionId',
+    value: eventId
+  });
+  return query;
+};
+
+const addSessionQueryFilter = (query, sessionId) => {
+  const sessionQueryString = `(sessionid = ${sessionId})`;
+  if (!query.filter) {
+    query.filter = [];
+  }
+
+  const queryFilter = query.filter.findBy('field', 'query');
+  if (queryFilter) {
+    queryFilter.value = [queryFilter.value, sessionQueryString].join(' && ');
+  } else {
+    query.filter.push({
+      field: 'query',
+      value: sessionQueryString
+    });
+  }
+
+  return query;
+};
+
+const addCatchAllTimeRange = (query) => {
+  return _addFilter(
+    query,
+    'timeRange',
+    {
+      from: 0,
+      to: +new Date() / 1000
+    },
+    'range'
+  );
+};
+
+const addStreaming = (_query, pageSize = 10000, batchSize = 10, limit = 100000, rowIndex = 0) => {
+  // can't page yet in UI yet, so just set default pageSize high
+  const query = {
+    ..._query,
+    page: {
+      index: rowIndex,
+      size: pageSize
+    },
+    stream: {
+      batch: batchSize,
+      limit
+    }
+  };
+
+  return query;
+};
+
+const addEmail = (query, email) => {
+  return _addFilter(query, 'email', email);
+};
+
+const basicPromiseRequest = (endpointId, eventId, modelName, streamOptions = {}) => {
+  const query = buildBaseQuery(endpointId, eventId);
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'query',
+    modelName,
+    query,
+    streamOptions
+  });
+};
+
+/**
+ * Creates a serviceId filter
+ * @param {string|number} value - The Id of the service
+ * @return {object} A field/value object
+ * @public
+ */
+const serviceIdFilter = (value) => ({ field: 'endpointId', value });
+
+/**
+ * Creates a Promise request with its "method" set to `query`,
+ * @param {string} modelName - Name of model
+ * @param {object} query - (Optional) Query params for request
+ * @param {object} streamOptions - (Optional) Stream params
+ * @return {object} An RSVP Promise
+ * @public
+ */
+const queryPromiseRequest = (modelName, query = {}, streamOptions = {}) => {
+  const request = lookup('service:request');
+  return request.promiseRequest({
+    method: 'query',
+    modelName,
+    query,
+    streamOptions
+  });
+};
+
+const addFileTypeFilter = (query, type) => {
+  return _addFilter(
+    query,
+    'outputContentType',
+    type
+  );
+};
+
+const addFileSelectionsFilter = (query, filenames = []) => {
+  if (filenames.length) {
+    query = _addFilter(
+      query,
+      'exportSelections',
+      filenames,
+      'values'
+    );
+  }
+  return query;
+};
+
+const addSessionIdsFilter = (query, ids) => {
+  return _addFilter(
+    query,
+    'sessionIds',
+    ids,
+    'values'
+  );
+};
+
+const addDecode = (query, decode) => {
+  return _addFilter(query, 'decode', decode);
+};
+
+const addFilenameFilter = (query, filename) => {
+  if (filename) {
+    query = _addFilter(
+      query,
+      'filename',
+      filename
+    );
+  }
+  return query;
+};
+
+export {
+  addCatchAllTimeRange,
+  addFileTypeFilter,
+  addFileSelectionsFilter,
+  addFilenameFilter,
+  addSessionIdsFilter,
+  endpointFilter,
+  buildBaseQuery,
+  addStreaming,
+  addSessionQueryFilter,
+  basicPromiseRequest,
+  serviceIdFilter,
+  queryPromiseRequest,
+  addDecode,
+  addEmail
+};

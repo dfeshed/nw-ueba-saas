@@ -1,0 +1,128 @@
+.usm-group-wizard {
+  .define-group-step {
+    max-height: calc(100vh - #{$wizardStepMaxHeight});
+    min-height: calc(100vh - #{$wizardStepMaxHeight});
+    span.ember-power-select-placeholder {
+      color: text-color(primary, light);
+    }
+    
+    .maxTenCriteria {
+      position: absolute;
+      left: 160px;
+      bottom: 6px;
+    }
+    .andOrTable {
+      width: 500px;
+      height: 30px;
+      td {
+        padding: rsa-whitespace(less);
+      }
+      .first {
+        width: 110px;
+        padding-left: 0px;
+      }
+      .andOrOperator {
+        width: 80px;
+      }
+    }
+    .group-attributes {
+      margin-top: rsa-whitespace(less);
+      margin-bottom: rsa-whitespace();
+      position: relative;
+      .criteria-wrapper {
+        overflow-y: auto;
+        max-height: calc(100vh - 380px);
+        margin-bottom: 45px;
+        padding-bottom: 45px;
+        border-bottom: 1px solid border-color(primary);
+        padding-left: rsa-whitespace();
+        .rsa-form-input input, .rsa-form-input textarea, .rsa-form-textarea input, .rsa-form-textarea textarea {
+           margin-top: -10px;
+        }
+      }
+      .group-criterias {
+        margin-left: rsa-whitespace(more);
+        margin-top: rsa-whitespace(more);
+        margin-bottom: rsa-whitespace(more);
+        border: 1px solid border-color(primary);
+      }
+      .group-criteria {
+        position: relative;
+        margin-top: rsa-whitespace(); 
+        vertical-align: text-top;
+        width: 800px;
+        .attribute, .operator {
+          padding-bottom: rsa-whitespace(more);
+        }
+        .input-value {
+          padding-bottom: rsa-whitespace(more);      
+          .textarea-input {
+            .input-error {
+              @include rsa-font(paragraph, small);
+              color: text-color(primary, lightest);
+              padding-left: rsa-whitespace(less);
+            }
+          }
+        }
+        label {
+          display: inline-block;
+          margin-right: rsa-whitespace(less);
+          width: 170px;
+          vertical-align: text-top;
+        }
+      }
+      .tooltip {
+        cursor: default;
+        position: absolute;
+        right: 24px;
+        top: 6px;
+      }
+      .remove-criteria {
+        cursor: pointer;
+        position: absolute;
+        right: -2rem;
+        top: 0.5rem;
+      }
+      .between-text-input {
+        width: 400px;
+        span {
+          margin-right: rsa-whitespace(less); 
+        }
+        label.operator-input.validIPv6 {
+          width: 350px;
+        }
+        .secondValueInput.validIPv6 {
+          margin-top: rsa-whitespace(less); 
+        }
+      }
+      .textarea-input textarea {
+        min-height: 8rem;
+      }
+      .textarea-input textarea, .osSelector, .os-selector, .text-input label, .input-error {
+        width: 385px;
+        max-width: 385px;
+        min-width: 385px;
+      }
+      .input-error {
+        @include rsa-font(paragraph, small);
+        color: text-color(primary, lightest);
+        padding-left: rsa-whitespace(less);
+      }
+      .selector-error {
+          @include rsa-input-placeholder($formInputErrorPlaceholderColor);
+          color: $formInputErrorTypeColor;
+          background-color: $formInputErrorBackgroundColor;
+          border-color: $formInputErrorBorderColor;
+      }
+    
+      .add-criteria-button {
+        position: absolute;
+        bottom: 0px;
+      }
+      .add-criteria-button {
+        margin-top: rsa-whitespace(more);
+        margin-left: rsa-whitespace();
+      }
+    }    
+  }
+}

@@ -1,0 +1,232 @@
+$darkStorylineBgColor: background-color(primary, light, nearly-transparent);
+$storylineSeverityRadius: 1rem;
+$storylineLineHeight: 1.5;
+$storylineHeadingSize: 1rem;
+$storylineSeverityOffset: -1 * $storylineSeverityRadius + $storylineHeadingSize * $storylineLineHeight / 2;
+$storylineConnectorWidth: $storylineSeverityRadius * 2;
+$storylineConnectorPaddingX: rsa-whitespace(less);
+$storylineConnectorOuterWidth: $storylineConnectorPaddingX * 2 + $storylineConnectorWidth;
+
+.rsa-incident-storyline {
+
+  .rsa-incident-storyline-status {
+    overflow: auto;
+  }
+
+  &-item {
+    cursor: pointer;
+    line-height: $storylineLineHeight;
+
+    h3 {
+      font-size: $storylineHeadingSize;
+    }
+
+    p {
+      @include rsa-font(body, small);
+    }
+
+    .rsa-enrichment {
+      @include rsa-font(body, small);
+      position: relative;
+      margin-bottom: rsa-whitespace(least);
+
+      &::before {
+        content: '\2022'; /* filled bullet */
+        position: absolute;
+        top: 0;
+        /* horizontally centered over the vertical connector line */
+        left: -1 * $storylineConnectorOuterWidth;
+        width: $storylineConnectorOuterWidth;
+        text-align: center;
+      }
+    }
+
+    .related {
+      label {
+        padding-right: rsa-whitespace(least);
+      }
+      span {
+        .entity {
+          text-transform: none;
+
+          &:not(:last-of-type) {
+            /* Adds comma and padding after each entity name except last */
+            padding-right: rsa-whitespace(less);
+            &::after {
+              content: ',';
+            }
+          }
+        }
+      }
+      .has-context-data {
+        @include rsa-has-context-data();
+      }
+    }
+
+    .content {
+      margin-left: $storylineConnectorOuterWidth;
+    }
+
+    .connector {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      /*
+      position: relative;
+      */
+      padding: 0 $storylineConnectorPaddingX;
+      width: $storylineConnectorWidth;
+
+      .line {
+        /* Renders a vertical line, horizontally aligned with center of score. */
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 1px;
+      }
+
+      .severity {
+        /* Overlays severity on top of vertical line element. */
+        position: absolute;
+        z-index: 2;
+        top: $storylineSeverityOffset;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+
+        $storylineSeverityRadius: 1rem;
+
+        /* Renders a circle with centered text inside. */
+        width: $storylineSeverityRadius * 2;
+        height: $storylineSeverityRadius * 2;
+        border-radius: $storylineSeverityRadius * 2;
+        @include rsa-font(body,small);
+        line-height: $storylineSeverityRadius * 2;
+        text-align: center;
+        white-space: nowrap;
+      }
+    }
+
+    .header,
+    .main {
+      position: relative;
+    }
+
+    .header {
+      .line {
+        bottom: -1 * $storylineSeverityOffset;
+      }
+      .content {
+        padding: rsa-whitespace() rsa-whitespace() 0 0;
+      }
+    }
+
+    .main {
+      .line {
+        top: $storylineSeverityRadius * 2 + $storylineSeverityOffset;
+      }
+      .content {
+        padding: 0 rsa-whitespace(less) rsa-whitespace() 0;
+        border-width: 0 0 1px 0;
+        border-style: solid;
+        border-color: transparent;
+      }
+    }
+
+    &:first-of-type {
+      .header .line {
+        display: none;
+      }
+    }
+
+    &:last-of-type {
+      .main .line {
+        display: none;
+      }
+    }
+  }
+}
+
+
+
+/* dark theme colors */
+
+.rsa-incident-storyline {
+  &-item {
+
+    .line {
+      background-color: $darkStorylineBgColor;
+    }
+
+    .main .content {
+      border-color: border-color(neutral, dark, nearly-transparent);
+    }
+
+    p {
+      color: text-color(primary, light);
+    }
+
+    a {
+      color: text-color(secondary, light);
+    }
+
+    .severity {
+      background-color: $darkStorylineBgColor;
+    }
+
+    &.is-catalyst {
+      .severity {
+        background-color: background-color(neutral);
+        color: text-color(neutral,dark,nearly-opaque);
+      }
+      .is-catalyst {
+        color: text-color(neutral);
+      }
+    }
+
+    .enrichment {
+      color: text-color(primary, light);
+
+      &::before {
+        color: text-color(primary, light);
+      }
+    }
+
+    .related {
+      .entity {
+        color: text-color(neutral);
+
+        &.user {
+          color: $entityUserColor;
+        }
+        &.host {
+          color: $entityHostColor;
+        }
+        &.domain {
+          color: $entityDomainColor;
+        }
+        &.ip {
+          color: $entityIPColor;
+        }
+        &.mac-address {
+          color: $entityMACColor;
+        }
+        &.file-name {
+          color: $entityFileNameColor;
+        }
+        &.file-hash {
+          color: $entityFileHashColor;
+        }
+      }
+    }
+
+    &.is-selected {
+      background: background-color(secondary,base,somewhat-opaque);
+    }
+  }
+}

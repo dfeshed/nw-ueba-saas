@@ -1,0 +1,27 @@
+.usm-source-wizard {
+
+  .source-wizard-toolbar {
+
+    .prev-button {
+      margin-right: rsa-whitespace();
+    }
+
+    .next-button {
+      margin-right: rsa-whitespace(most);
+    }
+
+    .publish-button {
+      margin-left: rsa-whitespace();
+    }
+
+    .save-button {
+      margin-left: rsa-whitespace();
+    }
+
+    .cancel-button {
+      margin-left: rsa-whitespace();
+    }
+
+  }
+
+}

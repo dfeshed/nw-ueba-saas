@@ -1,0 +1,215 @@
+.more-list .first-in-group {
+  @include border-top(1px, solid, primary);
+
+  &:first-child {
+    border-top: none;
+  }
+}
+
+.rsa-collapseable-actions {
+  flex-direction: column;
+  position: relative;
+  background: background-color(primary, darker);
+  padding: rsa-whitespace();
+  @include border-top(1px, solid, primary, dark);
+  display: flex;
+
+  .first-tier-trigger,
+  .second-tier-trigger {
+    display: inline-flex;
+  }
+
+  .dropdowns,
+  .toggles,
+  .buttons {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .dropdowns + .buttons,
+  .buttons + .toggles,
+  .dropdowns + .toggles {
+    padding-left: rsa-whitespace();
+    @include border-left(1px, solid, primary, light);
+  }
+
+  .separator {
+    height: 30px;
+    width: 0;
+    display: inline-flex;
+    margin-right: 1rem;
+    @include border-right(1px, solid, primary, lighter);
+  }
+
+  .find {
+    position: absolute;
+    top: rsa-whitespace();
+    right: rsa-whitespace();
+    background: background-color(primary, darker);
+
+    button {
+      padding-left: rsa-whitespace(less);
+      padding-right: rsa-whitespace(less);
+    }
+
+    i {
+      margin-left: 0!important;
+      margin-right: 0;
+    }
+  }
+
+  .x-toggle-component {
+    margin-right: rsa-whitespace(more);
+  }
+
+  .rsa-form-button-wrapper.with-dropdown {
+    i {
+      margin-right: rsa-whitespace(least)!important;
+    }
+    .rsa-icon-arrow-down-12 {
+      margin-left: rsa-whitespace(least)!important;
+      margin-right: 0!important;
+    }
+  }
+
+  .dropdown {
+    margin-right: rsa-whitespace();
+  }
+
+  .action-group {
+    flex-grow: 1;
+    margin-right: rsa-whitespace();
+    position: relative;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+
+    .rsa-form-button-wrapper {
+      margin-right: 1rem;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .action-group.for-fully-collapsed {
+    display: block;
+
+    .dropdown-and-buttons-wrapper {
+      display: flex;
+    }
+    .toggles {
+      margin-top: rsa-whitespace();
+    }
+    .more-dropdown {
+      margin-right: rsa-whitespace();
+
+      button {
+        padding-left: rsa-whitespace(least);
+        padding-right: 0;
+      }
+    }
+
+    .rsa-form-button-wrapper {
+      button {
+        padding-left: rsa-whitespace(less);
+        padding-right: rsa-whitespace(less);
+
+        i {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .action-group.for-collapsed {
+    display: flex;
+
+    .rsa-form-button-wrapper {
+      &:not(.is-first-class) {
+        button {
+          padding-left: rsa-whitespace(less);
+          padding-right: rsa-whitespace(less);
+        }
+
+        i {
+          margin: 0;
+        }
+      }
+
+      &.rsa-split-dropdown {
+        button {
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
+    }
+  }
+
+  .action-group.for-expanded {
+    align-self: flex-start;
+    display: flex;
+  }
+
+  .rsa-button-group {
+    margin-right: rsa-whitespace();
+    display: inline-flex;
+    flex-grow: 0;
+
+    .rsa-form-button-wrapper {
+      margin-right: 0;
+    }
+
+    .rsa-split-dropdown {
+      margin-left: 0;
+    }
+  }
+
+  &.actions-fully-collapsed.actions-collapsed {
+    .action-group.for-fully-collapsed {
+      display: block;
+      height: auto;
+      opacity: 1;
+    }
+
+    .action-group.for-collapsed {
+      opacity: 0;
+      height: 1px;
+    }
+    .action-group.for-expanded {
+      opacity: 0;
+      height: 1px;
+    }
+  }
+
+  &.actions-collapsed {
+    .action-group.for-fully-collapsed {
+      opacity: 0;
+      height: 1px;
+    }
+    .action-group.for-collapsed {
+      display: flex;
+      margin-top: -1px;
+      margin-bottom: -1px;
+    }
+    .action-group.for-expanded {
+      opacity: 0;
+      height: 1px;
+    }
+  }
+
+  &.actions-expanded {
+    .action-group.for-fully-collapsed {
+      opacity: 0;
+      height: 1px;
+    }
+    .action-group.for-collapsed {
+      opacity: 0;
+      height: 1px;
+    }
+    .action-group.for-expanded {
+      margin-top: -2px;
+      display: flex;
+    }
+  }
+}

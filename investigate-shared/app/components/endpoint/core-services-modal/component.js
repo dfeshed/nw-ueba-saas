@@ -1,0 +1,1 @@
+export { default } from 'investigate-shared/components/endpoint/core-services-modal/component';

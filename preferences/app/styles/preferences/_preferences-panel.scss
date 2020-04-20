@@ -1,0 +1,41 @@
+.rsa-preferences-panel {
+  transition: width .65s;
+  position: absolute;
+  top: $applicationHeaderHeight;
+  width: 0;
+  right: 0;
+  bottom: 0;
+  background-color: background-color(primary, darker);
+  border-top: 0.2rem solid border-color(secondary);
+  border-bottom: 0.3rem solid border-color(secondary);
+  overflow: hidden;
+  white-space: nowrap;
+  @include rsa-layer(overlay);
+
+  &.is-expanded {
+    transition: width .65s;
+    width: calc(100vw / 4);
+  }
+
+  .rsa-content-section-header {
+    min-width: calc(100vw / 4);
+    padding: rsa-whitespace();
+    box-sizing: border-box;
+    color: text-color(primary, lightest);
+    background-color: background-color(primary, darkest);
+
+    .controls {
+      right: rsa-whitespace(less);
+
+      .rsa-form-button {
+        padding: rsa-whitespace(least);
+        color: text-color(primary, light);
+
+        &:hover {
+          color: text-color(primary, lightest);
+        }
+      }
+    }
+  }
+
+}

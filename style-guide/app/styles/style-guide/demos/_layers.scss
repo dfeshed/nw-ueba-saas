@@ -1,0 +1,49 @@
+.sg-demo-layer {
+  padding: rsa-whitespace();
+  box-sizing: border-box;
+
+  &.below {
+    @include rsa-layer(below);
+    background-color: background-color(accentOne);
+  }
+
+  &.base {
+    @include rsa-layer(base);
+    background-color: background-color(primary, darkest);
+  }
+
+  &.panels {
+    @include rsa-layer(panels);
+    background-color: background-color(primary, darker);
+  }
+
+  &.controls {
+    @include rsa-layer(controls);
+    background-color: background-color(primary, dark);
+  }
+
+  &.overlay {
+    @include rsa-layer(overlay);
+    background-color: background-color(primary);
+    color: text-color(neutral, dark);
+  }
+
+  &.modals {
+    @include rsa-layer(modals);
+    background-color: background-color(primary, light);
+    color: text-color(neutral, dark);
+  }
+
+  &.tooltips {
+    @include rsa-layer(tooltips);
+    background-color: background-color(primary, lighter);
+    color: text-color(neutral, dark);
+  }
+
+  &.above {
+    @include rsa-layer(above);
+    background-color: background-color(accentTwo);
+    color: text-color(neutral, dark);
+  }
+
+}

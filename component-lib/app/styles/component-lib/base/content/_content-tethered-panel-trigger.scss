@@ -1,0 +1,10 @@
+.rsa-content-tethered-panel-trigger {
+  vertical-align: middle;
+  color: text-color(primary, lighter);
+  display: inline-block;
+
+  &:hover {
+    cursor: pointer;
+    color: text-color(primary, lightest);
+  }
+}

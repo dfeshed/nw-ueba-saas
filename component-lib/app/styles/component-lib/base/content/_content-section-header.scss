@@ -1,0 +1,23 @@
+.rsa-content-section-header {
+  padding: rsa-whitespace(less) rsa-whitespace();
+  padding-right: 15rem;
+  position: relative;
+  background: background-color(navigation, menu);
+  color: text-color(navigation, linkLighter);
+  border-bottom: 1px solid border-color(navigation, menuDarkest);
+  @include rsa-font(header, large);
+
+  .controls {
+    position:absolute;
+    top: rsa-whitespace(less);
+    right: rsa-whitespace();
+    bottom: 0;
+
+    .rsa-form-button-wrapper {
+      .rsa-form-button {
+        color: text-color(navigation, linkLighter);
+      }
+    }
+
+  }
+}

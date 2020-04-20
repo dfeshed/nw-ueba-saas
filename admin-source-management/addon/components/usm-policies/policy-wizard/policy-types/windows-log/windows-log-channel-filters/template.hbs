@@ -1,0 +1,27 @@
+<div class="channel-filter-container">
+  <div class="channel-container">
+    {{#rsa-data-table lazy=true  items=channels columnsConfig=columns}}
+      {{#rsa-data-table/header as |column|}}
+        {{t column.title}}
+      {{/rsa-data-table/header}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{usm-policies/policy-wizard/policy-types/windows-log/windows-log-channel-filters/body-cell
+          item=item
+          index=index
+          column=column
+          delete=(action "deleteRow")
+          invalidTableItem=channelFiltersValidator.invalidTableItem
+          errorMessage=channelFiltersValidator.errorMessage
+          channelUpdated=(action "channelUpdated")}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  </div>
+  <div class="add-row">
+    {{#rsa-form-button
+      class="add-channel-button"
+      click=(action "addRowFilter")
+    }}
+      {{t "adminUsm.policyWizard.windowsLogPolicy.channel.add"}}
+    {{/rsa-form-button}}
+  </div>
+</div>

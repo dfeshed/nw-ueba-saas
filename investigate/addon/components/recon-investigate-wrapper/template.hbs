@@ -1,0 +1,14 @@
+{{#investigate-header
+  activeTab="investigate.investigate-events"
+  class="recon-is-standalone"
+  as |section| }}
+
+  {{#if section.isMain}}
+    {{recon-container
+      endpointId=endpointId
+      eventId=eventId
+      queryInputs=queryInputs
+    }}
+  {{/if}}
+
+{{/investigate-header}}
