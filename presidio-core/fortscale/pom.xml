@@ -122,7 +122,7 @@
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jedis.version>2.9.0</jedis.version>
         <spring-data-redis.version>2.1.0.RELEASE</spring-data-redis.version>
-        <apache-tomcat.version>9.0.24</apache-tomcat.version>
+        <apache-tomcat.version>9.0.34</apache-tomcat.version>
         <spring-cloud-config-aws-kms.version>4.0</spring-cloud-config-aws-kms.version>
         <jackson-dataformat-yaml.version>2.9.9</jackson-dataformat-yaml.version>
         <aws-java-sdk-s3.version>1.11.699</aws-java-sdk-s3.version>
