@@ -37,7 +37,7 @@
         <thrift.version>0.7.0</thrift.version>
         <kafka.version>0.9.0.1</kafka.version>
         <kite.version>1.0.0</kite.version>
-        <hive.version>1.0.0</hive.version>
+        <hive.version>3.1.2</hive.version>
         <xalan.verion>2.7.1</xalan.verion>
         <xerces.version>2.9.1</xerces.version>
         <rpm-maven-plugin.version>2.1.5</rpm-maven-plugin.version>
