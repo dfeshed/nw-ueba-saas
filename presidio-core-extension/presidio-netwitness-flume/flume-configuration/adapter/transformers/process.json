@@ -1,0 +1,364 @@
+{
+  "type": "chain",
+  "name": "process-transformer",
+  "transformerList": [
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-operation-type",
+      "sourceKey": "action[0]",
+      "targetKey": "operationType",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "filter",
+      "name": "filter-operation-types",
+      "predicate": {
+        "type": "regex",
+        "name": "operationType-white-list",
+        "sourceKey": "operationType",
+        "regex": "OPEN_PROCESS|CREATE_PROCESS|CREATE_REMOTE_THREAD"
+      },
+      "filterIn": true
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "eventSourceId",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-device-type-to-data-source",
+      "sourceKey": "deviceType",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dataSource"
+      ]
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "user-id-normalization",
+      "sourceKey": "userSrc",
+      "destinationKey": "userId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "CN=([^,]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "CN=([^,]+),.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+\\\\)+([^@]+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(.+)@.+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 1,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": ".+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 0,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-user-src",
+      "sourceKey": "userSrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "userName",
+        "userDisplayName"
+      ]
+    },
+    {
+      "type": "regex_captor_and_formatter",
+      "name": "machine-id-normalization",
+      "sourceKey": "aliasHost[0]",
+      "destinationKey": "machineId",
+      "captureAndFormatConfigurations": [
+        {
+          "pattern": "-",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": ".*:.*",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": ".*\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*",
+          "format": "",
+          "capturingGroupConfigurations": null
+        },
+        {
+          "pattern": "(\\\\\\\\)?([^\\.]+)\\..+",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        },
+        {
+          "pattern": "(\\\\\\\\)?(.+)",
+          "format": "%s",
+          "capturingGroupConfigurations": [
+            {
+              "index": 2,
+              "caseFormat": "LOWER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-alias-host-to-machine-name",
+      "sourceKey": "aliasHost[0]",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "machineName"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-owner-to-machine-owner",
+      "sourceKey": "owner",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "machineOwner"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-directory-src",
+      "sourceKey": "directorySrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcProcessDirectory"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-file-src",
+      "sourceKey": "filenameSrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcProcessFileName"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-cert-common",
+      "sourceKey": "certCommon",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcProcessCertificateIssuer"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-directory-dst",
+      "sourceKey": "directoryDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessDirectory"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-file-dst",
+      "sourceKey": "filenameDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessFileName"
+      ]
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "eventTime",
+      "destinationKey": "dateTime"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-src-process-dir-group",
+      "sourceKey": "dirPathSrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcProcessDirectoryGroups"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-src-process-dir-groups",
+      "sourceKey": "srcProcessDirectoryGroups",
+      "targetKey": "srcProcessDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-dst-process-dir-group",
+      "sourceKey": "dirPathDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessDirectoryGroups"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-dst-process-dir-groups",
+      "sourceKey": "dstProcessDirectoryGroups",
+      "targetKey": "dstProcessDirectoryGroups",
+      "sourceStringFormat": "LOWER_CAMEL",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-src-process-categories",
+      "sourceKey": "fileCatSrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcProcessCategories"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-src-process-categories",
+      "sourceKey": "srcProcessCategories",
+      "targetKey": "srcProcessCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-dst-process-categories",
+      "sourceKey": "fileCatDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstProcessCategories"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-dst-process-categories",
+      "sourceKey": "dstProcessCategories",
+      "targetKey": "dstProcessCategories",
+      "sourceStringFormat": "LOWER_SPACE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "checksum-id",
+      "sourceKey": "checksumSrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.srcChecksumId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "checksum-dst",
+      "sourceKey": "checksumDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.dstChecksumId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "agent-id",
+      "sourceKey": "agentId",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.agentId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "callback_id",
+      "sourceKey": "nweCallbackId",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.callbackId"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "os-type",
+      "sourceKey": "os[0]",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.osType"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "process-vid-src",
+      "sourceKey": "processVidSrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.srcProcessVid"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "process-vid-dst",
+      "sourceKey": "processVidDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "additionalInfo.dstProcessVid"
+      ]
+    }
+  ]
+}

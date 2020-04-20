@@ -1,0 +1,255 @@
+{
+  "type": "chain",
+  "name": "tls-transformer",
+  "transformerList": [
+    {
+      "type": "filter",
+      "name": "direction-filter",
+      "predicate": {
+        "type": "regex",
+        "name": "direction-white-list",
+        "sourceKey": "direction",
+        "regex": "outbound"
+      },
+      "filterIn": true
+    },
+    {
+      "type": "filter",
+      "name": "tcp-srcPort-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "tcp-srcport-not-null",
+        "key": "tcpSrcPort",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
+      "type": "filter",
+      "name": "tcp-dstport-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "tcp-dstport-not-null",
+        "key": "tcpDstPort",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
+      "type": "filter",
+      "name": "ip-src-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "ip-src-not-null",
+        "key": "ipSrc",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
+      "type": "filter",
+      "name": "ip-dst-not-null-filter",
+      "predicate": {
+        "type": "key_exist",
+        "name": "ip_dst-not-null",
+        "key": "ipDst",
+        "testNull": true
+      },
+      "filterIn": true
+    },
+    {
+      "type": "epoch",
+      "name": "date-time-millis-to-nano-representation",
+      "sourceKey": "time",
+      "destinationKey": "dateTime"
+    },
+    {
+      "type": "set_value",
+      "name": "data-source-transformer",
+      "key": "dataSource",
+      "value": "network"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-event-source-id-to-event-id",
+      "sourceKey": "eventSourceId",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "eventId"
+      ]
+    },
+    {
+      "type": "string_format",
+      "name": "convert-string-format-of-direction",
+      "sourceKey": "direction",
+      "targetKey": "direction",
+      "sourceStringFormat": "LOWER_UNDERSCORE",
+      "targetStringFormat": "UPPER_UNDERSCORE"
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ip-src",
+      "sourceKey": "ipSrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcIp"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ip-dst",
+      "sourceKey": "ipDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstIp"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-country-src",
+      "sourceKey": "countrySrc",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcCountry"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-country-dst",
+      "sourceKey": "countryDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstCountry.name"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ssl-subject",
+      "sourceKey": "sslSubject",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "sslSubject.name"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ja3",
+      "sourceKey": "ja3",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "ja3.name"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-ssl-ca",
+      "sourceKey": "sslCA",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "sslCas"
+      ]
+    },
+    {
+      "type": "top_level_domain",
+      "name": "alias-host-to-top-level-domain",
+      "sourceKey": "aliasHost[0]",
+      "isRemoveSourceKey": false,
+      "targetKey": "domain.name"
+    },
+    {
+      "type": "copy_value",
+      "name": "copy-alias-host-to-fqdn",
+      "sourceKey": "aliasHost",
+      "isRemoveSourceKey": false,
+      "destinationKeys": [
+        "fqdn"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-org-dst",
+      "sourceKey": "orgDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstOrg.name"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-asn-dst",
+      "sourceKey": "asnDst",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstAsn.name"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-payload-req",
+      "sourceKey": "payloadReq",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "numOfBytesSent"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-payload-res",
+      "sourceKey": "payloadRes",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "numOfBytesReceived"
+      ]
+    },
+    {
+      "type": "first_array_value_regex_captor_and_formatter",
+      "name": "extract-src-netname",
+      "sourceArrayKey": "netname",
+      "targetKey": "srcNetname",
+      "captureAndFormatConfiguration": {
+        "pattern": "(.+) src",
+        "format": "%s",
+        "capturingGroupConfigurations": [
+          {
+            "index": 1,
+            "caseFormat": "LOWER"
+          }
+        ]
+      }
+    },
+    {
+      "type": "first_array_value_regex_captor_and_formatter",
+      "name": "extract-dst-netname",
+      "sourceArrayKey": "netname",
+      "targetKey": "dstNetname",
+      "captureAndFormatConfiguration": {
+        "pattern": "(.+) dst",
+        "format": "%s",
+        "capturingGroupConfigurations": [
+          {
+            "index": 1,
+            "caseFormat": "LOWER"
+          }
+        ]
+      }
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-tcp-dstport",
+      "sourceKey": "tcpDstPort",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "dstPort.name"
+      ]
+    },
+    {
+      "type": "copy_value",
+      "name": "rename-tcp-srcport",
+      "sourceKey": "tcpSrcPort",
+      "isRemoveSourceKey": true,
+      "destinationKeys": [
+        "srcPort"
+      ]
+    }
+  ]
+}
