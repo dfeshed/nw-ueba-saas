@@ -1,0 +1,24 @@
+.fs-explain {
+
+    color: $clrGrey80;
+    cursor: pointer;
+
+    &.fs-explain-required {
+        color: red;
+    }
+
+    &.fs-explain-control {
+        position: relative;
+        top: -0.8em;
+        left: -0.5em;
+        font-size: 1.2em;
+    }
+
+}
+
+.k-widget.k-tooltip {
+    background-image: none;
+    background-color: $clrGrey40;
+    @include font-roboto-regular();
+    font-size: 13px;
+}

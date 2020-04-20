@@ -1,0 +1,50 @@
+
+/*TODO - pass it to its own file*/
+$heatMapFirstCellWidth: 130px;
+$heatMapCellWidth: 45px;
+$heatMapCellHeight: 22px;
+$heatMapTHBackgroundColor: #c2d4d6;
+
+$heatMapRowHoverBackgroundColor: #f1f1f1;
+
+$heatMapRowHoverSelectedRow: rgba(194, 212, 214,0.4);
+
+
+
+.widget-heat-map{
+  margin-bottom: 1em;
+
+
+  rect{
+    shape-rendering: crispEdges;
+  }
+
+  rect.cell-hover {
+    stroke: red;
+    z-index: 9;
+  }
+
+  text.rowLabel,text.colLabel, g.legend text {
+    fill:gray;
+  }
+
+  text.text-highlight {
+    fill: #065DA0;
+    font-weight: bold;
+  }
+  text.text-hover {
+    fill: #065DA0;
+    cursor:pointer;
+    font-weight: bold;
+  }
+
+  .widget-heat-map {
+    margin:auto;
+  }
+
+  .heat-map-total-label{
+    color:gray;
+    text-align: center;
+  }
+
+}

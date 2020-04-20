@@ -1,0 +1,7 @@
+<div class="chart-description" ng-if="view.settings.description" ng-bind-html="view.settings.description"></div>
+<ul class="chart-legend unstyled" ng-if="view.data.legend">
+    <li ng-repeat="legend in view.data.legend.items">
+        <i class="fa fa-stop" ng-style="{ color: legend.color }"></i>
+        {{legend.value}}
+    </li>
+</ul>

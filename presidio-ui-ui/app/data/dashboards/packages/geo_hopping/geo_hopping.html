@@ -1,0 +1,13 @@
+<div ng-controller="GeoHoppingPackageController" class="row-fluid" ng-hide="packageNoData">
+    <div class="span8 package-column" >
+        <h4 class="package-contents-description">The graph below shows VPN events on a timeline for the selected
+            <span ng-class="{accent:isMultipleUsers}">{{usersTitle}}</span>. Click on the graph to view events:</h4>
+        <multi-timeline ng-model="userEvents"
+                        graph-settings="graphSettings"
+                        on-series-click="showUser(series)"></multi-timeline>
+    </div>
+    <div class="span7 package-column" >
+        <h4 class="package-contents-description">VPN Events For {{currentGeoHoppingUser.name}} (click on fields to explore):</h4>
+        <ng-include src="'widgets/table/table.view.html'"></ng-include>
+    </div>
+</div>

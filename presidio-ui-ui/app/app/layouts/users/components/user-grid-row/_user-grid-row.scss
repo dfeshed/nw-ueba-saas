@@ -1,0 +1,200 @@
+.user-row {
+    font-size: 14px;
+    height: 101px;
+
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid var(--main-widgets-lines-seperators);
+
+    &:hover {
+        background-color: var(--main-widgets-background-color-hover);
+    }
+
+    .user-details {
+        display: flex;
+        flex-direction: column;
+        flex: 0 0 20%;
+        justify-content: center;
+
+        .inner-details {
+            display: flex;
+            flex-direction: column;
+
+        .user-details-line {
+            line-height: 23px;
+           // width:100%
+        }
+        span {
+            font-family: 'Open Sans', sans-serif;;
+            line-height: 18px;
+            color: #838485;
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .user-details-first-row {
+            padding-top: 6px;
+            display: flex;
+            flex-direction: row;
+
+
+            a {
+                font-family: 'Open Sans', sans-serif;;
+                line-height: 18px;
+                color: var(--main-widgets-titles-link-color);
+                font-size: 14px;
+                font-weight: 600;
+                text-transform: capitalize;
+                max-width: 250px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                letter-spacing: 0.85px;
+
+                @media screen and (max-width: 1500px){
+                    max-width: 200px;
+                }
+
+            }
+
+            .watch-icon-container {
+                padding-top: 2px;
+                padding-left: 10px;
+                fill: var(--main-widgets-titles-icon-fill);
+            }
+        }
+    }
+}
+
+            .avatar-container-wrapper {
+                flex: 0 0 100px;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .avatar-container {
+                width: 60px;
+                height: 60px;
+
+
+                    display: block;
+                    clip-path: circle(46% at center);
+
+                    .image {
+                        display: inline-block;
+                        width: 100%;
+                        height: 100%;
+                        background-position: center;
+                        background-size: 100% 100%;
+
+                    }
+                }
+            }
+
+    .user-score {
+        flex: 1;
+        flex: 0 0 10%;
+        color: var(--main-critical-severity-color);
+        font-family: 'Open Sans', sans-serif;
+        font-size: 4vh;
+        line-height: 6vh;
+        font-weight: 400;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .user-score-inner{
+            width: 90px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .score-severity {
+
+            &--low {
+                color: var(--main-low-severity-color);
+            }
+            &--medium {
+                color: var(--main-medium-severity-color);
+            }
+            &--high {
+                color: var(--main-high-severity-color);
+            }
+            &--critical {
+                color: var(--main-critical-severity-color);
+            }
+        }
+    }
+
+    .user-alerts {
+        flex: 0 0 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        font-family: 'Open Sans Bold', 'Open Sans Regular', 'Open Sans';
+        font-weight: 700;
+        font-style: normal;
+        font-size: 14px;
+        color: var(--main-widgets-titles-link-color);
+
+        .user-alerts-internal{
+            width:80px;
+            display: flex;
+            cursor: context-menu;
+        }
+    }
+
+    .user-devices{
+        flex: 0 0 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        font-family: 'Open Sans Bold', 'Open Sans Regular', 'Open Sans';
+        font-weight: 700;
+        font-style: normal;
+        font-size: 14px;
+        color: #4C9AD0;
+
+        .user-devices-internal{
+            width:120px;
+            display: flex;
+            cursor: context-menu;
+        }
+
+    }
+
+    .user-tags{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .tags-wrapper{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+    }
+
+    &.user-item{
+        color: #00c3aa;
+    }
+
+    &.user-item.ng-leave {
+        -webkit-transition: 0.5s linear all;
+        transition: 0.3s linear all;
+        opacity:1;
+    }
+
+    &.user-item.ng-leave.ng-leave-active {
+        opacity: 0;
+    }
+
+    &.user-item.ng-leave {
+        opacity: 1;
+
+    }
+}
+

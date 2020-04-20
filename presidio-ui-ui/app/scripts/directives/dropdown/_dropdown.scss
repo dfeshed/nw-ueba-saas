@@ -1,0 +1,105 @@
+.dropdown-directive {
+  position: relative;
+  display: inline;
+
+  &.dropdown-open {
+    .dropdown-directive-menu {
+      display: block;
+    }
+  }
+
+  &.dropdown-visible {
+    .dropdown-directive-menu {
+      opacity: 1;
+    }
+  }
+
+  .dropdown-directive-menu {
+    display: none;
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: White;
+    border: solid 1px #ddd;
+    color: #ddd;
+    z-index: 99999999;
+    overflow: auto;
+    box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+  }
+
+  .dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: White;
+    color: #333;
+    font-size: .8rem;
+    font-style: normal;
+    white-space: nowrap;
+
+    li {
+      padding: .4rem 2rem .4rem 1rem;
+      line-height: 20px;
+      cursor: pointer;
+
+      &:hover {
+        background: $listHoverBackgroundColor;
+      }
+
+      &.ng-click-active, &:active {
+        background: $listActiveBackgroundColor;
+      }
+    }
+  }
+
+  .dropdown-list-header{
+    padding: 0 1rem;
+    font-weight: bold;
+
+    label{
+      font-weight: bold;
+      padding: .5rem;
+      display: block;
+      margin: 0;
+    }
+  }
+
+  .dropdown-list-icon{
+    height: 16px;
+    margin-right: .5rem;
+    display: inline-block;
+    opacity: 0.5;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+  }
+
+  .dropdown-list-toggle-checkbox{
+    display: none;
+
+    & + .dropdown-list{
+      display: none;
+      padding-top: 0;
+
+      li{
+        padding-left: 2rem;
+      }
+    }
+
+    &:checked + .dropdown-list{
+      display: block;
+    }
+  }
+}
+
+.dropdown-directive-button {
+  display: inline-block;
+  padding: .5rem;
+  background: none;
+  border: none;
+  vertical-align: middle;
+  outline: none;
+  -webkit-appearance: none;
+}

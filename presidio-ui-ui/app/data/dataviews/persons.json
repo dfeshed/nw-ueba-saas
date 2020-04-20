@@ -1,0 +1,117 @@
+{
+    "id": "persons",
+    "name": "Active Directory - Accounts",
+    "description": "All the accounts in the system, connected to persons",
+    "entities": [ "persons", "user_groups" ],
+    "entitiesJoin": [
+        {
+            "persons": "userprincipalname",
+            "user_groups": "username",
+            "_caseSensitive": true
+        }
+    ],
+    "requiredEntities": ["user_groups", "persons"],
+    "visualizations": [
+        {
+            "id": "group_users_bubbles",
+            "title": "Security Groups (Bubbles)",
+            "widgetId": "visualizations.group_users_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "user_groups",
+                "fields": [
+                    {
+                        "field": "uid",
+                        "entity": "user_groups"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "score",
+                        "entity": "user_groups"
+                    },
+                    {
+                        "field": "group_dn",
+                        "entity": "user_groups"
+                    }
+                ],
+                "groupBy": "uid, displayname, group_dn, score",
+                "limit": 80,
+                "sort": {
+                    "field": "score",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "user_groups_bubbles",
+            "title": "Security Groups Per User (Bubbles)",
+            "widgetId": "visualizations.user_groups_bubbles",
+            "height": 680,
+            "data": {
+                "mainEntity": "user_groups",
+                "fields": [
+                    {
+                        "field": "uid",
+                        "entity": "user_groups"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "score",
+                        "entity": "user_groups"
+                    },
+                    {
+                        "field": "group_dn",
+                        "entity": "user_groups"
+                    }
+                ],
+                "groupBy": "uid, displayname, group_dn, score",
+                "limit": 80,
+                "sort": {
+                    "field": "score",
+                    "direction": -1
+                }
+            }
+        },
+        {
+            "id": "group_users_heat_map",
+            "title": "Users To Security Groups",
+            "widgetId": "visualizations.group_users_heat_map",
+            "height": 680,
+            "mock_data":"visualizations.group_users_bubbles",
+            "data": {
+                "mainEntity": "user_groups",
+                "fields": [
+                    {
+                        "field": "uid",
+                        "entity": "user_groups"
+                    },
+                    {
+                        "field": "displayname",
+                        "entity": "persons"
+                    },
+                    {
+                        "field": "score",
+                        "entity": "user_groups"
+                    },
+                    {
+                        "field": "group_dn",
+                        "entity": "user_groups"
+                    }
+                ],
+                "groupBy": "uid, displayname, group_dn, score",
+                "limit": 80,
+                "sort": {
+                    "field": "score",
+                    "direction": -1
+                }
+            }
+        }
+
+    ]
+}

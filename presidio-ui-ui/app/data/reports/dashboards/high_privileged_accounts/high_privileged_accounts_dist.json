@@ -1,0 +1,59 @@
+{
+    "endpoint": {
+        "api": "dataQuery",
+        "dataQuery": {
+            "entity": "users",
+            "groupBy": "{{@field}}",
+            "fields": [
+                {
+                    "id": "{{@field}}",
+                    "alias": "users_group"
+                },
+                {
+                    "alias": "members_count",
+                    "func": {
+                        "name": "count",
+                        "params": {
+                            "all": true
+                        }
+                    }
+                }
+            ],
+            "conditions": {
+                "operator": "AND",
+                "terms": [
+                    {
+                        "type": "field",
+                        "id": "{{@columnNameToQuery}}",
+                        "value": true,
+                        "operator": "equals"
+                    }
+                ]
+            }
+        }
+    },
+	"limit": -1,
+    "params": [
+		{
+			"field": "dateRange",
+			"dashboardParam": "high_privileged_accounts_event_dates",
+			"isRequired": true
+		},
+        {
+            "field": "minscore",
+            "dashboardParam": "minscore",
+            "default": 80
+        },
+        {
+            "field": "field",
+            "dashboardParam": "dist_field",
+            "default": "department"
+        },
+        {
+            "field": "columnNameToQuery",
+            "dashboardParam": "columnNameToQuery",
+            "isRequired": true
+        }
+    ],
+    "_mock_data": "dashboards.high_privileged_accounts.high_privileged_{{@field}}_dist"
+}

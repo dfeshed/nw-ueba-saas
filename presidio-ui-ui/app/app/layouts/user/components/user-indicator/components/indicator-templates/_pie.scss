@@ -1,0 +1,16 @@
+.indicator-template.pie-template {
+
+    flex: 1 0;
+
+    display: flex;
+    flex-direction: row;
+
+
+    .chart {
+        flex: 1 0;
+
+        position: relative;
+    }
+
+
+}

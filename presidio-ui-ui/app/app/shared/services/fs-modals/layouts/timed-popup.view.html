@@ -1,0 +1,10 @@
+<div class="timed-popup fs-modal" ng-style="{borderTop: (popup.topColor ? '5px solid ' + popup.topColor : null) }">
+    <div class="image-section" ng-if="popup.imageSrc">
+        <img ng-src="{{popup.imageSrc}}" />
+    </div>
+    <div class="content-section">
+        <h1 ng-if="popup.title">{{popup.title}}</h1>
+        <p ng-if="popup.text">{{popup.text}}</p>
+        <span class="close-fsicon"><i class="fa fa-times"></i></span>
+    </div>
+</div>

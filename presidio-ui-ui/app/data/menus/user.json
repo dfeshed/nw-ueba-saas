@@ -1,0 +1,80 @@
+{
+    "id": "user",
+    "items": [
+        {
+            "text": "Go to {{display_name || username || normalized_username}}'s profile",
+            "preSelectReport": {
+                "reportId": "user.get_user_by_username",
+                "singleResult": true,
+                "conditions": [
+                    {
+                        "field": "{{id || userid}}",
+                        "operator": "hasNoValue"
+                    }
+                ]
+            },
+            "params": {
+                "normalized_username": "{{username  || normalized_username}}"
+            },
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/user/{{id || userid}}/baseline"
+                    }
+                }
+            ]
+        },
+		{
+			"text": "Unfollow user",
+			"conditions": [{
+				"field": "followed",
+				"operator": "isTruthy"
+			}],
+			"onSelect": [
+				{
+					"action": "runReport",
+					"actionOptions": {
+						"reportId": "follow_user",
+						"reportParams": {
+							"endpoint": {
+								"follow": "false"
+							},
+							"params": [
+								{
+									"dashboardParam": "userid",
+									"field": "userId"
+								},
+								{
+									"field": "follow",
+									"value": "false"
+								}
+							]
+						},
+						"onResults": {
+							"events": [
+								{ "action": "clearCache" },
+								{
+									"action": "refreshAll",
+									"actionOptions": {
+										"showLoading": false
+									}
+								}
+							]
+						},
+						"onError": {
+							"alert": "Couldn't unfollow user due to a server error."
+						}
+					}
+				}
+			]
+		},
+		{
+			"dynamicMenu": {
+				"baseEntity": ["scored_access_event", "session"],
+				"url": "#/d/explore/{{entity.id}}?filters={{entity.id}}.normalized_username%3D\\{\\{@normalizedUsername || normalized_username || username\\}\\}&mode=table",
+				"name":"Investigate \\{\\{@userName || display_name || username\\}\\}'s {{entity.nameForMenu}}"
+			}
+		}
+    ]
+}

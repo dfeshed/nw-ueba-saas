@@ -1,0 +1,105 @@
+.status-counter-container {
+    position: relative;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--main-widgets-titles-text-color);
+    background-color: var(--main-widgets-background-color);
+    height: 20px;
+
+    fs-severity-tag {
+        margin-right: 3px;
+    }
+
+    &--title {
+        font-family: 'Open Sans', sans-serif;
+        color: #002949;
+        font-size: 14px;
+        line-height: 20px;
+
+        margin-right: 20px;
+    }
+
+    &--severity-info {
+        display: flex;
+        flex-flow: row;
+        justify-content: flex-start;
+        align-items: center;
+
+        margin-right: 23px;
+
+        &--count {
+
+            font-family: 'Open Sans', sans-serif;
+            color: var(--main-widgets-titles-text-color);
+            font-size: 12px;
+            font-weight: 600;
+
+            margin-right: 3px;
+
+            //&.Critical {
+            //    color: var(--main-critical-severity-color);
+            //}
+            //
+            //&.High {
+            //    color: var(--main-high-severity-color);
+            //}
+            //
+            //&.Medium {
+            //    color: var(--main-medium-severity-color);
+            //}
+            //
+            //&.Low {
+            //    color: var(--main-low-severity-color);
+            //}
+        }
+
+        &--severity-name {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--main-widgets-titles-text-color);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+    }
+
+    &--export-alert-button {
+        position: absolute;
+
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+        align-items: center;
+        padding: 0 20px;
+        right: 10px;
+        height: 30px;
+        border: 1px solid var(--main-widgets-titles-text-color);
+        cursor: pointer;
+
+        .download-icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--main-widgets-titles-text-color);
+            stroke: var(--main-widgets-titles-text-color);
+
+            display: inline-block;
+
+            margin-right: 3px;
+        }
+
+        .download-text {
+            font-family: 'Open Sans', sans-serif;
+            color:  var(--main-widgets-titles-text-color);
+            font-size: 14px;
+
+            &:hover {
+                text-decoration: none;
+                font-weight: 800;
+            }
+        }
+    }
+}

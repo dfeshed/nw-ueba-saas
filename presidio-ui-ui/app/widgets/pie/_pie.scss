@@ -1,0 +1,14 @@
+.widget-pie{
+  overflow: hidden;
+
+  .slice:hover{
+    path{
+        -webkit-transform: scale(1.03);
+    }
+  }
+  path{
+    stroke: White;
+    stroke-width: 1px;
+    -webkit-transition: all ease-out 200ms;
+  }
+}

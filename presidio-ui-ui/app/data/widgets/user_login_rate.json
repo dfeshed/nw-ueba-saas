@@ -1,0 +1,70 @@
+{
+    "reportId": "user_login_rate",
+    "title": "Logins count - last 7 days",
+    "refreshOn": ["loginsUser"],
+    "minWidth": 720,
+    "views": [
+        {
+            "type": "barsChart",
+            "settings": {
+                "options": {
+                    "height": "200px",
+                    "width": "100%",
+                    "createAxes": false,
+                    "barLabelsFont": {
+                        "size": 16,
+                        "color": "#999999"
+                    },
+                    "labelsFont": {
+                        "size": "14px",
+                        "color": "#999999"
+                    },
+                    "labels": {
+                        "height": 20,
+                        "margin": 13,
+                        "handleEvents": true
+                    },
+                    "selectable": false,
+                    "padding": { "top": 0, "right": 50, "left": 50, "bottom": 0 },
+                    "tooltip": "{{seriesLabel}}'s logins for {{barLabel}}: {{barValue}}",
+                    "values": {
+                        "min": 0
+                    }
+                },
+                "series": [
+                    {
+                        "field": "SUCCESS",
+                        "label": "{{@userName}}",
+                        "color": "#69b85e",
+                        "barLabelsColor": "#aaaaaa",
+                        "default": 0
+                    }
+                ],
+                "labels": {
+                    "field": "day",
+                    "value": "{{day}}",
+                    "styleField": "day",
+                    "predefinedValues": {
+                        "type": "date",
+                        "first": "-7days",
+                        "last": "now"
+                    },
+                    "transform": {
+                        "method": "date",
+                        "options": {
+                            "format": "MM/DD/YYYY"
+                        }
+                    }
+                },
+                "legend": {
+                    "items": [
+                        {
+                            "value": "Number of successful logins",
+                            "color": "#69b85e"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}

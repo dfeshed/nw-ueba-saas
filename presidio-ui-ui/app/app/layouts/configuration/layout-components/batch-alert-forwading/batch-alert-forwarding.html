@@ -1,0 +1,72 @@
+<div class="form-pane--config-section--header-strip">
+
+    <div class="header-content">
+        <div class="header-display-name">
+            Batch Alert Forwarding via Syslog
+        </div>
+        <div class="header-display-description">
+            Forward a batch of historical alerts
+        </div>
+        <div> Note: All alerts will be forwarded via TCP </div>
+    </div>
+</div>
+
+<div class="form-pane--config-section--form-content">
+
+    <ng-form name="batch_alert_forwarding" ng-submit="::baCtrl.submitBatchAlert()">
+
+
+        <!-- Config Item Cards -->
+        <div class="config-item-cards" ng-repeat="configItem in baCtrl.models">
+            <div class="config-item-card-container">
+                <fs-config-renderer
+                    config-item="configItem"
+                    form-controller="baCtrl"
+                    form-model-controller="batch_alert_forwarding">
+                </fs-config-renderer>
+            </div>
+        </div>
+        <!-- END OF Config Item Cards-->
+        <div class="config-item-card forward-historical-alerts" style="margin: 0 20px 20px 20px;">
+
+            <!-- Values -->
+            <div class="config-item-card--values">
+
+                <div class="date-range-container">
+                    <div class="date-range-label">Select Date Range</div>
+                    <fs-date-range update-state-delegate="::baCtrl.updateDates"></fs-date-range>
+                </div>
+
+            </div>
+            <!-- END OF Values -->
+
+
+            <div class="form-pane--config-section--form-content--form-buttons">
+                <label for="perform_forward_job"
+                    class="submit-button form-button"
+                    ng-disabled="!batch_alert_forwarding.$valid || baCtrl.isLoading">
+                    <div class="form-button-icon">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <input id="perform_forward_job"
+                        name="perform_forward_job"
+                        type="button"
+                        value="Forward Alerts"
+                        ng-disabled="!batch_alert_forwarding.$valid || baCtrl.isLoading"
+                        ng-click="baCtrl.forward()"
+                    ></label>
+            </div>
+
+
+            <div class="message" ng-if="baCtrl.message">{{baCtrl.message}}</div>
+
+
+            <div class="loader" ng-if="baCtrl.isLoading"></div>
+
+        </div>
+    </ng-form>
+</div>
+
+<!-- when custom form -->
+<section class="form-pane--custom-form"></section>
+

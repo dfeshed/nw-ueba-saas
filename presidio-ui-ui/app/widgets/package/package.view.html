@@ -1,0 +1,111 @@
+<div ng-controller="PackageController" class="package-wrapper">
+    <div class="package {{currentPackage.className}}" ng-class="{ 'package-with-description': currentPackage.contentsDescription, 'package-with-params': currentPackage.renderParams }">
+        <div class="package-params clearfix" ng-if="currentPackage.renderParams">
+            <a class="btn btn-default package-params-linkto"
+               ng-repeat="link in currentPackage.links"
+               ng-class="{'package-params-linkto-noparams': !currentPackage.controls }"
+               href="{{link.href || link.url}}">
+                {{link.text}}
+            </a>
+            <div class="btn-group" ng-if="currentPackage.multiLink">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    {{currentPackage.multiLink.text}} <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li ng-repeat="link in currentPackage.multiLink.links"><a href="{{link.href || link.url}}">{{link.text}}</a></li>
+                </ul>
+            </div>
+
+            <div class="package-params-field" ng-repeat="control in currentPackage.controls" ng-if="currentPackage.controls">
+                <ng-include src="'package_control_' + control.type"></ng-include>
+            </div>
+            <div class="package-params-field" ng-if="currentPackage.controls">
+                <a class="btn btn-default"
+                   ng-click="updateParams()"
+                   ng-class="{ disabled: !paramChange || !paramsReadyToRun }"
+                   ng-disabled="!paramChange || !paramsReadyToRun">Run</a>
+            </div>
+        </div>
+        <div class="package-description" ng-if="currentPackage.contentsDescription && paramsReady && !packageError">
+            <a class="package-description-link btn-link"
+               ng-if="currentPackage.linkTo && currentPackage.linkTo.href"
+               title="{{currentPackage.linkTo.tooltip}}"
+               href="{{currentPackage.linkTo.href}}">{{currentPackage.linkTo.text}}</a>
+            <h4 class="package-contents-description">{{currentPackage.contentsDescription}}</h4>
+        </div>
+        <div class="package-contents" ng-if="currentPackage.widgets && paramsReady">
+            <widget ng-repeat="widget in currentPackage.widgets" widget-model="widget"></widget>
+        </div>
+        <div ng-if="currentPackage.loadHtml" class="package_contents">
+            <ng-include src="'packages/' + currentPackage.id + '/' + currentPackage.id + '.html'"></ng-include>
+        </div>
+        <div class="package-message package-warning">
+            <div class="package-warning-text" ng-show="!paramsReady && !paramsReadyToRun">Please select {{requiredParamNames}} from above to continue</div>
+            <div class="package-warning-text" ng-show="!paramsReady && paramsReadyToRun">Click on 'Run' to continue</div>
+            <div class="package-warning-text package-warning-text-error" ng-show="packageNoData">{{currentPackage.noDataMessage || 'No data found'}}</div>
+            <div class="package-warning-text package-warning-text-error" ng-show="packageError"><i class="icon-remove-sign"></i> {{packageError}}</div>
+        </div>
+        <div class="package-loading" ng-show="packageLoading">
+            <div class="widget-message widget-loading">
+                <span class="widget-loader"></span>
+                <div>Loading data</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="package_control_search">
+    <label>
+        {{control.label}}
+        <input type="text"
+               class="search"
+               is-required="control.isRequired"
+               ng-model="control.value"
+               display="control.valueLabel"
+               ng-disabled="control.disabled"
+               searchbox
+               search-settings="control.settings"
+               on-select="onControlChange(control, $value, $label)"  />
+    </label>
+</script>
+<script type="text/ng-template" id="package_control_date">
+    <label>
+        {{control.label}}
+        <ofs-datepicker placeholder="{{control.settings.placeholder || 'Select date'}}"
+                    on-select="onControlChange(control, date)"
+                    ng-model="control.value"
+                    is-required="control.isRequired"
+                    ng-class="{ error: control.isRequired && !control.value }"
+                    hour="control.hour"
+                    end-of-day="control.settings.endOfDay"
+                    min-value="control.minValue"
+                    max-value="control.maxValue"
+                    time="control.settings.time"
+                    show-hours="control.settings.hour"></ofs-datepicker>
+    </label>
+</script>
+<script type="text/ng-template" id="package_control_number">
+    <label>
+        {{control.label}}
+        <input type="number"
+               ng-model="control.value"
+               ng-change="onControlChange(control, control.value)"
+               ng-blur="onControlBlur(control)"
+               ng-class="{ error: control.isRequired && !control.value }"
+               is-required="control.isRequired"
+               ng-disabled="control.disabled"
+               class="input-small"
+               min="{{control.settings.min}}"
+               max="{{control.settings.max}}" />
+    </label>
+</script>
+<script type="text/ng-template" id="package_control_select">
+    <label>
+        {{control.label}}
+        <select ng-model="control.value"
+                ng-change="onControlChange(control, control.value)"
+                ng-class="{ error: control.isRequired && !control.value }"
+                is-required="control.isRequired"
+                ng-disabled="control.disabled"
+                ng-options="option.value as option.label for option in control.settings.options"></select>
+    </label>
+</script>

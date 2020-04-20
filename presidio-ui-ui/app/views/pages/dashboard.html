@@ -1,0 +1,81 @@
+<div id="dashboard-{{::dashboard.id}}" ng-controller="DashboardController" class="dashboard {{dashboard.className}}" ng-class="{ 'dashboard-with-nav': dashboard.navigation }" data-dashboardId="{{::dashboard.dashboardId}}">
+    <div class="sidebar dashboard-nav print-hide flex-vertical" ng-if="dashboard.navigation || dashboard.details">
+        <div class="dashboard-details" ng-if="dashboard.details">
+            <div class="dashboard-details-image" ng-if="dashboard.currentDetails.image" ng-style="{ 'background-image': 'url(' + dashboard.currentDetails.image + ')' }"></div>
+            <div class="dashboard-details-icon" ng-if="!dashboard.currentDetails.image && dashboard.currentDetails.icon">
+                <i class="icon-{{dashboard.currentDetails.icon}}"></i>
+            </div>
+            <img class="dashboard-details-iconurl"
+                 ng-src="images/icons/{{dashboard.currentDetails.iconUrl}}"
+                 ng-if="!dashboard.currentDetails.image && dashboard.currentDetails.iconUrl"
+                 title="{{dashboard.currentDetails.iconTooltip}}" />
+            <h2 class="dashboard-details-title" ng-if="dashboard.currentDetails.title">{{dashboard.currentDetails.title}}</h2>
+            <h3 class="dashboard-details-subtitle" ng-if="dashboard.currentDetails.subtitle">{{dashboard.currentDetails.subtitle}}</h3>
+            <div class="dashboard-details-menu dropdown" ng-if="dashboard.details.menu">
+                <a class="dashboard-details-menu-link"
+                   title="Open menu"
+                   data-toggle="dropdown">
+                    <img src="images/icons/menu.svg" />
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-repeat="menuItem in dashboard.details.parsedMenu.items">
+                        <a ng-click="menuSelect($event, menuItem, {}, dashboard.details.parsedMenu, mainDashboardParams)" ng-href="{{menuItem.href}}">{{menuItem.text}}</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div ng-if="dashboard.details.parsedTags.length" class="widget-tags">
+                <span ng-repeat="tag in dashboard.details.parsedTags" class="tag {{tag.className}}" title="{{tag.name}}">{{tag.text}}</span>
+            </div>
+
+        </div>
+        <nav nav-data="dashboard.navigation" class="flex-1" ng-model="dashboard.navigation.currentItem"></nav>
+    </div>
+    <div class="dashboard-contents">
+        <header id="dashboard-header-{{::dashboard.id}}" class="dashboard-header" ng-if="::dashboard._renderHeader">
+            <div class="dashboard-header-icon" ng-if="::(dashboardIconUrl || dashboard.icon)">
+                <img class="dashboard-icon-image" ng-src="{{::dashboardIconUrl}}" ng-if="::dashboardIconUrl" />
+                <span class="dashboard-icon" ng-if="::dashboard.icon && !dashboardIconUrl">
+                    <i class="icon-{{dashboard.icon.type}}" ng-if="!dashboardIconUrl && dashboard.icon.type"></i>
+                </span>
+            </div>
+            <div class="dashboard-header-text">
+                <h3 class="dashboard-name">{{dashboard.title}}</h3>
+                <p class="dashboard-description" ng-if="dashboard.description" ng-bind-html="dashboard.description"></p>
+            </div>
+            <div class="dashboard-controls widget-controls" ng-if="!isPopup || !!dashboard.controls.length">
+                <div class="widget-view-control print-only">
+                    <span>Analyst: {{loggedInUser.fullName}}</span>
+                </div>
+                <div class="widget-view-control print-only">
+                    <span>Date: {{loadDate}}</span>
+                </div>
+            </div>
+        </header>
+        <param-controls ng-if="dashboard.controlsList || dashboard.search || dashboard.buttons"
+                        controls="dashboard.controlsList.controls"
+                        buttons="dashboard.buttons"
+                        search="dashboard.search"
+                        ready="dashboard.ready"
+                        get-params="getDashboardParams()"
+                        set-params="setParams(params)"
+                        widget-control-id="dashboard-control-{{dashboard.id}}"
+                        ></param-controls>
+        <div ng-if="dashboard.paramsReady && dashboard.ready" class="dashboard-widgets" ng-class="{ 'flex-vertical': dashboard.columns }">
+
+            <div ng-if="dashboard.columns" class="dashboard-columns row-fluid">
+                <div ng-repeat="column in dashboard.columns"
+                     class="dashboard-column {{column.span}}"
+                     ng-include="'views/pages/column.html'"
+                     ng-class="{'dashboard-with-title': column.title}">
+                </div>
+            </div>
+            <widget ng-repeat="widget in dashboard.widgets" widget-model="widget"></widget>        </div>
+        <div class="dashboard-messages" ng-if="dashboard._messages && dashboard._messages.length">
+            <div id="dashboard-{{dashboard.id}}" ng-repeat="message in dashboard._messages"
+                 class="dashboard-message {{message.type}}" ng-bind-html="message.text">
+             </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="21" height="14" viewBox="0 0 21 14">
+  <defs>
+    <style>
+      .cls-tagged-icon-class {
+
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="tag_copy_5" data-name="tag copy 5" class="cls-tagged-icon-class" d="M38,203H50.957C55.4,203,59,205.581,59,210s-3.6,7-8.043,7H38m6-9a2,2,0,1,1-2,2A2,2,0,0,1,44,208Z" transform="translate(-38 -203)"/>
+</svg>

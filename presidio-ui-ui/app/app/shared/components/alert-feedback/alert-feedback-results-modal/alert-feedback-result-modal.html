@@ -1,0 +1,18 @@
+<div class="fs-alert-modal">
+    <div class="modal-body">
+        <span ng-if="responseModal.newAlertStatus == 'open'">
+                <div class="splash-fsicon reopen-splash-fsicon"></div>
+                <h2 class="success">Alert is Reopend</h2>
+                <div class="bodaySpace" ng-if="responseModal.specificBodyMessage">
+                    {{responseModal.specificBodyMessage}}
+                </div>
+        </span>
+        <span ng-if="responseModal.newAlertStatus == 'closed'">
+                <div class="splash-fsicon close-splash-fsicon"></div>
+                <h2 class="success">Alert is closed</h2>
+                <div class="bodaySpace" ng-if="responseModal.specificBodyMessage">
+                    {{responseModal.specificBodyMessage}}
+                </div>
+        </span>
+    </div>
+</div>

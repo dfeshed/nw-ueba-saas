@@ -1,0 +1,13 @@
+<div class="search-users-container" ng-keypress="$ctrl.submitWithKeypress($event)" >
+    <div>
+        <div ng-repeat="user in $ctrl.users" >
+            <div class="user-details-box" ng-click="$ctrl._gotoUserPage()"
+                 ng-mouseover="$ctrl.updateIndex($index)" ng-class="{'user-details-box-hover' : ( $index === $ctrl.currentHoverIndex )}">
+                <user-grid-row  user='user' mini-view="true" search-text="$ctrl.searchText"
+                                roles-filtered="$ctrl.isRoleFilterTurnedOn()" department-filtered="$ctrl.isDepartmentFilterTurnedOn()"></user-grid-row>
+            </div>
+        </div>
+    </div>
+
+</div>
+

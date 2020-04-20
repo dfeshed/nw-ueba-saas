@@ -1,0 +1,12 @@
+<ul class="checklist dropdown-noclose">
+    <li>
+        <a class="btn" ng-click="selectAll()">All</a>
+        <a class="btn btn-danger" ng-click="selectNone()">None</a>
+    </li>
+    <li ng-repeat="item in items">
+        <label>
+            <input type="checkbox" ng-model="item.checked" ng-change="onChange(item)" />
+            {{item.label}}
+        </label>
+    </li>
+</ul>

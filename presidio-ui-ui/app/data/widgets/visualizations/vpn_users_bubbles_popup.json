@@ -1,0 +1,50 @@
+{
+    "dataPath": "popup.data.members",
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{displayname || username}}",
+                        "valueTooltip": "Click to open {{displayname || username}}'s profile",
+                        "menu": {
+                            "id": "user_vpn",
+                            "params": {
+                                "displayname": "{{displayname || username}}",
+                                "username": "{{username}}",
+                                "userid": "{{id}}"
+                            }
+                        }
+                    },
+                    {
+                        "name": "User VPN Score",
+                        "value": "{{vpnscore:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "vpnscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "vpnscore"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

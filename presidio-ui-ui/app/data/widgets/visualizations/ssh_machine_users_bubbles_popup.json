@@ -1,0 +1,43 @@
+{
+    "dataPath": "popup.data.members",
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{displayname || username}}",
+                        "valueTooltip": "Click to open {{displayname || username}}'s profile",
+                        "link": "#/user/{{id}}/user_overview"
+                    },
+                    {
+                        "name": "User SSH Score",
+                        "value": "{{sshscore:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "sshscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "sshscore"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

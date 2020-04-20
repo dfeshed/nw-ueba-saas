@@ -1,0 +1,20 @@
+{
+    "dataPath": "popup.data.members",
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Country",
+                        "noValueDisplay": "N/A",
+                        "value": "{{country:capitalize}}"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+<div class="config-item-card alert-severity-checkbox">
+    <!-- Header -->
+    <div class="config-item-card--header">
+        <div class="config-item-card--title">{{configItem.displayName}}</div>
+        <div class="config-item-card--description">{{configItem.description}}</div>
+    </div>
+    <!-- END OF Header -->
+
+    <!-- Values -->
+    <div class="config-item-card--values">
+
+        <!-- Severities -->
+        <input style="display:none" ng-model="configFormCtrl.configModels[configItem.id]" class="hidden-input">
+        <div class="severities-checkboxes">
+            <label for="{{'severity_' + severity.name}}"
+                ng-repeat="severity in ctrl.severities"> <input type="checkbox"
+                class="severity-checkbox"
+                name="{{'severity_' + severity.name}}"
+                id="{{'severity_' + severity.name}}"
+                ng-model="severity.value"
+                ng-value="severity.value"
+                ng-change="ctrl.changeSeverity()"
+            />
+                {{severity.name}}</label>
+        </div>
+        <!-- END OF Severities -->
+
+
+
+    </div>
+    <!-- END OF Values -->
+
+</div>

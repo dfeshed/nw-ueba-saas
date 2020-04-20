@@ -1,0 +1,19 @@
+.fs-modal {
+
+    display: flex;
+
+    box-sizing: border-box;
+
+    @include font-roboto-bold();
+    color: $clrGrey100;
+    font-size: 15px;
+    line-height: 1.33em;
+
+    border-top: 5px solid #797979;
+
+}
+
+
+@import "loading-modal";
+@import "timed-popup";
+@import "ok-cancel";

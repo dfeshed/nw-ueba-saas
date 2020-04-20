@@ -1,0 +1,113 @@
+{
+    "entity": "dataQuery",
+    "params": {
+        "dataQuery": {
+            "fields": [
+                {
+                    "entity": "users",
+                    "id": "department"
+                },
+                {
+                    "entity": "users",
+                    "id": "display_name"
+                },
+                {
+                    "entity": "users",
+                    "id": "id"
+                },
+                {
+                    "alias": "username",
+                    "entity": "users",
+                    "id": "normalized_username"
+                },
+                {
+                    "alias": "event_count",
+                    "id": "event_time",
+                    "func": {
+                        "name": "count"
+                    }
+                },
+                {
+                    "alias": "events_max_score",
+                    "id": "event_score",
+                    "func": {
+                        "name": "max"
+                    }
+                }
+            ],
+            "entities": [
+                "auth_event"
+            ],
+            "sort": [
+                {
+                    "field": {
+                        "alias": "events_max_score"
+                    },
+                    "direction": "DESC"
+                }
+            ],
+            "conditions": {
+                "type": "term",
+                "logicalOperator": "AND",
+                "terms": [
+                    {
+                        "field": {
+                            "id": "event_time_utc"
+                        },
+                        "queryOperator": "between",
+                        "type": "field",
+                        "value": "{{events_time.value}}"
+                    },
+                    {
+                        "field": {
+                            "id": "event_score"
+                        },
+                        "queryOperator": "greaterThanOrEquals",
+                        "type": "field",
+                        "value": "{{min_score.value}}"
+                    },
+                    {
+                        "field": {
+                            "id": "is_sensitive_machine"
+                        },
+                        "queryOperator": "equals",
+                        "type": "field",
+                        "value": true
+                    }
+                ]
+            },
+            "join": [
+                {
+                    "type": "RIGHT",
+                    "entity": "users",
+                    "left": {
+                        "entity": "auth_event",
+                        "field": "normalized_username"
+                    },
+                    "right": {
+                        "entity": "users",
+                        "field": "normalized_username"
+                    }
+                }
+            ],
+            "groupBy": [
+                {
+                    "entity": "users",
+                    "id": "department"
+                },
+                {
+                    "entity": "users",
+                    "id": "display_name"
+                },
+                {
+                    "entity": "users",
+                    "id": "id"
+                },
+                {
+                    "entity": "users",
+                    "id": "normalized_username"
+                }
+            ]
+        }
+    }
+}

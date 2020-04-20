@@ -1,0 +1,75 @@
+{
+	"id": "user_datasource_machine_count",
+    "title": "Suspicious Logged-in Machines Count Per Data Source",
+    "description": "The number of machines the user has logged into for each data source",
+    "reportId": "user.user_datasource_machine_count",
+	"refreshOn": [
+		"start",
+		"end"
+	],
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "multiLine",
+            "height": 300,
+            "settings": {
+                "series": "type",
+                "y": "machine_count",
+                "x": "date",
+                "xType": {
+                    "type": "date",
+                    "format": "%Y-%m-%d"
+                },
+                "minYValue": 0,
+				"minXValue": "{{event_dates.split(',')[0]}}",
+				"maxXValue": "{{event_dates.split(',')[1]}}",
+                "tooltipText": "{{type}} on {{date:date:MM/DD/YYYY}}: {{machine_count}} {{machine_count:pluralOrSingular:machine:machines}}",
+                "axes": {
+                    "x": {
+                        "type": "time",
+                        "timeFormat": "days",
+						"label": "Event Time"
+                    },
+                    "y": {
+                        "label": "Machine Count",
+                        "tickFormat": "d"
+                    }
+                },
+                "scales": {
+                    "x": {
+                        "type": "time"
+                    },
+                    "y": {}
+                },
+                "legend": {
+                    "type": "circles",
+                    "position": "right"
+                },
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widget": {
+                            "widgetId": "user.user_machines_per_datasource",
+                            "reportId": "user.user_machines_{{type}}",
+                            "renderHeader": false
+                        },
+                        "title": "Machines {{@userName}} Logged Into By {{type}} on {{date:date:MM/DD/YYYY}}",
+                        "width": 700,
+                        "height": 360,
+                        "params": {
+                            "type": "{{type}}",
+                            "date": "{{date:date:YYYY-MM-DD}}"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,23 @@
+<div>
+    <div class="container-fluid">
+        <div class="settings-wrapper" id="pad-wrapper">
+            <!-- edit form column -->
+            <div class="span7 personal-info">
+                <h3 class="dashboard-name">Global Settings</h3>
+
+                <div class="vertical-sliders setting-block">
+                    <h4>Score Weight Distribution</h4>
+                    <div class="vertical-container" ng-repeat="score in scores">
+                        <div ui-slider="{orientation: 'vertical', range: 'min'}"  min="0" max="100" ng-model="score.weight" ng-change="scoreChange(score, $index)"></div>
+                        <span class="slider-value">{{score.weightDisplay}}</span>
+                        <span class="slider-label">{{score.name}}</span>
+                    </div>
+                    <footer>
+                        <a ng-click="save()" class="btn btn-primary" style="float: right" ng-class="{ disabled: !changed }" ng-disabled="!changed">Save Changes</a>
+                        <a class="btn" ng-click="distributeScoresEvenly()">Distribute Evenly</a>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

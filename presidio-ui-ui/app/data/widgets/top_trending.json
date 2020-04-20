@@ -1,0 +1,44 @@
+{
+    "reportId": "top_trending",
+    "title": "Top Trending",
+    "views": [
+        {
+            "type": "table",
+            "className": "widget-table-list",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Icon",
+                        "icon": {
+                            "type": "{{type}}",
+                            "typeMap": {
+                                "user": "user",
+                                "machine": "desktop"
+                            }
+                        },
+                        "style": "score",
+                        "styleParams": {
+                            "value": "score"
+                        }
+                    },
+                    {
+                        "name": "Name",
+                        "link": "#/d/{{type}}/{{id}}",
+                        "value": "{{name}}",
+                        "className": "table-large-cell"
+                    },
+                    {
+                        "name": "Trend",
+                        "value": "{{trend}}%",
+                        "icon": "caret-up",
+                        "className": "sideNote",
+                        "style": "percentSeverity",
+                        "styleParams": {
+                            "value": "trend"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

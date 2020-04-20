@@ -1,0 +1,35 @@
+<div class="config-item-card user-tag-checkbox">
+    <!-- Header -->
+    <div class="config-item-card--header">
+        <div class="config-item-card--title">{{configItem.displayName}}</div>
+        <div class="config-item-card--description">{{configItem.description}}</div>
+    </div>
+    <!-- END OF Header -->
+
+    <!-- Values -->
+    <div class="config-item-card--values">
+
+        <!-- Tags -->
+        <input style="display:none" ng-model="configFormCtrl.configModels[configItem.id]" class="hidden-input">
+        <div class="tags-checkboxes">
+            <label for="{{'tag_' + tag.id}}"
+                ng-repeat="tag in ctrl.tags"> <input type="checkbox"
+                class="tag-checkbox"
+                name="{{'tag_' + tag.id}}"
+                id="{{'tag_' + tag.id}}"
+                ng-model="tag.value"
+                ng-value="tag.value"
+                ng-change="ctrl.changeTag()"
+            />
+                {{tag.displayName}}</label>
+        </div>
+        <!-- END OF Tags -->
+
+
+
+    </div>
+
+    <div class="mask" ng-if="ctrl.isLoading"></div>
+    <div class="loader" ng-if="ctrl.isLoading"></div>
+
+</div>

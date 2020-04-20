@@ -1,0 +1,14 @@
+<div class="fs-indicators-tooltip">
+
+    <a class="fs-indicators-tooltip--item-container"
+        ng-repeat="indicator in ::$ctrl.indicators|orderBy:'-scoreContribution'"
+        alert-model="$ctrl.alertModel"
+        indicator-model="indicator"
+        ui-sref="user.indicator({userId: $ctrl.alertModel.entityId, alertId: $ctrl.alertModel.id, indicatorId: indicator.id})"
+        ng-if="indicator.anomalyTypeFieldName !== 'tag'">
+        <div class="indicator-name">
+            {{::indicator.anomalyType}} <span ng-if="indicator.timeframe && indicator.evidenceType ==='AnomalyAggregatedEvent'"> ({{::indicator.timeframe}})</span>
+        </div>
+    </a>
+
+</div>

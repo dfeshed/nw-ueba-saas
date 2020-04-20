@@ -1,0 +1,150 @@
+<section class="fs-report sensitive-resource-monitoring">
+
+    <!-- Header -->
+    <fs-report-header header-title="{{::report.state.reportTitle}}"
+        header-description="{{::report.state.reportDescription}}"></fs-report-header>
+    <!-- END OF Header -->
+
+    <fs-state-container container-id="report_main_state" state-model="report.mainState">
+
+        <!-- Controls -->
+        <fs-controls submit-delegate="stateContainer.applyPreState">
+            <label>Events Time</label>
+            <fs-date-range date-range-id="events_time"
+                fetch-state-delegate="stateContainer.fetchStateById"
+                update-state-delegate="stateContainer.updateCtrlState"></fs-date-range>
+            <label>Min Score</label>
+            <fs-min-score min-score-id="min_score"
+                fetch-state-delegate="stateContainer.fetchStateById"
+                update-state-delegate="stateContainer.updateCtrlState"></fs-min-score>
+        </fs-controls>
+        <!-- END OF Controls -->
+
+
+        <!-- Report Content -->
+        <section class="report-content">
+
+
+            <!-- Accessed Sensitive Machines Table -->
+            <fs-state-container container-id="sensitive_machines_status"
+                resource-settings="::report.sensitiveMachinesStatusTableResource"
+                on-data-fetch="report.dataFetchDelegate(promise)">
+
+                <div class="table-widget">
+
+                    <!-- Table Header -->
+                    <fs-table-header header-title="{{::report.state.sensitiveMachinesStatusTableTitle}}"
+                        header-description="{{::report.state.sensitiveMachinesStatusTableDescription}}"></fs-table-header>
+                    <!-- END OF Table Header -->
+
+
+                    <!-- No Sensitive Machines Message -->
+                    <div class="no-machines-container"
+                        style="text-align: center; margin-top: 20px;"
+                        ng-class="{hide: stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length === 0 && !stateContainer.isLoading}">
+                        <h3>{{::report.state.sensitiveMachinesStatusTableNoItems}}</h3></div>
+                    <!-- END of Sensitive Machines Message -->
+
+                    <!-- Table -->
+                    <div class="table-content sensitive-machines-status-table-content"
+                        ng-class="{hide: !stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length !== 0 && !stateContainer.isLoading}">
+                        <div class="fs-table-wrapper">
+                            <fs-table table-id="sensitive_machines_status_table"
+                                table-settings="::report.sensitiveMachinesStatusTableSettings"
+                                table-model="stateContainer.dataModel"
+                                class="general-fs-table"></fs-table>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </fs-state-container>
+            <!-- END OF Accessed Sensitive Machines Table -->
+
+            <hr>
+
+            <!-- Users Who Accessed Sensitive Resources Table -->
+            <fs-state-container container-id="users_access_resources"
+                resource-settings="::report.usersAccessResourcesTableResource"
+                on-data-fetch="report.dataFetchDelegate(promise)">
+
+                <div class="table-widget">
+
+                    <!-- Table Header -->
+                    <fs-table-header header-title="{{::report.state.usersAccessResourcesTableTitle}}"
+                        header-description="{{::report.state.usersAccessResourcesTableDescription}}"></fs-table-header>
+                    <!-- END OF Table Header -->
+
+
+                    <!-- No Sensitive Users Message -->
+                    <div class="no-machines-container"
+                        style="text-align: center; margin-top: 20px;"
+                        ng-class="{hide: stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length === 0 && !stateContainer.isLoading}">
+                        <h3>{{::report.state.usersAccessResourcesTableNoItems}}</h3></div>
+                    <!-- END of No Sensitive Users Message -->
+
+                    <!-- Table -->
+                    <div class="table-content users-access-resources-table-content"
+                        ng-class="{hide: !stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length !== 0 && !stateContainer.isLoading}">
+                        <div class="fs-table-wrapper">
+                            <fs-table table-id="users_access_resources_table"
+                                table-settings="::report.usersAccessResourcesTableSettings"
+                                table-model="stateContainer.dataModel"
+                                class="general-fs-table"></fs-table>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </fs-state-container>
+            <!-- END OF Users Who Accessed Sensitive Resources Table -->
+
+            <hr>
+
+            <!-- Access Events to Sensitive Machines Table -->
+            <fs-state-container container-id="events_sensitive_machines"
+                resource-settings="::report.eventsSensitiveMachinesTableResource"
+                on-data-fetch="report.dataFetchDelegate(promise)">
+
+                <div class="table-widget">
+
+                    <!-- Table Header -->
+                    <fs-table-header header-title="{{::report.state.eventsSensitiveMachinesTableTitle}}"
+                        header-description="{{::report.state.eventsSensitiveMachinesTableDescription}}"></fs-table-header>
+                    <!-- END OF Table Header -->
+
+
+                    <!-- No Sensitive Events Message -->
+                    <div class="no-events-container"
+                        style="text-align: center; margin-top: 20px;"
+                        ng-class="{hide: stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length === 0 && !stateContainer.isLoading}">
+                        <h3>{{::report.state.eventsSensitiveMachinesTableNoItems}}</h3></div>
+                    <!-- END of NO Sensitive Events Message -->
+
+                    <!-- Table -->
+                    <div class="table-content events-sensitive-machines-table-content"
+                        ng-class="{hide: !stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length !== 0 && !stateContainer.isLoading}">
+                        <div class="fs-table-wrapper">
+                            <fs-table table-id="events_sensitive_machines_table"
+                                table-settings="::report.eventsSensitiveMachinesTableSettings"
+                                table-model="stateContainer.dataModel"
+                                class="general-fs-table"></fs-table>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </fs-state-container>
+            <!-- END OF Access Events to Sensitive Machines Table -->
+
+
+        </section>
+        <!-- END OF Report Content -->
+
+
+    </fs-state-container>
+
+</section>

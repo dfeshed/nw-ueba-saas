@@ -1,0 +1,9 @@
+<div ng-controller="TableWidgetController" class="widget-table-wrapper">
+    <table class="table table-hover widget-table {{view.settings.className}}"
+           table-data="view.data"
+           table-settings="view.settings">
+    </table>
+    <div class="widget-table-controls print-hide" ng-if="view.settings.allowPaging && !widget.noData && tablePagingData.totalCount > tablePagingData.itemsPerPage">
+        <fs-pagination ng-model="tablePagingData" ng-change="pageTable()"></fs-pagination>
+    </div>
+</div>

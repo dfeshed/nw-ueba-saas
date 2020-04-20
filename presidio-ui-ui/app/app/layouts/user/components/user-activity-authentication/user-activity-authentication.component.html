@@ -1,0 +1,40 @@
+<fs-card-header card-title="Authentications <span class='fs-card-title-small'>(Last 90 Days)</span"></fs-card-header>
+
+<!-- Authentication Container -->
+<div class="auth-column-container" ng-if="$ctrl.authentications">
+    <div class="auth-row-container">
+
+        <!-- Finger Print Icon -->
+        <div class="finger-print-container">
+            <div class="blue-finger-print finger-print-icon"
+                style="clip-path: polygon(0% 0%, 0% {{$ctrl.authPercent}}%, 100% {{$ctrl.authPercent}}%, 100% 0%);-webkit-clip-path: polygon(0% 0%, 0% {{$ctrl.authPercent}}%, 100% {{$ctrl.authPercent}}%, 100% 0%);"
+                ng-class="{'grey-finger-print': ($ctrl.successPercent + $ctrl.failurePercent) === 0}">
+                <svg viewBox="-10 -10 100 100" preserveAspectRatio="none" width="100%" height="100%">
+                    <use xlink:href="#finger-print-icon-02"></use>
+                </svg>
+            </div>
+            <div class="red-finger-print finger-print-icon"
+                style="clip-path: polygon(0% 100%, 0% {{$ctrl.authPercent}}%, 100% {{$ctrl.authPercent}}%, 100% 100%);-webkit-clip-path: polygon(0% 100%, 0% {{$ctrl.authPercent}}%, 100% {{$ctrl.authPercent}}%, 100% 100%);">
+                <svg viewBox="-10 -10 100 100" preserveAspectRatio="none" width="100%" height="100%">
+                    <use xlink:href="#finger-print-icon-02"></use>
+                </svg>
+            </div>
+        </div>
+        <!-- END OF Finger Print Icon -->
+
+        <!-- Success Stat -->
+        <div class="stat-container">
+            <div class="stat-value blue">{{$ctrl.successPercent}}%</div>
+            <div class="stat-label">Success</div>
+        </div>
+        <!-- END OF Success Stat -->
+
+        <!-- Failure Stat -->
+        <div class="stat-container failure-stat">
+            <div class="stat-value red">{{$ctrl.failurePercent}}%</div>
+            <div class="stat-label failure-stat">Failure</div>
+        </div>
+        <!-- END OF Failure Stat -->
+
+    </div>
+</div>

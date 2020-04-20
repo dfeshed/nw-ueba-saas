@@ -1,0 +1,1 @@
+angular.module("Menus", ["Utils", "Version", "Conditions"]);

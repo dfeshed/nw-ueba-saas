@@ -1,0 +1,33 @@
+$itemBorder: solid 1px #eee;
+
+.details-widget{
+  margin-top: 10px;
+
+  h4{
+    border-bottom: $itemBorder;
+    padding-bottom: 5px;
+  }
+
+  li{
+    padding: 7px 0;
+    border-top: $itemBorder;
+
+    &:first-child{ border-top: none }
+    i{
+      display: inline-block;
+      width: 25px;
+      color: #0088cc;
+    }
+  }
+
+  .details-widget-minimize{
+    font-size: 12pt;
+    cursor: pointer;
+
+    &:hover{
+      text-decoration: none;
+      color: Black;
+    }
+  }
+  margin-bottom: 30px;
+}

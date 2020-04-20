@@ -1,0 +1,5 @@
+{
+    "reports.highPrivilegedUsersMonitoring.daysRange": 30,
+    "reports.staleAccountsMonitoring.inactiveUserAccounts.daysAgo": 45,
+    "reports.deviceMonitoring.suspiciousEndpointAccess.daysRange": 45
+}

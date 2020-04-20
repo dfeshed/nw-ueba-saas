@@ -1,0 +1,12 @@
+.widget-tags{
+  .label{
+    font-size: 14px;
+    padding: 4px 6px;
+    cursor: default;
+    margin:3px;
+    &:hover{
+      background-color: Black;
+      color: White;
+    }
+  }
+}

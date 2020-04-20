@@ -1,0 +1,52 @@
+<div class="config-item-card" ng-if="::!$ctrl.configItem.replace" ng-class="::$ctrl.configItem.classNames">
+    <!-- Header -->
+    <div class="config-item-card--header">
+        <div class="config-item-card--title">{{::$ctrl.configItem.displayName}}</div>
+        <div class="config-item-card--description">{{::$ctrl.configItem.description}}</div>
+    </div>
+    <!-- END OF Header -->
+
+    <!-- Values -->
+    <div class="config-item-card--values">
+
+        <!-- Local Value -->
+        <div class="config-item-card--local-value {{$ctrl.configItem.component ? 'renderer-' + $ctrl.configItem.component : ''}}" ng-if="::!$ctrl.configItem.templateUrl">
+            <label class="title" ng-if="::$ctrl.configItem.showComplex">Local Value:</label>
+            <div class="component-wrapper"></div>
+        </div>
+        <div class="config-item-card--by-template-url" ng-include="::$ctrl.configItem.templateUrl"></div>
+        <!-- END OF Local Value -->
+
+        <!-- Derived Values -->
+        <div class="config-item-card--derived-value" ng-if="::$ctrl.configItem.derivedConfigItem && $ctrl.configItem.showComplex">
+            <div class="value">
+                <span class="title">Derived Value:</span> <span class="bottom-row">{{::$ctrl.configItem.derivedConfigItem.value}}</span>
+            </div>
+            <div class="from">
+                <span class="title">Derives From: </span> <a class="bottom-row"
+                ui-sref="configuration.configForm({stateName: $ctrl.configItem.derivedConfigItem.containerId})"
+                ui-sref-opts="{reload: true, notify: true}"> {{::$ctrl.configItem.derivedConfigItem.containerId | containerIdToDisplayName}}</a>
+            </div>
+        </div>
+        <!-- END OF Derived Values -->
+
+        <!-- No Derived Values -->
+        <div class="config-item-card--no-derived-value" ng-if="::!$ctrl.configItem.derivedConfigItem && $ctrl.configItem.showComplex">
+            <span class="title">Derived Value:</span> <span class="bottom-row">No derived value</span>
+        </div>
+        <!-- END OF No Derived Values -->
+
+    </div>
+    <!-- END OF Values -->
+    <fs-config-affected-items config-item="::$ctrl.configItem" ng-if="::$ctrl.configItem.showComplex"></fs-config-affected-items>
+    <div class="loader-wrapper" ng-if="$ctrl.configItem.showLoader && $ctrl.isLoading">
+        <span class="loader"></span>
+    </div>
+
+</div>
+
+<div class="config-item-card--replace" ng-if="::$ctrl.configItem.replace" ng-class="::$ctrl.configItem.classNames">
+    <div class="component-wrapper" ng-if="::$ctrl.configItem.component"></div>
+    <div class="config-item-card--by-template-url" ng-include="::$ctrl.configItem.templateUrl"></div>
+    <span class="loader" ng-if="$ctrl.configItem.showLoader && $ctrl.isLoading"></span>
+</div>

@@ -1,0 +1,14 @@
+{
+    "extends"       : "../.jshintrc",
+    "jasmine"       : true,     // Jasmine
+    "jquery"        : true,     // jQuery
+    "mocha"         : false,    // Mocha
+    "node"          : true,     // Node.js
+    "phantom"       : false,    // PhantomJS
+    "qunit"         : false,    // QUnit
+    "globals"       : {         // additional predefined global variables
+        "angular": true,
+        "moment": true,
+        "inject": true
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "id": "department",
+    "items": [
+        {
+            "text": "View all users in this department",
+            "onSelect": [
+                {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/d/explore/users?filters=users.department={{department}}"
+                    }
+                }
+            ]
+        }
+    ]
+}

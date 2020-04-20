@@ -1,0 +1,57 @@
+//  VARIABLES
+$loadingModalWidth: 30em;
+
+
+.loading-modal-container {
+    font-size: #{$basicFontSize - 1};
+    width: $loadingModalWidth;
+}
+.loading-modal {
+    display: flex;
+    flex-flow: column nowrap;
+
+    h1 {
+        @include font-roboto-bold();
+        font-size: #{$basicFontSize + 4};
+        background-color: $clrGrey40;
+        padding: 0.5em;
+        margin-bottom: 0.5em;
+        color: $clrGrey100;
+        height: #{($basicFontSize + 4) * 1.2}
+    }
+
+    .content-section {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        margin: 0.68em;
+
+        p {
+            font-size: #{$basicFontSize - 1};
+        }
+
+
+        .loader-section {
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: flex-start;
+            align-items: center;
+            position: relative;
+            top: -0.4em;
+            margin-right: 0.5em;
+
+            .loader {
+                display: inline-block;
+                width: 1.5em;
+                height: 1.5em;
+                -webkit-animation: rotating 2s linear infinite;
+                animation: rotating 2s linear infinite;
+                background: url(../images/loader.png);
+                background-size: contain;
+                background-repeat: no-repeat;
+
+            }
+        }
+    }
+
+}

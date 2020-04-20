@@ -1,0 +1,75 @@
+	<!-- main container .wide-content is used for this layout without sidebar :)  -->
+    <div class="account-template-container">
+        <div class="container-fluid">
+            <div class="settings-wrapper" id="pad-wrapper">
+                <!-- edit form column -->
+                <div class="span7 personal-info">
+                    <h5 class="personal-title">Account info</h5>
+
+                    <form>
+                        <p class="description">Edit texts to change account settings:</p>
+
+                        <div class="field-box">
+                            <label>First name:</label>
+                            <input class="span5 inline-input" type="text" ng-model="account.firstName" ng-change="modified=true" />
+                        </div>
+                        <div class="field-box">
+                            <label>Last name:</label>
+                            <input class="span5 inline-input" type="text" ng-model="account.lastName" ng-change="modified=true" />
+                        </div>
+                        <div class="field-box">
+                            <label>Email:</label>
+                            <input class="span5 inline-input" type="text" ng-model="account.userName" ng-change="modified=true" />
+                        </div>
+                        <div class="field-box" ng-show="modified">
+                            <label ng-class="{error: passwordRequired}">Verify your password:</label>
+                            <input class="span5 inline-input" type="password" ng-model="userPassword" focus-when="passwordRequired" />
+                        </div>
+                        <div class="alert alert-success" ng-show="success">
+                            <i class="icon-check"></i>
+                            {{success.message}}
+                        </div>
+                        <div class="alert alert-error" ng-show="error">
+                            <i class="icon-remove-sign"></i>
+                            {{error.message}}
+                        </div>
+                        <div class="span6 field-box actions" ng-show="modified">
+                            <input type="button" class="btn-glow primary" value="Save Changes" ng-click="saveUser()" />
+                            <span>OR</span>
+                            <a ng-click="reset()" class="reset">Cancel</a>
+                        </div>
+                        <div class="field-box" ng-show="!enableChangePassword">
+                            <input type="button" class="btn-glow" value="Change Password" ng-click="enableChangePassword = true">
+                        </div>
+                        <fieldset ng-show="enableChangePassword">
+                            <legend>Change Password</legend>
+                            <div class="field-box">
+                                <label>Current password:</label>
+                                <input class="span5 inline-input" type="password" ng-model="currentPassword" />
+                            </div>
+                            <div class="field-box">
+                                <label>Password:</label>
+                                <input class="span5 inline-input" type="password" ng-model="newPassword" />
+                            </div>
+                            <div class="field-box">
+                                <label>Confirm password:</label>
+                                <input class="span5 inline-input" type="password" ng-model="newPasswordConfirm" />
+                            </div>
+                            <div class="alert alert-success" ng-show="passwordSuccess">
+                                <i class="icon-check"></i>
+                                {{passwordSuccess.message}}
+                            </div>
+                            <div class="alert alert-error" ng-show="passwordError">
+                                <i class="icon-remove-sign"></i>
+                                {{passwordError.message}}
+                            </div>
+                            <div>
+                                <a class="btn btn-primary" ng-class="{ disabled: !currentPassword || !newPassword || !newPasswordConfirm }" ng-click="changePassword()">Change Password</a>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end main container -->

@@ -1,0 +1,18 @@
+<input style="display:none" ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]" class="hidden-input">
+<div class="ip-octets">
+    <div ng-repeat="tabIndex in ::$ctrl.tabIndices" class="ip-octets--octet-wrapper">
+        <input type="number"
+            class="octet"
+            ng-init="$ctrl.octets[tabIndex] = $ctrl.octets[tabIndex] || null"
+            ng-model="$ctrl.octets[tabIndex]"
+            tabindex="{{::tabIndex + 100}}"
+            min="0"
+            max="255"
+            required
+            placeholder="000"
+            ng-keypress="$ctrl.limitLength($event,3)"
+            ng-change="$ctrl.ipChangeHandler(tabIndex)"
+            ng-model-options="{debounce: { 'default': 200, 'blur': 0 }}">
+        <span class="dot" ng-if="$index !== $ctrl.tabIndices.length - 1">.</span>
+    </div>
+</div>

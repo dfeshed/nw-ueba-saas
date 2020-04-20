@@ -1,0 +1,9 @@
+{
+    "id": "session",
+    "items": [
+        {
+            "text": "Investigate session events",
+			"url": "#/d/explore/{{eventsEntity}}?filters={{eventsEntity}}.username%3D{{username}}&default_filters={{eventsEntity}}.event_time_utc%3D:{{start_time||end_time}}::{{end_time||start_time}},{{eventsEntity}}.event_score%3D%3E%3D0&mode=table"
+		}
+    ]
+}

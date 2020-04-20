@@ -1,0 +1,32 @@
+user-indicator-events {
+    @mixin alertPageTableOverrides() {
+        tr {
+            background-color: var(--main-widgets-background-color);
+            color: var(--main-widgets-titles-text-color);;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+
+            @media only screen and (max-width: 1500px) {
+                font-size: 10px;
+            }
+
+            a {
+                color: var(--main-widgets-titles-link-color);
+
+                &:hover {
+                    //color: #02254a;
+                    //font-weight: 600;
+                }
+
+            }
+
+            //&.k-alt { //Zebra
+            //    background-color: white;
+            //}
+        }
+    }
+
+    @include fs-table-style2();
+    @include alertPageTableOverrides();
+}

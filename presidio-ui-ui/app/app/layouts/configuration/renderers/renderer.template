@@ -1,0 +1,41 @@
+module Fortscale.layouts.configuration.renderer {
+    import IConfigurationRenderer = Fortscale.layouts.configuration.renderer.IConfigurationRenderer;
+    import IConfigItemDecorator = Fortscale.layouts.configuration.decorator.IConfigItemDecorator;
+
+    'use strict';
+
+    const MAIN_INPUT_SELECTOR = %insert main input selector%;
+
+
+    class %renderer%RendererController extends ConfigurationRenderer<IConfigItemDecorator%or local interface%> {
+        static $inject = ['$scope', '$element', 'assert'];
+
+        constructor (public $scope:ng.IScope, public $element:JQuery, public assert:any) {
+            super(MAIN_INPUT_SELECTOR);
+        }
+
+        controllerName:string = '%renderer%RendererController';
+
+
+        onComponentInit:(passObj:{ ngModelController: ng.INgModelController}) => void;
+
+
+        $onInit () {
+            super.$onInit();
+            this.onElementReady();
+        }
+    }
+
+    let %renderer%RendererComponent:ng.IComponentOptions = {
+        templateUrl: 'app/layouts/configuration/renderers/%renderer%/%renderer%.renderer.html',
+        controller: %renderer%RendererController,
+        bindings: {
+            _configItem: '<configItem',
+            configFormCtrl: '<',
+            onComponentInit: '&'
+        }
+    };
+
+    angular.module('Fortscale.layouts.configuration')
+        .component('configurationRenderers%renderer%', %renderer%RendererComponent);
+}

@@ -1,0 +1,85 @@
+{
+    "entity": "dataQuery",
+    "params": {
+        "dataQuery": {
+            "fields": [
+                {
+                    "id": "event_time"
+                },
+                {
+                    "id": "username"
+                },
+                {
+                    "id": "normalized_username"
+                },
+                {
+                    "id": "destination_machine"
+                },
+                {
+                    "id": "source_machine"
+                },
+                {
+                    "id": "is_sensitive_machine"
+                },
+                {
+                    "id": "event_score"
+                },
+                {
+                    "id": "normalized_dst_machine_score"
+                },
+                {
+                    "id": "normalized_src_machine_score"
+                },
+                {
+                    "id": "event_time_score"
+                },
+                {
+                    "id": "status"
+                }
+            ],
+            "entities": [
+                "auth_event"
+            ],
+            "sort": [
+                {
+                    "field": {
+                        "id": "event_time"
+                    },
+                    "direction": "DESC"
+                }
+            ],
+            "conditions": {
+                "type": "term",
+                "logicalOperator": "AND",
+                "terms": [
+                    {
+                        "field": {
+                            "id": "event_time_utc"
+                        },
+                        "queryOperator": "between",
+                        "type": "field",
+                        "value": "{{events_time.value}}"
+                    },
+                    {
+                        "field": {
+                            "id": "event_score"
+                        },
+                        "queryOperator": "greaterThanOrEquals",
+                        "type": "field",
+                        "value": "{{min_score.value}}"
+                    },
+                    {
+                        "field": {
+                            "id": "is_sensitive_machine"
+                        },
+                        "queryOperator": "equals",
+                        "type": "field",
+                        "value": true
+                    }
+                ]
+            },
+            "limit": 20,
+            "offset": 0
+        }
+    }
+}

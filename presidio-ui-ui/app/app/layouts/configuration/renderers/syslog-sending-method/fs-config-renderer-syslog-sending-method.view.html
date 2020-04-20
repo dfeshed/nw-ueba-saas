@@ -1,0 +1,24 @@
+<div class="config-item-card config-item-card-syslog-sending-method">
+    <!-- Header -->
+    <div class="config-item-card--header">
+        <div class="config-item-card--title">{{configItem.displayName}}</div>
+        <div class="config-item-card--description">{{configItem.description}}</div>
+    </div>
+    <!-- END OF Header -->
+
+    <!-- Values -->
+    <div class="config-item-card--values">
+
+        <!-- Local Value -->
+        <div class="config-item-card--local-value">
+
+            <select ng-model="configFormCtrl.configModels[configItem.id]" required="required">
+                <option value="tcp">TCP</option>
+                <option value="udp">UDP</option>
+            </select>
+        </div>
+        <!-- END OF Local Value -->
+
+    </div>
+
+</div>

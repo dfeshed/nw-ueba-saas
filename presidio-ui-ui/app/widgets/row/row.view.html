@@ -1,0 +1,7 @@
+<div class="row-fluid widget-row">
+    <div ng-repeat="column in view.settings.columns"
+         ng-include="'views/pages/column.html'"
+         class="dashboard-column dashboard-column-static {{column.className}}"
+         ng-class="{'dashboard-with-title': column.title}">
+     </div>
+</div>

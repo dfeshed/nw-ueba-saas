@@ -1,0 +1,79 @@
+<div class="fs-multiselect-container">
+    <div class="fs-multiselect-value-container">
+
+        <div
+            class="btn fs-multiselect-value"
+            ng-click="multiselect.showDropdown()"
+            ng-attr-title="{{multiselect.value}}">
+            <div class="multiselect-value-content" ng-class="{'bold': multiselect.value !== 'None'}">
+                <span ng-if="multiselect.label" class="multi-select-label">{{multiselect.label}}</span>
+                <span ng-if="multiselect.value !== 'None' && multiselect.label">:</span>
+                <span ng-if="multiselect.value !== 'None'">{{multiselect.value}}</span>
+            </div>
+            <!--<span class="caret"></span>-->
+            <svg class="icon dropdown-icon">
+                <use xlink:href="#dropdown-icon"></use>
+            </svg>
+        </div>
+    </div>
+    <div
+        class="fs-multiselect-dropdown-list"
+        ng-form="dropdownForm"
+        ng-class="{short: multiselect.listData.length <= multiselect.longListThreshold, long: multiselect.listData.length > multiselect.longListThreshold}"
+        ng-keyup="multiselect.keyPress($event)">
+        <label for="{{multiselect.multiselectId}}-search-for" class="search-container">
+            <svg class="icon search-icon">
+                <use xlink:href="#search-icon"></use>
+            </svg>
+            <input class="search" placeholder="Search" ng-model="search" ng-change="multiselect.setLocation(true)" ng-model-options="{ debounce: 300 }"
+                   id="{{multiselect.multiselectId}}-search-for">
+
+            <!--<div class="fsicon-looking-glass"></div>-->
+        </label>
+
+        <div class="list-container">
+            <div class="fs-li">
+                <input name="checked" type="checkbox" id="{{multiselect.multiselectId}}-select-all"
+                       class="k-checkbox"
+                       ng-model="multiselect.allSelected" ng-click="multiselect.selectAllHandler()">
+                <label class="k-checkbox-label" for="{{multiselect.multiselectId}}-select-all">
+                    Select all
+                </label>
+            </div>
+            <div class="fs-li" ng-repeat="dataItem in multiselect.listData | filter:search" onclick="angular.element(this).scope().multiselect.setListContainerScroll(this, event)">
+                <input name="checked" type="checkbox"
+                       id="{{multiselect.multiselectId}}-{{dataItem.id}}" class="k-checkbox"
+                       ng-model="dataItem.checked" ng-click="multiselect.selectSingleHandler($event)">
+                <label class="k-checkbox-label" for="{{multiselect.multiselectId}}-{{dataItem.id}}">
+                    {{dataItem.value}}
+                    <span ng-if="multiselect.countLabels">
+                    ({{dataItem.count}}
+                    {{dataItem.count===1? multiselect.countLabels[0] :multiselect.countLabels[1]}})
+                    </span>
+                </label>
+
+            </div>
+        </div>
+
+        <div class="fs-multiselect-buttons-group">
+            <button type="button" class="cancel" ng-click="multiselect.cancelClickHandler()">
+                Cancel
+            </button>
+            <button
+                type="button"
+                class="fs-button fs-button-regular ok"
+                ng-click="multiselect.okClickHandler()"
+                ng-disabled="dropdownForm.$pristine">
+                <svg class="icon check-mark-icon" width="15px" height="18px" preserveAspectRatio="none">
+                    <use xlink:href="#check-mark-icon"></use>
+                </svg>
+                OK
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+
+

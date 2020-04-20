@@ -1,0 +1,34 @@
+{
+    "dataPath": "popup.data.members",
+    "renderHeader": false,
+    "className": "no-border no-margins",
+    "style": { "margin-top": "10px" },
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Group Name",
+                        "value": "{{group_dn:groupName}}",
+                        "valueTooltip": "View all members of {{group_dn:groupName}}"
+                    },
+                    {
+                        "name": "Score For The Group",
+                        "value": "{{score:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

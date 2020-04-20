@@ -1,0 +1,13 @@
+<input style="display:none" ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]" class="hidden-input">
+<div class="items-checkboxes">
+    <label for="{{::'severity_' + severity.value}}"
+        ng-repeat="severity in ::$ctrl.severities">
+        <input type="checkbox"
+            class="item-checkbox"
+            name="{{::'severity_' + severity.value}}"
+            id="{{::'severity_' + severity.value}}"
+            ng-model="severity.checked"
+            ng-value="severity.checked"
+            ng-change="::$ctrl.changeSeverity(severity)"
+        /> {{::severity.label}}</label>
+</div>

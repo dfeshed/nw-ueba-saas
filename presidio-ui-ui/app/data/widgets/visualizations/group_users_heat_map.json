@@ -1,0 +1,51 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+    "views": [
+        {
+            "type": "heatMap",
+            "settings": {
+                "column": "{{group_dn:groupName}}",
+                "row": "{{displayname:capitalize}}",
+
+                "legend": {
+                    "items": [
+                        {
+                            "color": "binary",
+                            "value": "The User Belong to the group"
+                        }
+                    ]
+                },
+                "behavior":{
+                    "rows":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}}"
+                    },
+                    "columns":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}} : has {{valueSum}} members",
+                        "percentCalculationMethod":"count",
+                        "showPercentage":true
+                    },
+                    "cell":{
+                        "tooltip":"{{rowName}} belong to {{name}}"
+                    },
+                    "color":"binary"
+                },
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.group_users_bubbles_popup",
+                        "title": "Members of {{name}}",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+<!-- Tags -->
+<div class="tags-container">
+    <fs-tag ng-repeat="tag in $ctrl.userTags"
+        ng-if="$ctrl.userTags.length !== 0"
+        tag="tag"
+        remove-tag-delegate="$ctrl.removeTagDelegate({tag: tag})"></fs-tag>
+</div>
+<!-- END OF Tags -->
+
+<!-- Add Tag -->
+<div class="add-tag-section">
+    <span class="add-tag-section--button" ng-click="$ctrl.toggleDropDown()" ng-show="!$ctrl.showNewTag">+ Add Tag</span>
+    <input class="add-tag-section--new-tag-input"
+        autofocus
+        maxlength="100"
+        ng-show="$ctrl.showNewTag"
+        ng-blur="$ctrl.newTagLostFocusHandler()"
+        ng-keydown="$ctrl.newTagKeyPressHandler($event)"
+        ng-model="$ctrl.newTagModel">
+    <div class="list-outer-wrapper" ng-show="$ctrl.showAddTag">
+        <div class="list-inner-wrapper">
+            <div class="tag-list-item"
+                ng-repeat="tagItem in $ctrl.tags|filter:{deleted: false, isAssignable: true }|fsNotIn:{compareKey: 'name', list: $ctrl.userTags}  track by $index"
+                ng-click="$ctrl.addTagItem(tagItem)">
+                {{tagItem.displayName}}
+            </div>
+            <hr>
+            <div class="tag-list-item" ng-click="$ctrl.toggleAddNewTag()">Add new tag</div>
+        </div>
+
+    </div>
+</div>
+<!-- END OF Add Tag -->

@@ -1,0 +1,61 @@
+{
+    "id": "sensitive_machines",
+    "title": "Accessed Sensitive Machines Status",
+    "description": "Sensitive machines that were accessed in the selected time span and minimum event score",
+    "reportId": "dashboards.sensitive_resources.sensitive_machines",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Hostname",
+						"value": "{{destination_machine}}",
+						"spanRowsIfEqual": true,
+                        "menu": {
+                            "id": "destination_machine",
+                            "params": {
+								"machineName": "{{destination_machine}}"
+                            }
+                        },
+                        "tags": "machine"
+                    },
+					{
+						"name": "Type",
+						"value": "{{type}}"
+					},
+                    {
+                        "name": "Users Count",
+                        "value": "{{user_count}}"
+                    },
+                    {
+                        "name": "Event Count",
+                        "value": "{{event_count}}"
+                    },
+                    {
+                        "name": "Event Highest Score",
+                        "value": "{{events_max_score:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "events_max_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "events_max_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

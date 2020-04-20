@@ -1,0 +1,117 @@
+{
+    "id": "vpn_exfiltration",
+    "title": "Suspicious Amount of Data Over VPN",
+    "description": "Used to identify and alert on abnormal amount of data that is transferred out of the organization in a VPN session.",
+    "contentsDescription": "Click in the graph to view VPN event details:",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn_session"
+			}
+		]
+	},
+    "controls": [
+		{
+			"label": "Events Time",
+			"type": "dateRange",
+			"param": "vpn_session.session_time_utc",
+			"paramGroup": "default_filters",
+			"value": {
+				"timeStart": "-7d",
+				"timeEnd": "0d"
+			},
+			"formatParam": ":{{value.timeStart}}::{{value.timeEnd}}"
+		},
+        {
+            "label": "User",
+            "type": "search",
+            "settings": {
+                "search": {
+                    "dataEntity": "vpn_session",
+                    "dataEntityField" : "username"
+                },
+                "resultField": "username",
+                "value": "{{username}}",
+                "showValueOnSelect": true,
+                "placeholder": "All users"
+            },
+            "param": "vpn_session.username",
+            "paramGroup": "filters"
+        },
+		{
+			"label": "Min Data Usage Score",
+			"type": "number",
+			"param": "vpn_session.data_bucket_score",
+			"paramGroup": "filters",
+			"formatParam": ">={{value}}",
+			"value": 50,
+			"defaultValue": 50,
+			"settings": {
+				"min": 0,
+				"max": 100
+			}
+		},
+		{
+			"label": "Min Score",
+			"type": "number",
+			"param": "vpn_session.session_score",
+			"defaultValue": 0,
+			"value" : 0,
+			"settings": {
+				"min": 0
+			},
+			"paramGroup": "default_filters",
+			"formatParam": ">={{value}}",
+			"hide": true
+		}
+    ],
+    "widgets": [
+		{
+			"id": "vpn_sessions_exfiltration_graph",
+			"params": {
+				"entityId": "vpn_session",
+				"mode": "graphs",
+				"graphs":"session_exfiltration_time"
+			},
+			"className": "widget-noPadding",
+			"handleDataSort": false,
+			"flags": {
+				"contentsOnly": true,
+				"noBorder": true
+			},
+			"handlePaging": false,
+			"loadingDataMessage": "Loading events",
+			"views": [
+				{
+					"type": "explore",
+					"settings": {
+						"viewOnly": true
+					}
+				}
+			]
+		},
+		{
+            "id": "vpn_sessions_exfiltration_table",
+            "flags": {
+                "contentsOnly": true
+            },
+            "className": "widget-noPadding",
+            "title": "VPN Sessions",
+            "params": {
+                "entityId": "vpn_session",
+				"tableview_sort": "data_bucket_score",
+				"tableview_fields": "username,source_ip,country,end_time,duration,read_bytes,data_bucket,data_bucket_score"
+            },
+			"handlePaging": false,
+            "views": [
+                {
+                    "type": "explore",
+                    "settings": {
+                        "viewOnly": true
+                    }
+                }
+            ]
+        }
+    ]
+}

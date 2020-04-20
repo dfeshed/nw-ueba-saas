@@ -1,0 +1,58 @@
+//  VARIABLES
+$timedPopupWidth: 30em;
+
+
+.timed-popup-container {
+    font-size: #{$basicFontSize - 1};
+    width: $timedPopupWidth;
+    border-radius: 5px;
+    cursor: pointer;
+
+}
+
+.timed-popup {
+    display: flex;
+    flex-flow: row nowrap;
+
+    .content-section {
+        display: flex;
+        flex-flow: column nowrap;
+        flex: 1 1 auto;
+
+        h1 {
+            @include font-roboto-bold();
+            font-size: #{$basicFontSize + 4};
+            background-color: $clrGrey40;
+            padding: 0.5em;
+            margin-bottom: 0.5em;
+            color: $clrGrey100;
+            height: #{($basicFontSize + 4) * 1.2}
+        }
+
+        p {
+            @include font-roboto-bold();
+            font-size: #{$basicFontSize - 1};
+            padding: 0.68em;
+
+        }
+
+
+    }
+
+    .image-section {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: center;
+        align-items: center;
+
+        flex: 1;
+    }
+
+    .close-fsicon {
+        position: absolute;
+        top: 0.3em;
+        right: 0.2em;
+        font-size: 1.2em;
+        color: $clrGrey80;
+    }
+}

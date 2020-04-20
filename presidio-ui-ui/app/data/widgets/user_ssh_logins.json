@@ -1,0 +1,112 @@
+{
+    "reportId": "user_ssh_logins",
+    "title": "SSH Events",
+    "description": "Top ssh Events in the last 7 days",
+    "noDataMessage": "No SSH logins data available for this date.",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "ssh"
+			}
+		]
+	},
+	"views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Source IP / Machine Name",
+                        "value": "{{hostname || source_ip}}",
+                        "valueTooltip": "Source score: {{normalized_src_machine_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_src_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "normalized_src_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Target IP / Machine name",
+                        "value": "{{target_machine}}",
+                        "valueTooltip": "Internal IP score: {{normalized_dst_machine_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_dst_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "normalized_dst_machine_score"
+                            }
+                        },
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{date_time:date}}",
+                        "transform": {
+                            "method": "date",
+                            "options": {
+                                "format": "MM/DD/YY HH:mm:ss"
+                            }
+                        },
+                        "valueTooltip": "Login time score: {{date_time_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "date_time_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "date_time_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}",
+                        "valueTooltip": "Status score: {{statusscore:toFixed:2}}"
+                    },
+                    {
+                        "name": "Auth Method",
+                        "value": "{{auth_method}}",
+                        "valueTooltip": "Status score: {{auth_method_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "auth_method_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "auth_method_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{eventscore}}",
+                        "transform": {
+                            "method": "round"
+                        },
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "eventscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "eventscore"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

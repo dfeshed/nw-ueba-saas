@@ -1,0 +1,13 @@
+{
+    "id": "manager",
+    "items": [
+        {
+            "text": "Go to {{displayname}}'s profile",
+			"url": "#/user/{{userid}}/user_overview"
+        },
+        {
+            "text": "View all people {{displayname}} manages",
+			"url": "#/d/explore/users?filters=users.manager_username%3D{{username}}"
+        }
+    ]
+}

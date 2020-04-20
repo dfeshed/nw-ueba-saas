@@ -1,0 +1,9 @@
+user-indicator-charts {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - 4vh);
+    display: -ms-flexbox;
+    display: flex;
+    flex-flow: column nowrap;
+    padding-top: 2vh;
+}

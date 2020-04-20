@@ -1,0 +1,36 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{country:capitalize}}",
+                "noValueLabel": "N/A",
+                "childIdField": "username",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:User:Users}} ({{_percent:toFixed:2}}% of all users)",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.vpn_users_bubbles_popup",
+                        "title": "Users With VPN Access From {{name}}",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

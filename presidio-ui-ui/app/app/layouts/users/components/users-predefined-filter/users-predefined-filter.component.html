@@ -1,0 +1,12 @@
+<div class="user-predefined-filter-main" ng-class="{'active':$ctrl.isActive}" ng-click="$ctrl.updateChange()">
+    <div class="icon">
+        <fs-svg-icon symbol-name="{{::$ctrl.svgIcon}}" attributes="{width: 16, height: 16}"></fs-svg-icon>
+    </div>
+    <div class="filter-name">
+     {{::$ctrl.text}}
+
+     <span ng-if="$ctrl.isCountConfigured " class="items-count">({{$ctrl.count}})</span>
+     </div>
+
+ </div>
+</div>

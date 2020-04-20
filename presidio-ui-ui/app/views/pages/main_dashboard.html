@@ -1,0 +1,11 @@
+<div ng-include="'views/pages/dashboard.html'"></div>
+<popup popup-config="popup"></popup>
+<tooltip ng-model="tooltipOpen" position="tooltipPosition">
+    <table ng-if="tooltipContents.table" class="tooltip-table">
+        <tr ng-repeat="row in tooltipContents.table.rows">
+            <td class="tooltip-table-label">{{row.label}}</td>
+            <td class="tooltip-table-value">{{row.value}}</td>
+        </tr>
+    </table>
+    <div ng-if="tooltipContents.text" ng-bind-html="tooltipContents.text"></div>
+</tooltip>

@@ -1,0 +1,111 @@
+{
+    "id": "top_vpn_events",
+    "reportId": "top_vpn_events",
+    "title": "Top Suspicious VPN Events",
+    "loadingDataMessage": "Loading login events",
+	"show": {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{username}}",
+                        "menu": {
+                            "id": "user_vpn",
+                            "params": {
+                                "displayname": "{{username}}",
+                                "username": "{{username}}",
+                                "userid": "{{id}}"
+                            }
+                        },
+                        "tags": "user"
+                    },
+                    {
+                        "name": "Source IP / Machine Name",
+                        "value": "{{source_ip}}",
+                        "link": "#/d/explore/vpn?filters=vpn.source_ip={{source_ip}}",
+                        "valueTooltip": "Click to see all VPN logins from this source IP"
+                    },
+                    {
+                        "name": "Source Country",
+                        "value": "{{country:capitalize}}",
+                        "link": "#/d/explore/vpn?filters=vpn.country={{country}}",
+                        "valueTooltip": "Country score: {{country_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "country_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "country_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Source City",
+                        "value": "{{city}}",
+                        "valueTooltip": "Click to investigate logins from this city"
+                    },
+                    {
+                        "name": "Internal IP",
+                        "value": "{{local_ip}}",
+                        "link": "#/d/explore/vpn?filters=vpn.local_ip={{local_ip}}",
+                        "sortBy": "local_ip"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{event_time:date}}",
+                        "sortBy": "event_time",
+                        "valueTooltip": "Login time score: {{event_time_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_time_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_time_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}",
+                        "sortBy": "status",
+                        "valueTooltip": "Click to view all {{status}} VPN logins by {{username}}",
+                        "link": "#/d/explore/vpn?filters=vpn.status={{status}},vpn.username={{username}}"
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{event_score}}",
+                        "transform": {
+                            "method": "round"
+                        },
+                        "sortBy": "event_score",
+                        "sortDirection": -1,
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

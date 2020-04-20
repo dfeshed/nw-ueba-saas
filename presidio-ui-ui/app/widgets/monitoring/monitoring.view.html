@@ -1,0 +1,67 @@
+<div class="jstree jstree-default" ng-controller="MonitoringController">
+    <strong>Source Types</strong>
+    <ul>
+        <li ng-repeat="source in view.data" ng-class="{ 'jstree-open': source.isOpen, 'jstree-closed': !source.isOpen, 'jstree-last': $last }">
+            <div class="jstree-expand" ng-click="source.isOpen = !source.isOpen">
+                <ins class="jstree-icon">&nbsp;</ins>
+                <a class="jstree-item-name">{{source.sourceType}}</a>
+                <span ng-show="source.hasErrors" class="label label-important">Errors</span>
+                <span ng-show="source.hasErrors" class="label label-warning">Warnings</span>
+                <span class="expand-link" ng-show="source.isOpen">(Showing jobs)</span>
+            </div>
+            <ul ng-show="source.isOpen">
+                <li ng-repeat="job in source.jobs" ng-class="{ 'jstree-open': job.isOpen, 'jstree-closed': !job.isOpen, 'jstree-last': $last }">
+                    <div class="jstree-expand" ng-click="job.isOpen = !job.isOpen">
+                        <ins class="jstree-icon">&nbsp;</ins>
+                        <a class="jstree-item-name">{{job.jobName}}</a>
+                        <span ng-show="job.hasErrors" class="label label-important">Errors</span>
+                        <span ng-show="job.hasErrors" class="label label-warning">Warnings</span>
+                        <span class="expand-link" ng-show="job.isOpen">(Showing details)</span>
+                    </div>
+                    <ul ng-show="job.isOpen">
+                        <li ng-repeat="jobDetails in job.runDetails" ng-class="{ 'jstree-open': jobDetails.isOpen, 'jstree-closed': !jobDetails.isOpen, 'jstree-last': $last }">
+                            <div class="jstree-expand" ng-click="getJob(jobDetails)">
+                                <ins class="jstree-icon">&nbsp;</ins>
+                                <a class="jstree-item-name">{{jobDetails.start|date:"MMM d, yyyy HH:mm"}} - {{jobDetails.finish|date:"HH:mm"}}</a>
+                                <span class="expand-link" ng-show="jobDetails.isOpen">(Showing steps)</span>
+                            </div>
+                            <ol ng-show="jobDetails.isOpen" class="pad-top">
+                                <li ng-repeat="step in jobDetails.steps"
+                                    class="jstree-table-item jstree-leaf"
+                                    ng-class="{ 'jstree-open': !step.isClosed, 'jstree-closed': step.isClosed, 'jstree-last': $last }">
+                                    <div class="jstree-expand" ng-click="step.isClosed = !step.isClosed">
+                                        <a class="jstree-item-name">
+                                            <ins class="jstree-icon" >&nbsp;</ins>
+                                            {{step.stepName}}
+                                        </a>
+                                    </div>
+                                    <!--<a ng-if="step.messages" ng-click="step.isClosed = !step.isClosed">[{{step.isClosed && "Show messages" || "Hide messages"}}]</a>-->
+                                    <table ng-if="step.messages" ng-hide="step.isClosed" class="table table-hover widget-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Time</th>
+                                                <th>Severity</th>
+                                                <th>Message</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="message in step.messages">
+                                                <td class="table-small-cell">{{message.when|date:"medium"}}</td>
+                                                <td class="table-small-cell">
+                                                    <span class="label" ng-class="{ 'label-important': message.severity == 'ERROR', 'label-warning': message.severity == 'WARN'}">
+                                                        {{message.severity == "ERROR" ? "Error" : "Warning"}}
+                                                    </span>
+                                                </td>
+                                                <td class="break-text">{{message.message}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </li>
+                            </ol>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

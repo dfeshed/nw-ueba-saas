@@ -1,0 +1,99 @@
+{
+    "reportId": "user_logins",
+    "title": "Kerberos Events",
+    "description": "Top Kerberos Events in the last 7 days",
+    "noDataMessage": "No logins data available for this date.",
+    "loadingDataMessage": "Loading login events",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "kerberos_logins"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Source Machine",
+                        "value": "{{machine_name || client_address}}",
+                        "valueTooltip": "Source score: {{hostnamescore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "hostnamescore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "hostnamescore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Destination Hostname",
+                        "value": "{{service_name}}",
+                        "valueTooltip": "Destination hostname score: {{destscore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "destscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "destscore"
+                            }
+                        },
+                        "tags": "machine"
+                    },
+                    {
+                        "name": "Failure Code",
+                        "value": "{{failure_code}}",
+                        "valueTooltip": "Error code score: {{failure_codescore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "failure_codescore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "failure_codescore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{date_time:date}}",
+                        "valueTooltip": "Login time score: {{date_timescore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "date_timescore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "date_timescore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{eventscore}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "eventscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "eventscore"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

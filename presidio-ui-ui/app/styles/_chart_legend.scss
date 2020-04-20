@@ -1,0 +1,16 @@
+.legend-horizontal{
+  clear: both;
+
+  .legend-horizontal-description{
+    font-weight: 300;
+  }
+
+  .legend-horizontal-items{
+    text-align: center;
+
+    li{
+      display: inline-block;
+      margin-right: 2em;
+    }
+  }
+}

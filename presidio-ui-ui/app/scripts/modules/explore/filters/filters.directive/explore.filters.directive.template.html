@@ -1,0 +1,56 @@
+<form class="card explore-filters-component">
+    <header class="card-header">
+        <fs-svg-icon symbol-name="filter-icon" attributes="{class: 'filter-icon'}"></fs-svg-icon>
+        <h3>Filters</h3>
+        <div class="card-header-controls">
+            <input type="submit"
+                class="btn btn-default btn-small"
+                ng-click="applyFilters()"
+                value="Apply Filters"
+                ng-show="filtersCollection.isDirty && filtersCollection.isValid" />
+
+            <div class="explore-filters-add">
+                <dropdown button-text="+ Add Filter" button-class="btn btn-default" close-on-click="true">
+                    <div ng-repeat="filterGroup in filterGroups">
+                        <h4 class="dropdown-list-header"><label class="dropdown-list-toggle-label">{{filterGroup.name}}</label></h4>
+                        <!--<h4 class="dropdown-list-header"><label class="dropdown-list-toggle-label" for="dropdown-list-{{filterGroup.name}}">{{filterGroup.name}}</label></h4>-->
+                        <input type="checkbox" ng-model="filterGroup.isOpen" class="dropdown-list-toggle-checkbox" id="dropdown-list-{{filterGroup.name}}" />
+                        <ul class="dropdown-list explore-filters-add-fields">
+                            <li ng-repeat="dataEntityField in filterGroup.fields" ng-click="addFilter(dataEntityField)">
+                                {{dataEntityField.name}}
+                            </li>
+                        </ul>
+                    </div>
+                </dropdown>
+            </div>
+        </div>
+    </header>
+    <div class="card-contents">
+        <!--<p class="explore-filters-empty-message" ng-show="!filtersCollection.filters.length">(No filters)</p>-->
+        <div class="explore-filters-empty-message" ng-show="!filtersCollection.filters.length">
+            <fs-svg-icon symbol-name="Fortscale_logo_icon"></fs-svg-icon>
+            No Filters
+        </div>
+        <ul class="explore-filters-list">
+            <li ng-repeat="filter in filtersCollection.filters" class="explore-filters-list-filter">
+                <label class="explore-filters-filter-name" ng-class="{'dirty': filter.isDirty }" for="{{::entity.id}}_filter_{{$index}}">
+                    {{filter.field.entity.name}} | {{filter.field.name}}</label>
+                <div class="flex-horizontal explore-filters-list-filter-container">
+					<select ng-model="filter.operator"
+							ng-options="operator as operator.name for operator in filter.field.type.operators"></select>
+                    <div class="flex-1 explore-filters-filter-value" ng-if="filter.inputTemplate" ng-include="filter.inputTemplate"></div>
+                    <a class="explore-filters-filter-remove"
+                       ng-click="removeFilter(filter)"
+                       title="Remove filter">
+                        <fs-svg-icon symbol-name="close-icon"></fs-svg-icon>
+                    </a>
+
+					<div ng-if="filter.validObj.showErrors" class="error-message-list">
+						<span class="error-message">{{filter.validObj.errorMessage}}</span>
+					</div>
+                </div>
+            </li>
+        </ul>
+
+    </div>
+</form>

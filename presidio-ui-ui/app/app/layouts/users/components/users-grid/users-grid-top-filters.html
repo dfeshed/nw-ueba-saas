@@ -1,0 +1,65 @@
+<!-- This page use the scope and controller of users-grid.component
+     The only reason to split it, is to make the HTML code more readable
+-->
+
+
+<div class="current-filters">
+    <span class="current-filters-title">Filtered By:</span>
+
+    <users-filter-in-use  update-state-delegate="$ctrl.updateStateDelegate" fetch-state-delegate="$ctrl.fetchStateDelegate"
+                          state-id="$ctrl.stateId" attribute-name="minScore" text="Risky User">
+
+    </users-filter-in-use>
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate" fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId"
+        attribute-name="isWatched" text="Watchlist users">
+
+    </users-filter-in-use>
+
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate" fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId" attribute-name="userTags"text="{{$ctrl.getPrettifyTags()}}">
+
+    </users-filter-in-use>
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate"
+        fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId" attribute-name="alertTypes" text="Alert Types: {{$ctrl.getPrettifyAlertTypes()}}">
+
+    </users-filter-in-use>
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate"
+        fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId" attribute-name="indicatorTypes" text="Indicator Types: {{$ctrl.getPrettifyIndicatorTypes()}}">
+
+    </users-filter-in-use>
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate"
+        fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId"  attribute-name="locations" text="Locations: {{$ctrl.getValueFromState('locations')}}">
+
+    </users-filter-in-use>
+
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate"
+        fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId"  attribute-name="severity" text="Severity: {{$ctrl.getPrettifySeverity()}}">
+
+    </users-filter-in-use>
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate"
+        fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId"  attribute-name="departments"
+        text="Departments: {{$ctrl.getValueFromState('departments')}}">
+
+    </users-filter-in-use>
+    <users-filter-in-use
+        update-state-delegate="$ctrl.updateStateDelegate"
+        fetch-state-delegate="$ctrl.fetchStateDelegate"
+        state-id="$ctrl.stateId"  attribute-name="positions" text="Roles: {{$ctrl.getValueFromState('positions')}}">
+    </users-filter-in-use>
+    <a ng-if="$ctrl.stateDifferentThenOriginal" class="reset-filters" ng-click="$ctrl.clearStateDelegate()">(Reset filters)</a>
+
+
+</div>

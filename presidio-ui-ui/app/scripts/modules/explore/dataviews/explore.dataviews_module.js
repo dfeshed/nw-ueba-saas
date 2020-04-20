@@ -1,0 +1,1 @@
+angular.module("Explore.DataViews", ["DataEntities", "Widgets", "Reports", "Utils", "Menus"]);

@@ -1,0 +1,28 @@
+{
+    "data": [
+        {
+            "deviceName": "ALRUSR44_PC",
+            "count": 55,
+            "deviceType": "Linux"
+        },
+        {
+            "deviceName": "other",
+            "count": 5,
+            "deviceType": null
+        },
+        {
+            "deviceName": "EVDUSR3_PC",
+            "count": 20,
+            "deviceType": "Windows"
+        },
+        {
+            "deviceName": "ALRUSR10_PC",
+            "count": 140,
+            "deviceType": "Mac"
+        }
+    ],
+    "total": 1,
+    "offset": 0,
+    "warning": null,
+    "info": null
+}

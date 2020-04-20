@@ -1,0 +1,35 @@
+/* Date range css */
+fs-date-range {
+
+    .fs-daterange {
+
+        background-color: transparent;
+
+        .main-ul {
+            display: inline-block;
+            min-width: 150px;
+            font-weight: bold;
+            .date-range-label{
+                font-size: 14px;
+            }
+        }
+
+        .select-range {
+            overflow: auto;
+
+            label.time{
+                padding-bottom: 3px;
+                font-size: 14px;
+                font-weight: bold;
+                display: block;
+            }
+
+            .box-col {
+                display: inline-block;
+                padding:5px;
+
+            }
+        }
+
+    }
+}

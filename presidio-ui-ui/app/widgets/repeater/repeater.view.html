@@ -1,0 +1,6 @@
+<div ng-controller="RepeaterWidgetController" class="repeater">
+    <h4 ng-if="repeaterTitle" class="widget-view-title repeater-title">{{repeaterTitle}}</h4>
+    <div ng-repeat="view in repeaterViews">
+        <ng-include src="'widgets/' + view.type + '/' + view.type + '.view.html'"></ng-include>
+    </div>
+</div>

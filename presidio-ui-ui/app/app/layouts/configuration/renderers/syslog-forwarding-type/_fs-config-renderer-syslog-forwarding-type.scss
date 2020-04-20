@@ -1,0 +1,9 @@
+.config-item-card-syslog-forwarding-type {
+    select {
+        width: 15em;
+
+        &.ng-invalid {
+            border: 1px solid red;
+        }
+    }
+}

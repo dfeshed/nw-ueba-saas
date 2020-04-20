@@ -1,0 +1,18 @@
+<div class="alert-view-container">
+    <div class="user-alert-overview-header">
+        <fs-user-alert-overview-header
+            alerts="userAlertOverviewController.userAlerts"
+        ></fs-user-alert-overview-header>
+    </div>
+    <div  class="user-alert-overview-description">
+        <alert-description alert-model="userAlertOverviewController.alert"></alert-description>
+
+    </div>
+    <div class="alert-view-page-seperator"></div>
+    <div class="scrolled-area-container-outer">
+        <div class="scrolled-area-container-inner">
+            <fs-user-alert-flow alert-model="userAlertOverviewController.alert"></fs-user-alert-flow>
+            <div class="alert-view-page-seperator"></div>
+        </div>
+    </div>
+</div>

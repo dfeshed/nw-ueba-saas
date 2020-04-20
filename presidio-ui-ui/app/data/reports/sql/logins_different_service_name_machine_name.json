@@ -1,0 +1,1 @@
+select account_name, service_name, service_id, machine_name from wmievents4769 where machine_name not like concat(lcase(regexp_replace(service_name, "\\$", ".")), "%") and service_name != "" order by account_name  limit 50

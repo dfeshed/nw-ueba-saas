@@ -1,0 +1,66 @@
+$entityMenuWidth: 200px;
+$entityHeaderHeight: 30px;
+
+.entity-header{
+  position: absolute;
+  top: 0;
+  height: $entityHeaderHeight;
+  line-height: $entityHeaderHeight;
+  left: 0;
+  right: 0;
+  background: #EDEDE7;
+  border-bottom: 1px solid #CCC;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  padding: 0 20px;
+
+  a{
+    color: #73a550;
+    text-decoration: none;
+
+    &:hover{
+      text-decoration: underline;
+    }
+  }
+
+  .icon-caret-right{
+    color: Black;
+  }
+}
+#entity-menu{
+  position: absolute;
+  top: $entityHeaderHeight;
+  left: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  padding: 0 20px;
+  width: $entityMenuWidth;
+  box-sizing: border-box;
+
+  .icon-caret-right{ display: none }
+
+  a{
+    display: block;
+    padding: 10px;
+
+    &.selected{
+      color: Black;
+      font-weight: bold;
+
+      .icon-caret-right{ display: inline; }
+    }
+  }
+}
+
+#entity-contents{
+  position: absolute;
+  top: $entityHeaderHeight;
+  left: $entityMenuWidth;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

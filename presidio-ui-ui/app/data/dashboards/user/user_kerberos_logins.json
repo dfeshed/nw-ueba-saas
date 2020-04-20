@@ -1,0 +1,43 @@
+{
+    "dashboardId": "user_kerberos_logins",
+    "title": "{{@userName}}: Kerberos Events",
+    "description": "A summary of the user's Kerberos activity",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "kerberos_logins"
+			}
+		]
+	},
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "widgetId": "user_score_history",
+                    "params": {
+                        "classifier": "auth"
+                    },
+					"noCache" : true,
+                    "title": "Kerberos Events Score History - Last 7 Days"
+                },
+                {
+                    "widgetId": "user_logins",
+                    "id": "scoreHistoryWidgetLogins",
+                    "params": {
+                        "date": "now"
+                    },
+                    "refreshOn": "date"
+                },
+                {
+                    "widgetId": "user.user_logins_count",
+                    "title": "Kerberos Events Count",
+					"noCache" : true,
+                    "description": "Count of successful and failed Kerberos Events in the last 7 days",
+                    "reportId": "user.user_ad_logins_count",
+					"noDataMessage": "No Kerberos logins found"
+                }
+            ]
+        }
+    ]
+}

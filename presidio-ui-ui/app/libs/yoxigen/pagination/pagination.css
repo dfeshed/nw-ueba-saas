@@ -1,0 +1,21 @@
+.yoxigen-pagination {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none; }
+  .yoxigen-pagination a {
+    display: inline-block;
+    padding: 0 5px;
+    cursor: pointer;
+    color: #1a7996; }
+    .yoxigen-pagination a.selected {
+      color: White;
+      background: #1a7996 !important;
+      cursor: default; }
+    .yoxigen-pagination a[disabled] {
+      color: #dddddd !important;
+      cursor: default; }
+    .yoxigen-pagination a.yoxigen-pagination-page:hover {
+      background: #c5dae0; }
+    .yoxigen-pagination a.yoxigen-pagination-button:hover {
+      color: black; }

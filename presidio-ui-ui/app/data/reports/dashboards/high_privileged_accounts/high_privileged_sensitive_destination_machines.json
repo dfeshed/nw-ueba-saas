@@ -1,0 +1,91 @@
+{
+	"_mock_data": "dashboards.high_privileged_accounts.high_privileged_sensitive_destination_machines",
+    "endpoint": {
+        "api": "dataQuery",
+        "dataQuery": {
+			"entity": "auth_event",
+			"fields": ["destination_machine",
+				{
+					"id": "normalized_username",
+					"alias": "user_count",
+					"func": {
+						"name": "count",
+						"params": {
+							"distinct": true
+						}
+					}
+				},
+				{
+					"id": "event_score",
+					"alias": "events_max_score",
+					"func": {
+						"name": "max"
+					}
+				},
+				{
+					"id": "event_score",
+					"alias": "events_average_score",
+					"func": {
+						"name": "avg"
+					}
+				},
+				{
+					"id": "event_time",
+					"alias": "event_count",
+					"func": {
+						"name": "count"
+					}
+				}
+				],
+			"conditions": {
+				"operator": "AND",
+				"terms": [
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "dateRange",
+						"valueParam": "dateRange"
+					},
+					{
+						"type": "field",
+						"id": "{{@columnNameToQuery}}",
+						"value": true,
+						"operator": "equals"
+					},
+					{
+						"type": "field",
+						"id": "event_score",
+						"operator": "greaterThanOrEquals",
+						"valueParam": "minscore"
+					},
+					{
+						"type": "field",
+						"id": "is_sensitive_machine",
+						"value": true,
+						"operator": "equals"
+					}
+				]
+			},
+            "groupBy": "destination_machine",
+            "sort": "destination_machine",
+            "limit": 50
+        }
+    },
+    "params": [
+		{
+			"field": "dateRange",
+			"dashboardParam": "high_privileged_accounts_event_dates",
+			"isRequired": true
+		},
+        {
+            "field": "minscore",
+            "dashboardParam": "minscore",
+            "default": 50
+        },
+        {
+            "field": "columnNameToQuery",
+            "dashboardParam": "columnNameToQuery",
+            "isRequired": true
+        }
+    ]
+}

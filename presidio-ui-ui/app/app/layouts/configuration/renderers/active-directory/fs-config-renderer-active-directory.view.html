@@ -1,0 +1,174 @@
+<section class="active-directory-settings">
+
+    <input ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]"
+        name="fields.{{::$ctrl.configItem.id}}"
+        ng-value="$ctrl.configItem.value"
+        id="active_directory_main_input"
+        style="display:none">
+
+    <!-- Active Directory Domains List -->
+    <div class="active-directory-settings--domains-list">
+        <!-- Active Directory domain item -->
+        <div class="config-item-card active-directory-settings--domain-item"
+            ng-repeat="domain in $ctrl.settings track by $index"
+            ng-init="_domainIndex = $index"
+            ng-form="{{'activeDirectoryConfigurationDomainItem' + $index}}">
+
+            <div class="active-directory-settings--domain-item--title">
+                Domain Controllers
+            </div>
+
+            <div class="active-directory-settings--domain-item--configurations-section">
+
+                <!-- DCs List -->
+                <div class="active-directory-settings--domain-item--dcs-list">
+
+                    <!-- New DC -->
+                    <div class="active-directory-settings--domain-item--new-dc-row">
+                        <input class="active-directory-settings--domain-item--new-dc-input"
+                            id="{{::'active-directory-settings--domain-item--new-dc-input-' + $index}}"
+                            ng-model="$ctrl.newDCsInput[$index]"
+                            type="text"
+                            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 500 } }"
+                            ng-keypress="$ctrl.mainInputKeyPress($event, domain, $ctrl.newDCsInput[$index])"
+                            placeholder="Enter connection string, e.g. ldap://192.168.0.106:389"/>
+
+                        <!-- Buttons -->
+                        <div class="form-buttons">
+
+                            <!-- Add DC Button -->
+                            <label for="{{'add_dc_button_' + $index}}"
+                                class="form-button button-add-new-dc"
+                                ng-disabled="!$ctrl.newDCsInput[$index].length"
+                                ng-click="$ctrl.addDC(domain, $ctrl.newDCsInput[$index])">
+                                <div class="form-button-icon">
+                                    <i class="fa fa-plus"></i>
+                                </div>
+                                <input id="{{'add_dc_button_' + $index}}"
+                                    name="{{'add_dc_button_' + $index}}"
+                                    type="button"
+                                    value="Add DC"> </label>
+                            <!-- END OF Add User Button -->
+                        </div>
+                        <!-- END OF Buttons -->
+
+                    </div>
+                    <!-- END OF new DC -->
+
+                    <!-- DCs List -->
+                    <div class="active-directory-settings--dcs-list">
+
+                        <!-- DC item -->
+                        <div class="active-directory-settings--dc-item" ng-repeat="dc in domain.dcs track by $index">
+                            <div class="active-directory-settings--dc-item--address">{{dc}}</div>
+                            <div class="active-directory-settings--dc-item--remove-dc"
+                                ng-click="$ctrl.removeDC(domain, $index)">
+                                <i class="fa fa-times"></i>
+                            </div>
+                        </div>
+                        <!-- END OF DC item -->
+
+                    </div>
+                    <!-- END OF DCs List -->
+
+                </div>
+
+            </div>
+
+            <br>
+
+            <!-- Other Configuration -->
+            <div class="active-directory-settings--domain-item--title">
+                Username
+            </div>
+            <label for="domainUser">
+                <input id="domainUser"
+                       name="domainUser"
+                       ng-model="$ctrl.settings[_domainIndex].domainUser"
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                    ng-change="$ctrl.modelChange()"
+                       placeholder="Enter username e.g. user@somebigcompany.com"
+                       type="text"/>
+            </label>
+            <div class="active-directory-settings--domain-item--title">
+                Password
+            </div>
+            <label for="domainPassword">
+                <input id="domainPassword"
+                       name="domainPassword"
+                       ng-model="$ctrl.settings[_domainIndex].domainPassword"
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                    ng-change="$ctrl.modelChange()"
+                       type="password"/>
+            </label>
+            <div class="active-directory-settings--domain-item--title">
+                Base Search
+            </div>
+            Distinguished Name for the root of the search
+            <label for="domainBaseSearch">
+                <input id="domainBaseSearch"
+                    name="domainBaseSearch"
+                    ng-model="$ctrl.settings[_domainIndex].domainBaseSearch"
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                    ng-change="$ctrl.modelChange()"
+                       placeholder="Enter base DN e.g. DC=somebigcompany,DC=com"
+                    type="text"/>
+            </label>
+            <!-- Other Configuration -->
+
+            <!-- Domain Item Buttons -->
+            <div class="form-buttons domain-item-buttons">
+
+                <!-- Duplicate Domain Button -->
+                <label for="{{'duplicate_domain_' + $index}}" class="form-button button-duplicate-domain">
+                    <div class="form-button-icon">
+                        <i class="fa fa-files-o"></i>
+                    </div>
+                    <input id="{{'duplicate_domain_' + $index}}"
+                        name="{{'duplicate_domain_' + $index}}"
+                        type="button"
+                        ng-click="$ctrl.duplicateDomain($index)"
+                        value="Duplicate Domain"> </label>
+                <!-- Duplicate Domain Button -->
+
+                <!-- Remove Domain Button -->
+                <label for="{{'remove_domain_' + $index}}" class="form-button button-remove-domain">
+                    <div class="form-button-icon">
+                        <i class="fa fa-times"></i>
+                    </div>
+                    <input id="{{'remove_domain_' + $index}}"
+                        name="{{'remove_domain_' + $index}}"
+                        type="button"
+                        ng-click="$ctrl.removeDomain($index)"
+                        value="Remove Domain"> </label>
+                <!-- Remove Domain Button -->
+
+            </div>
+            <!-- END OF Domain Item Buttons -->
+
+        </div>
+
+        <!-- END OF Active Directory domain item -->
+
+    </div>
+    <!-- END OF Active Directory Domains List -->
+
+    <!-- active-directory Buttons -->
+    <div class="form-buttons active-directory-settings-buttons">
+
+        <!-- new Domain Button -->
+        <label for="new_domain_button" class="form-button button-duplicate-domain">
+            <div class="form-button-icon">
+                <i class="fa fa-plus-circle"></i>
+            </div>
+            <input id="new_domain_button"
+                name="new_domain_button"
+                type="button"
+                ng-click="$ctrl.newDomain()"
+                value="Add Domain"> </label>
+        <!-- Remove Domain Button -->
+
+    </div>
+    <!-- END OF Domain Item Buttons -->
+
+</section>

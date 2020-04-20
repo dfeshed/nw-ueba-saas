@@ -1,0 +1,52 @@
+$commentBorder: solid 1px #ddd;
+
+.comments{
+  .comment{
+    padding: 5px 0;
+
+    .comment{
+      margin-left: 30px;
+      &:first-child{
+        border-top: none;
+      }
+    }
+
+    .comment-header{
+      font-size: 11px;
+      color: #666;
+    }
+    .comment-body{
+	  width: 97%;
+	  word-wrap: break-word;
+      font-size: 1.1em;
+    }
+    .comment-children{
+      margin-top: 5px;
+    }
+
+    .comment-reply{
+      padding: 8px;
+      background: #DFEAEE;
+
+      textarea{ width: 97%;}
+      .comment-reply-controls{
+        a{
+          margin-right: 10px;
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+
+.comment-write{
+  padding: 10px;
+  background: #DFEAEE;
+  margin-bottom: 10px;
+
+  textarea{
+    width: 97%;
+    margin-bottom: 8px;
+	resize: none;
+  }
+}

@@ -1,0 +1,20 @@
+overview-high-risk-users {
+
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1;
+
+    .high-risk-users-list {
+
+        display: block;
+        box-sizing: border-box;
+        overflow-y: hidden;
+        overflow-x: hidden;
+
+        flex: 1;
+
+
+
+    }
+
+}

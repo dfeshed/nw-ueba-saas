@@ -1,0 +1,17 @@
+.indicator-view-container {
+
+    @import "components/user-indicator/user-indicator.component";
+    @import "components/user-indicator-header/user-indicator-header.component";
+    @import "components/user-indicator-description/user-indicator-description.component";
+    @import "components/user-indicator-charts/user-indicator-charts.component";
+    @import "components/user-indicator-events/user-indicator-events.component";
+    @import "components/fs-indicator-am-geo-location/_fs-indicator-am-geo-location.component";
+    @import "components/fs-indicator-activity-time-anomaly/_fs-indicator-activity-time-anomly.component";
+
+    // Indicator Templates
+    @import "components/indicator-templates/dualcolumn";
+    @import "components/indicator-templates/pie";
+    @import "components/indicator-templates/aggregated-serial";
+    @import "components/indicator-templates/shared-credentials";
+    @import "components/indicator-templates/lateral-movement";
+}

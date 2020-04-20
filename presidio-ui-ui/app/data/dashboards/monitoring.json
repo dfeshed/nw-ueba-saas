@@ -1,0 +1,150 @@
+{
+    "dashboardId": "monitoring",
+    "title": "Jobs Monitoring",
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "title": "Timeline of the latest jobs to run",
+                    "reportId": "monitoring_jobs",
+                    "views": [
+                        {
+                            "type": "timeline",
+                            "settings": {
+                                "useLastRefreshTimeForX": true,
+                                "showDayByDefault": true,
+                                "series": {
+                                    "name": "sourceType",
+                                    "timeSpansSeries": "jobs",
+                                    "timeSpansSeriesGroupName": "jobName",
+                                    "timeSpans": "runDetails",
+                                    "timeStart": "start",
+                                    "timeEnd": "finish"
+                                },
+                                "color": "severity",
+                                "colorMap": {
+                                    "WARN": "#F59925",
+                                    "ERROR": "#D77576",
+                                    "NO_DATA": "#000000",
+                                    "_default": "#80BFF0",
+                                    "NOT_FINISHED": "rgb(21, 175, 0)"
+                                },
+                                "tooltip": "Job name: {{_groupName}}|Start time: {{start:date:MMM D, HH\\:mm\\:ss}}|Duration: {{start:timeSpan:finish}}",
+                                "onSelect": {
+                                    "action": "setParams",
+                                    "actionOptions": {
+                                        "updateUrl": true,
+                                        "params": {
+                                            "run_id": "{{id}}"
+                                        }
+                                    }
+                                },
+                                "getPageReport": {
+                                    "endpoint": {
+                                        "entity": "monitor",
+                                        "id": "summary",
+                                        "subEntityName": "before"
+                                    },
+                                    "params": [
+                                        {
+                                            "field": "subEntityId",
+                                            "dashboardParam": "timestamp"
+                                        }
+                                    ]
+                                },
+                                "description": "Click in the chart for more details:",
+                                "legend": {
+                                    "items": [
+                                        {
+                                            "value": "OK",
+                                            "color": "#80BFF0"
+                                        },
+                                        {
+                                            "value": "In Progress",
+                                            "color": "rgb(21, 175, 0)"
+                                        },
+                                        {
+                                            "value": "Selected",
+                                            "color": "Purple"
+                                        },
+                                        {
+                                            "value": "Error",
+                                            "color": "#D77576"
+                                        },
+                                        {
+                                            "value": "Warning",
+                                            "color": "#F59925"
+                                        },
+                                        {
+                                            "value": "No Data",
+                                            "color": "#000000"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "renderControls": false,
+                    "renderHeader": false,
+                    "refreshOn": ["run_id"],
+                    "hideOnNoData": true,
+                    "hideOnError": true,
+                    "reportId": "monitoring_job_details",
+                    "views": [
+                        {
+                            "type": "table",
+                            "weight": 11,
+                            "settings": {
+                                "caption": "Steps",
+                                "dataField": "steps",
+                                    "fields": [
+                                        {
+                                            "name": "Step Name",
+                                            "value": "{{stepName}}",
+                                            "className": "table-small-cell no-wrap"
+                                        },
+                                        {
+                                            "name": "Time",
+                                            "value": "{{messages[0]:date}}",
+                                            "className": "table-small-cell no-wrap"
+                                        },
+                                        {
+                                            "name": "Severity",
+                                            "value": "{{messages[0].severity}} <span class='light-text'>{{valueType}}</span>",
+                                            "className": "table-small-cell no-wrap"
+                                        },
+                                        {
+                                            "name": "Message",
+                                            "value": "{{messages[0].message}}",
+                                            "className": "table-small-cell no-wrap"
+                                        }
+
+                                    ]
+                            }
+                        },
+                        {
+                            "type": "table",
+                            "weight": 4,
+                            "settings": {
+                                "caption": "Data Received",
+                                "dataField": "dataReceived",
+                                "fields": [
+                                    {
+                                        "name": "Data Type",
+                                        "value": "{{dataType}}"
+                                    },
+                                    {
+                                        "name": "Size",
+                                        "value": "{{value}} <span class='light-text'>{{valueType}}</span>"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

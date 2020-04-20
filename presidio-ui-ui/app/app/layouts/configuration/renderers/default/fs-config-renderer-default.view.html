@@ -1,0 +1,45 @@
+<div class="config-item-card">
+    <!-- Header -->
+    <div class="config-item-card--header">
+        <div class="config-item-card--title">{{configItem.displayName}}</div>
+        <div class="config-item-card--description">{{configItem.description}}</div>
+    </div>
+    <!-- END OF Header -->
+
+    <!-- Values -->
+    <div class="config-item-card--values">
+
+        <!-- Local Value -->
+        <div class="config-item-card--local-value">
+            <label class="title">Local Value:</label>
+            <input ng-model="configFormCtrl.configModels[configItem.id]"
+                name="fields.{{configItem.id}}"
+                ng-value="configItem.value"
+                fs-config-type="configItem">
+        </div>
+        <!-- END OF Local Value -->
+
+        <!-- Derived Values -->
+        <div class="config-item-card--derived-value" ng-if="configItem.derivedConfigItem && configItem.showComplex">
+            <div class="value">
+                <span class="title">Derived Value:</span> <span class="bottom-row">{{configItem.derivedConfigItem.value}}</span>
+            </div>
+            <div class="from">
+                <span class="title">Derives From: </span> <a class="bottom-row"
+                ui-sref="configuration.configForm({stateName: configItem.derivedConfigItem.containerId})"
+                ui-sref-opts="{reload: true, notify: true}"> {{configItem.derivedConfigItem.containerId | containerIdToDisplayName}}</a>
+            </div>
+        </div>
+        <!-- END OF Derived Values -->
+
+        <!-- No Derived Values -->
+        <div class="config-item-card--no-derived-value" ng-if="!configItem.derivedConfigItem && configItem.showComplex">
+            <span class="title">Derived Value:</span> <span class="bottom-row">No derived value</span>
+        </div>
+        <!-- END OF No Derived Values -->
+
+    </div>
+    <!-- END OF Values -->
+    <fs-config-affected-items config-item="::configItem" ng-if="configItem.showComplex"></fs-config-affected-items>
+
+</div>

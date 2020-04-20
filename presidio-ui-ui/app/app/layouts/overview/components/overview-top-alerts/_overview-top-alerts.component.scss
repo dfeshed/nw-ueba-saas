@@ -1,0 +1,35 @@
+overview-top-alerts {
+    flex: 1;
+
+    display: flex;
+    flex-flow: column nowrap;
+
+    .top-alerts-header {
+        flex: 0 0 auto;
+        padding: 9px 0 0 15px;
+    }
+
+    .top-alerts-content {
+        flex:1;
+
+        display: flex;
+        flex-flow: column nowrap;
+
+        position: relative;
+
+        &--list-container {
+            //flex: 1;
+            //
+            //display: flex;
+            //flex-flow: row wrap;
+
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+
+            box-sizing: border-box;
+            padding: 20px;
+        }
+    }
+
+}

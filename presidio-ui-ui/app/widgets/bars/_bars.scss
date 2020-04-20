@@ -1,0 +1,35 @@
+.widget-bars{
+  font-family: Roboto, Arial, Sans-Serif;
+
+  .bar{
+    &:hover{
+      rect{
+        fill: #499ed3;
+      }
+    }
+    rect{
+      fill: steelblue;
+    }
+
+    text{
+      &.innerText{
+        text-anchor: end;
+        fill: White;
+        pointer-events: none;
+      }
+      &.outerText{
+        text-anchor: start;
+        fill: "#333";
+      }
+    }
+  }
+
+  .stacked-bar{
+    shape-rendering: crispEdges;
+
+    &:hover{
+      stroke: #666;
+      stroke-width: 1px;
+    }
+  }
+}

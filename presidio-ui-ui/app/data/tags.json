@@ -1,0 +1,34 @@
+{
+    "user": [
+        { "name": "Administrator Account", "field": "isuseradministrator", "className": "label label-primary", "text": "Admin", "id": "admin" },
+        { "name": "Administrator Account", "field": "is_user_administrator", "className": "label label-primary", "text": "Admin", "id": "admin" },
+        { "name": "Administrator Account", "field": "adminAccount", "className": "label label-primary", "text": "Admin", "id": "admin" },
+		{ "name": "Administrator Account", "field": "administratorAccount", "className": "label label-primary", "text": "Admin", "id": "admin" },
+        { "name": "Executive Account", "field": "isuserexecutive", "className": "label label-success", "text": "Executive", "id": "executive" },
+        { "name": "Executive Account", "field": "is_user_executive", "className": "label label-success", "text": "Executive", "id": "executive" },
+		{ "name": "Executive Account", "field": "executiveAccount", "className": "label label-success", "text": "Executive", "id": "executive" },
+        { "name": "Disabled Account", "field": "accountisdisabled", "className": "label label-warning", "text": "Disabled", "id": "disabled" },
+        { "name": "Disabled Account", "field": "account_is_disabled", "className": "label label-warning", "text": "Disabled", "id": "disabled" },
+        { "name": "Followed Account", "field": "isUserFollowed", "className": "label label-danger", "text": "Followed", "id": "followed" },
+        { "name": "Service Account", "field": "userServiceAccount", "className": "label label-info", "text": "Service", "id": "service" },
+		{ "name": "Service Account", "field": "isuseraccountservice", "className": "label label-info", "text": "Service", "id": "service" },
+		{ "name": "Service Account", "field": "serviceAccount", "className": "label label-info", "text": "Service", "id": "service" },
+		{ "name": "Service Account", "field": "is_user_service", "className": "label label-info", "text": "Service", "id": "service" },
+        { "name": "Sweeper Account", "field": "Sweeper", "className": "label label-info", "text": "Sweeper", "id": "sweeper" },
+        { "name": "Fixed Source Account", "field": "Fixed Source", "className": "label label-info", "text": "Fixed Source", "id": "fixed_source" },
+        { "name": "Endpoint Machine User", "field": "Desktop", "className": "label label-info", "text": "Endpoint", "id": "endpoint" },
+        { "name": "Server Machine User", "field": "Server", "className": "label label-info", "text": "Server", "id": "server" },
+        { "name": "LR", "field": "lr", "className": "label label-lr", "text": "About to Leave", "id": "LR" },
+        { "name": "LR", "field": "LR", "className": "label label-lr", "text": "About to Leave", "id": "LR" }
+    ],
+    "machine": [
+        { "name": "Sensitive Machine", "field": "is_sensitive_machine", "className": "label label-danger", "text": "Sensitive", "id": "sensitive" },
+		{ "name": "Sensitive Machine", "field": "isSensitive", "className": "label label-danger", "text": "Sensitive", "id": "sensitive" },
+        { "name": "Sensitive Machine", "field": "Sensitive", "className": "label label-danger", "text": "Desktop", "id": "desktop" }
+
+    ],
+    "yid": [
+        { "name": "VIP", "field": "is_sensitive_machine", "className": "label label-danger", "text": "VIP", "id": "vip" },
+        { "name": "VIP", "field": "vip_yid", "className": "label label-danger", "text": "VIP", "id": "vip" }
+    ]
+}

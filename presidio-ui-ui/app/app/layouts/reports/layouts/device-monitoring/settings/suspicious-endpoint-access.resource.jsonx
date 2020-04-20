@@ -1,0 +1,94 @@
+{
+  "entity": "dataQuery",
+  "params": {
+    "dataQuery": {
+      "fields": [
+        {
+            "id": "event_time"
+        },
+        {
+            "id": "username"
+        },
+        {
+            "id": "normalized_username"
+        },
+        {
+            "id": "destination_machine"
+        },
+        {
+            "id": "source_machine"
+        },
+        {
+            "id": "event_score"
+        },
+        {
+            "id": "normalized_dst_machine_score"
+        },
+        {
+            "id": "normalized_src_machine_score"
+        },
+        {
+            "id": "event_time_score"
+        }
+      ],
+      "entities": [
+        "auth_event"
+      ],
+      "sort": [
+        {
+          "field": {
+            "id": "{{suspicious_endpoint_access.value.sortBy}}"
+          },
+          "direction": "{{suspicious_endpoint_access.value.sortDirection}}"
+        }
+      ],
+      {{ suspicious_endpoint_access.value ? '
+            "limit": ' + suspicious_endpoint_access.value.pageSize + ',' : '' }}
+            {{ suspicious_endpoint_access.value ? '
+            "offset": ' + (suspicious_endpoint_access.value.pageSize * (suspicious_endpoint_access.value.page - 1))
+            + ',' : '' }}
+      "conditions": {
+        "type": "term",
+        "logicalOperator": "AND",
+        "terms": [
+          {{ user.value ? '
+          {
+            "field": {
+              "id": "normalized_username"
+            },
+            "queryOperator": "equals",
+            "type": "field",
+            "value": "' + user.value + '"
+          },' : ''
+          }}
+          {{ endpoint.value ? '
+          {
+            "field": {
+              "id": "destination_machine"
+            },
+            "queryOperator": "equals",
+            "type": "field",
+            "value": "' + endpoint.value + '"
+          },' : ''
+          }}
+          {
+            "field": {
+              "id": "event_time_utc"
+            },
+            "queryOperator": "between",
+            "type": "field",
+            "value": "{{events_time.value}}"
+          },
+          {
+            "field": {
+              "id": "event_score"
+            },
+            "queryOperator": "greaterThanOrEquals",
+            "type": "field",
+            "value": 50
+          }
+        ]
+      }
+    }
+  }
+}

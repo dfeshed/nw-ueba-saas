@@ -1,0 +1,17 @@
+.widget-bubbles{
+  text-align: center;
+
+  circle{
+    fill: steelblue;
+  }
+
+  text{
+    fill: White;
+  }
+
+  .node:hover{
+    circle{
+      fill: #50a3df;
+    }
+  }
+}

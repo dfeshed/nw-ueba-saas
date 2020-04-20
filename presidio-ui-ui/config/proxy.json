@@ -1,0 +1,25 @@
+{
+	"apiUrl": "http://fs-test-nv11:8080",
+	"port": 3000,
+	"lrPort": 35729,
+	"proxy": {
+		"baseUrl": "/api/*",
+		"redirects": {
+			"/api/analyst/logout": "/signin.html"
+		}
+	},
+	"apiCache": {
+		"cacheFolder": "api_cache",
+		"useWhiteList": true,
+		"whiteListUrls": [
+			"/api/getEntities",
+			"/api/dataQuery",
+			"/api/analyst/me/details",
+			"/api/notifications",
+			"/api/monitor"
+		],
+		"clearCacheOnUrls": [
+			"/api/analyst/login"
+		]
+	}
+}

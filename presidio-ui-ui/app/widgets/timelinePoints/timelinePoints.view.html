@@ -1,0 +1,4 @@
+<div ng-controller="TimelineController">
+    <ng-include src="'views/elements/chart_legend.html'"></ng-include>
+    <timeline-points ng-model="view.data" settings="view.settings" page="getPage($firstTime)"></timeline-points>
+</div>

@@ -1,0 +1,63 @@
+$btnBorderRadius: 4px;
+$btnBorderColor: #498a99;
+
+.form{
+  .form-field{
+    border-bottom: solid 1px #ddd;
+    padding: 6px 0;
+  }
+
+  .label-text{
+    display: inline-block;
+    width: 80px;
+  }
+
+  .form-buttons{
+    padding-top: 15px;
+    text-align: right;
+  }
+
+  .form-submit-btn{
+    font-size: 14px;
+    height: 30px;
+    line-height: 29px;
+    padding: 0 20px;
+    cursor: pointer;
+  }
+}
+
+.checklist{
+  -webkit-column-width: 180px;
+  -moz-column-width: 180px;
+  column-width: 180px;
+  -webkit-column-gap: 0;
+  -moz-column-gap: 0;
+  column-gap: 0;
+
+  &.checklist-single-column{
+    -webkit-column-count: 1;
+    -moz-column-count: 1;
+    column-count: 1;
+  }
+  li{
+    padding: 4px 4px 4px 8px;
+    display: list-item;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+
+    &:hover{
+      background: rgba(78, 101, 104, 0.15);
+    }
+  }
+
+  input[type=checkbox]{
+    margin-top: -1px;
+  }
+
+  label{
+    font-size: 13px;
+    margin: 0;
+  }
+}

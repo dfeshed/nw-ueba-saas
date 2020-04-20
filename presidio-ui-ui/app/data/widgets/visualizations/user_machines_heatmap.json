@@ -1,0 +1,46 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+    "views": [
+        {
+            "type": "heatMap",
+            "settings": {
+                "column": "{{service_name}}",
+                "row": "{{displayname:capitalize}}",
+                "value":"{{target_count}}",
+                "legend": {
+                    "items": [
+                        {
+                            "color": "#80BFF0",
+                            "value": "Minimal machine accesses"
+                        },
+                        {
+                            "color": "#065DA0",
+                            "value": "Maximal machine accesses"
+                        }
+                    ]
+                },
+                "behavior":{
+                    "rows":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}}"
+                    },
+                    "columns":{
+                        "isSortingEnabled":true,
+                        "tooltip":"{{name}} : all = {{valueSum}}",
+                        "percentCalculationMethod":"valueSum"
+                    },
+                    "cell":{
+                        "tooltip":"{{rowName}} logged {{value}} {{value:pluralOrSingular:time:times}} to {{name}}"
+                    }
+
+                }
+            }
+
+        }
+    ]
+}

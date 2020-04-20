@@ -1,0 +1,10 @@
+<div class="filter-in-use-main" ng-class="{'active':$ctrl.isActive}" ng-click="$ctrl.updateChange()" ng-if="$ctrl.isActive"
+    title="{{$ctrl.text}}">
+
+    <div class="filter-name">
+        <span>{{$ctrl.text}}</span>
+        <span ng-click="$ctrl.clearFilter()" class="disable-filter"> X</span>
+     </div>
+
+ </div>
+</div>

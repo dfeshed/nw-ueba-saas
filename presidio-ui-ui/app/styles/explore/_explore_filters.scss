@@ -1,0 +1,269 @@
+.explore-filters-component {
+
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: hidden;
+
+    .card-header {
+
+        padding: 0;
+        min-height: 0;
+        height: 50px;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        position:relative;
+
+        h3 {
+            color: #013f71;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .filter-icon {
+            margin: 0 9px 0 16px;
+            fill: #013f71;
+        }
+
+        .card-header-controls {
+            padding: 0 15px;
+
+            input {
+                height: 28px;
+                margin-right: 5px;
+                color: white;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 14px;
+                font-weight: 400;
+                background-color: #2ac57e;
+                border: none;
+            }
+        }
+    }
+
+    .card-contents {
+        flex: 1;
+        padding: 10px;
+        overflow: auto;
+    }
+
+    .explore-filters-add {
+        position: relative;
+        display: inline-block;
+
+        button {
+            background-color: #2b98e4;
+            border: none;
+        }
+
+        .dialog {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: White;
+            box-shadow: 1px 1px 8px rgba(0, 0, 0, .6);
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        .explore-filters-add-fields {
+            list-style: none;
+            padding: .5rem 0;
+            margin: 0;
+
+            li {
+                white-space: nowrap;
+                padding: .4rem 2rem .4rem 1rem;
+                cursor: pointer;
+
+                &:hover {
+                    background: $listHoverBackgroundColor;
+                }
+            }
+        }
+    }
+
+    input[type='input'], textarea, .uneditable-input {
+        width: 185px;
+
+        @media screen and (max-width: 1280px) {
+            width: 120px;
+        }
+    }
+    .explore-filters-empty-message {
+        display: block;
+
+        color: #01294a;
+        font-family: 'Open Sans', sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        text-align: center;
+
+        svg {
+            display: block;
+            width: 50px;
+            height: 50px;
+            margin: 25px auto 0;
+        }
+    }
+
+    .explore-filters-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        .explore-filters-list-filter {
+            margin-bottom: 1rem;
+        }
+
+        .explore-filters-list-filter-container {
+            position: relative;
+            margin-top: 5px;
+
+            select {
+                width: 100px;
+            }
+        }
+
+        .explore-filters-filter-name {
+            color: #013f71;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .explore-filters-filter-value {
+            padding: 0 0 0 10px;
+            width: 200px;
+
+            @media screen and (max-width: 1400px) {
+                width: 150px;
+            }
+
+            input, select {
+                width: 210px;
+                box-sizing: border-box;
+
+                @media screen and (max-width: 1400px) {
+                    width: 150px;
+                }
+            }
+
+            daterange input {
+                height: 25px;
+            }
+        }
+        .explore-filters-filter-remove {
+            display: block;
+            width: 28px;
+            height: 28px;
+
+            .close-icon {
+                margin: 6px auto;
+            }
+        }
+        .explore-filters-in-val-remove {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            background: url(../images/icons/remove.svg) no-repeat center bottom;
+            background-size: 60%;
+            float: right;
+            opacity: 0.4;
+        }
+        .explore-filters-inf-val-selected {
+            display: inline-block;
+            word-break: break-all;
+            max-width: 80%;
+
+        }
+        .explore-filters-in-val-checkbox {
+            margin: 5px 5px 5px 0;
+            float: left;
+        }
+        .explore-filters-in-val-disabled {
+            opacity: 0.5;
+        }
+        .filters-in-val-even {
+            background-color: #FFFFFF;
+        }
+        .explore-filters-in-val-row {
+            padding: 3px;
+        }
+        .explore-filters-in-val-container {
+            list-style: none;
+            margin: 0;
+            padding: 0
+        }
+        .explore-filters-in-val-row:hover .explore-filters-in-val-remove {
+            opacity: 1;
+        }
+        .explore-filters-in-val-selected {
+            word-wrap: break-word;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 80%;
+            display: inline-block;
+        }
+    }
+}
+
+input.error-input {
+    transition: background-color 1s ease;
+    background-color: #FFCCB8;
+}
+
+.number-range-widget input {
+    width: 70px;
+}
+
+.number-range-widget .delimiter {
+    display: inline-block;
+    margin: 0 0.3rem
+}
+
+.explore-filters-list .error-message-list {
+    color: #c00;
+    background-color: cornsilk;
+    width: 150px;
+    position: absolute;
+    padding: .3rem .6rem;
+    margin: 4px 0 0 4px;
+    top: 25px;
+    left: 120px;
+    font-size: 0.8rem;
+    box-shadow: 0 1px 3px RGBA(0, 0, 0, 0.5);
+    z-index: 999;
+    list-style: none;
+    height: 17px;
+    padding-bottom: 6px;
+    padding-top: 0px;
+}
+
+.dropdown-directive-menu {
+    top: 175px !important;
+    left: 115px !important;
+    height: 50% !important;
+    width: 270px !important;
+    text-align: left;
+
+    @media screen and (max-width: 1400px) {
+        width: 210px !important;
+    }
+}
+
+

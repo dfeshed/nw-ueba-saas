@@ -1,0 +1,65 @@
+{
+    "data": [
+        {
+            "id": "1",
+            "name": "vpn_geo_hopping",
+            "startDate": 1468569600000,
+            "endDate": 1468573199000,
+            "entityType": "User",
+            "entityName": "evdusr35@somebigcompany.com",
+            "entityId": "578d03eee4b0f79726b6e2c4",
+            "evidences": [
+                {
+                    "id": "1",
+                    "entityType": "User",
+                    "entityTypeFieldName": "normalized_username",
+                    "entityName": "evdusr35@somebigcompany.com",
+                    "startDate": 1468224000000,
+                    "endDate": 1468238400000,
+                    "retentionDate": 1468224000000,
+                    "anomalyType": "VPN_user_lateral_movement",
+                    "anomalyTypeFieldName": "VPN_user_lateral_movement",
+                    "name": "VPN_user_lateral_movement",
+                    "anomalyValue": "evdusr35@somebigcompany.com",
+                    "dataEntitiesIds": [
+                        "vpn_session"
+                    ],
+                    "evidenceType": "Notification",
+                    "score": 50,
+                    "severity": "Low",
+                    "top3eventsJsonStr": null,
+                    "top3events": null,
+                    "numOfEvents": 5,
+                    "timeframe": null,
+                    "supportingInformation": {
+                        "EntitySupportingInformation": {}
+                    }
+                }
+            ],
+            "evidenceSize": 1,
+            "score": 100,
+            "severityCode": 0,
+            "severity": "Critical",
+            "status": "Open",
+            "feedback": "None",
+            "userScoreContribution": 20,
+            "userScoreContributionFlag": true,
+            "timeframe": "Hourly",
+            "dataSourceAnomalyTypePair": [
+                {
+                    "dataSource": "vpn",
+                    "anomalyType": "vpn_geo_hopping"
+                },
+                {
+                    "dataSource": "vpn",
+                    "anomalyType": "country"
+                }
+            ],
+            "comments": []
+        }
+    ],
+    "total": 1,
+    "offset": 0,
+    "warning": null,
+    "info": null
+}

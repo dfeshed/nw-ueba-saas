@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>System Setup</title>
+    <link rel="icon" type="image/png" href="images/quest.ico">
+
+    <!-- inject:css -->
+    <!-- endinject -->
+</head>
+<body>
+
+<!-- Page loader animation -->
+<div id="app-loader" ng-class="{ 'loader-hidden': hideLoader }">
+    <img class="login-background-image">
+    <div class="app-loader-container">
+        <div class="logo-container">
+            <img src="assets/images/white-fortscale-logo.png" alt="" class="logo-image">
+        </div>
+        <div class="app-loader-loader-icon">
+            <img src="assets/images/Loader-chess-infinite.gif">
+        </div>
+        <div class="app-loader-footer">
+                <span class="company-name">
+                    <i class="fa fa-copyright" aria-hidden="true"></i> <span id="current-year"></span> FORTSCALE LTD All Rights Reserved
+                </span>
+        </div>
+    </div>
+</div>
+
+<div class="main" ng-class="{ 'show': showMainView }">
+    <div class="fs-header-bar-component--bullets-container">
+        <a class="fs-header-bar-component--logo" ui-sref-opts="{reload: true}" href="../#/overview">
+
+        </a>
+    </div>
+    <div ui-view class="main-ui-view"></div>
+</div>
+
+<div ng-app="Fortscale.SystemSetupAppLoader"></div>
+
+<!-- inject:js -->
+<!-- endinject -->
+
+<!-- include templates -->
+<script src="assets/js/fs-templates.min.js"></script>
+<ng-include src="'assets/svgs-spritesheet/symbols.svg'"></ng-include>
+
+</body>
+</html>

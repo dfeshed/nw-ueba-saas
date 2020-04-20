@@ -1,0 +1,33 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 50
+        }
+    },
+    "views": [
+        {
+            "type": "bars",
+            "settings": {
+                "label": "label",
+                "value": "login_count",
+                "tooltipText": "{{label}} - {{login_count}} logins",
+                "scales": {
+                    "x": true
+                },
+                "axes": {
+                    "x": {
+                        "label": "Logins Count",
+                        "tickFormat": "d"
+                    }
+                },
+                "onSelect": {
+                    "action": "innerUrl",
+                    "actionOptions": {
+                        "url": "/d/explore/kerberos_logins?filters=kerberos_logins.target_machine%3D{{label}}"
+                    }
+                }
+            }
+        }
+    ]
+}

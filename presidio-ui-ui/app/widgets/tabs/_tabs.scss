@@ -1,0 +1,102 @@
+$widgetTableLabelHeight: 18px;
+$tabsBorderRadius: 5px;
+
+.widget-tabs{
+/*  position: relative;
+  z-index: 4;
+  overflow: hidden;*/
+  .dashboard{
+    position: static;
+  }
+
+  &>ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 5px;
+  }
+
+  &>ul>li{
+    display: inline-block;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border-style: solid;
+    border-width: 1px 1px 0 1px;
+    border-color: #ddd;
+    cursor: pointer;
+    background: White;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #f7f7f7;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(55%,#f7f7f7), color-stop(100%,#d7d7d7));
+    background: -webkit-linear-gradient(top, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+    background: linear-gradient(to bottom, #f7f7f7 0%, #f7f7f7 55%, #d7d7d7 100%);
+
+    -webkit-transform: translateY(3px);
+    -moz-transform: translateY(3px);
+    transform: translateY(3px);
+    -webkit-transition: -webkit-transform 200ms ease-out;
+    -moz-transition: -moz-transform 200ms ease-out;
+    transition: transform 200ms ease-out;
+
+    &:first-child{
+      border-radius: $tabsBorderRadius 0 0 0;
+    }
+    &:last-child{
+      border-right-width: 1px;
+      border-radius: 0 $tabsBorderRadius 0 0;
+    }
+
+    &:hover{
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      transform: translateY(0);
+    }
+
+    &.selected{
+      /*box-shadow: 1px 3px 8px rgba(0,0,0,.2); remarked by shavit in order to support all tabs*/
+      box-shadow: 0px 0px 0px rgba(0,0,0,.2);
+      font-weight: bold;
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      transform: translateY(0);
+      cursor: default;
+      z-index: 5;
+      background: #f1f1f1;
+    }
+  }
+
+  .widget-tabs-label{
+    float: right;
+    display: block;
+    border-radius: $widgetTableLabelHeight / 2;
+    height: $widgetTableLabelHeight;
+    color: White;
+    font-weight: bold;
+    padding: 0 8px;
+    line-height: $widgetTableLabelHeight;
+  }
+
+  .widget-tabs-bottom{
+    display: block;
+    position: absolute;
+    bottom: 1px;
+    background: $innerDashboardBorderColor;
+    width: 100%;
+    height: 1px;
+    z-index: 1000;
+  }
+
+  .widget-tabs-mask{
+    display: block;
+    position: absolute;
+    bottom: 1px;
+    background: White;
+    height: 1px;
+    z-index: 1001;
+  }
+}

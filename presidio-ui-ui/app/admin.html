@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html ng-app="FortscaleAdmin">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Fortscale - Manage Users</title>
+
+    <link rel="icon" type="image/png" href="images/quest.ico" />
+
+    <!-- inject:css -->
+    <!-- endinject -->
+</head>
+<body ng-controller="AdminController" id="admin" ng-cloak>
+    <div class="row-fluid login-wrapper">
+        <a href="index.html">
+            <img class="logo" src="images/login_title.png">
+        </a>
+
+        <div class="span8 box">
+            <div class="content-wrap">
+                <header>
+                    <input type="button"
+                           class="btn btn-primary"
+                           ng-class="{ disabled: newUser }"
+                           ng-disabled="newUser"
+                           style="float: right"
+                           ng-click="addUser()"
+                           value="+ Add New User" />
+                    <h6>Manage Users</h6>
+                </header>
+                <div class="alert alert-error" ng-show="error">
+                    <i class="icon-remove-sign"></i>
+                    {{error.message}}
+                </div>
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>Email Address</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-show="newUser">
+                            <td><input type="text" placeholder="Email address" ng-model="newUser.username" ng-change="validateNewUser()" focus-when="newUser" /></td>
+                            <td><input type="text" placeholder="First name" ng-model="newUser.firstName" ng-change="validateNewUser()" /></td>
+                            <td><input type="text" placeholder="Last name" ng-model="newUser.lastName" ng-change="validateNewUser()" /></td>
+                            <td><input type="password" placeholder="Password" ng-model="newUser.password" ng-change="validateNewUser()" /></td>
+                            <td colspan="2">
+                                <input type="button"
+                                       class="btn btn-primary"
+                                       ng-class="{ disabled: !newUserValidated }"
+                                       value="Add User"
+                                       ng-click="createUser()"
+                                       ng-disabled="!newUserValidated" />
+                                <a ng-click="cancelNewUser()" class="btn btn-link">Cancel</a>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="user in users | orderBy:'userName'">
+                            <td>{{user.userName}}</td>
+                            <td>{{user.firstName}}</td>
+                            <td>{{user.lastName}}</td>
+                            <td>
+                                <input type="button" ng-click="renewPassword(user)" value="Renew password" class="btn" />
+                            </td>
+                            <td><input type="button" ng-click="deleteUser(user)" value="Delete" class="btn btn-danger" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal filters-modal" style="width: 500px" ng-if="showRenewPasswordModal">
+        <div class="modal-header">
+            <a class="close" ng-click="renewPasswordModal.close()">×</a>
+            <h3>Renew password for {{renewPasswordModal.renewPasswordUser.firstName}} {{renewPasswordModal.renewPasswordUser.lastName}}</h3>
+        </div>
+        <div class="modal-body">
+            <label>
+                <span>Verify your password:</span>
+                <input type="password" placeholder="{{currentUser.fullName}}'s password" ng-model="renewPasswordModal.adminPassword" />
+            </label>
+            <label>
+                <span>New password:</span>
+                <input type="password" placeholder="Password for {{renewPasswordModal.renewPasswordUser.firstName}} {{renewPasswordModal.renewPasswordUser.lastName}}" ng-model="renewPasswordModal.newPassword" />
+            </label>
+            <label>
+                <span>Verify password:</span>
+                <input type="password" placeholder="Same as above" ng-model="renewPasswordModal.newPasswordVerify" />
+            </label>
+            <div ng-if="renewPasswordModal.error" class="alert alert-error">
+                {{renewPasswordModal.error}}
+            </div>
+        </div>
+        <footer class="modal-footer">
+            <a class="btn btn-primary" ng-click="renewPasswordModal.update()">Update Password</a>
+        </footer>
+    </div>
+    <div class="modal-backdrop fade in" ng-click="renewPasswordModal.close()" ng-show="showRenewPasswordModal"></div>
+
+    <!-- inject:js -->
+    <!-- endinject -->
+
+    <!-- pre load bg imgs -->
+    <script type="text/javascript">
+        $(function () {
+            // bg switcher
+            var $btns = $(".bg-switch .bg");
+            $btns.click(function (e) {
+                e.preventDefault();
+                $btns.removeClass("active");
+                $(this).addClass("active");
+                var bg = $(this).data("img");
+
+                $("html").css("background-image", "url('img/bgs/" + bg + "')");
+            });
+
+        });
+    </script>
+</body>
+</html>

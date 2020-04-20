@@ -1,0 +1,43 @@
+.fs-severity-tag {
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0;
+    padding: 0;
+
+    @mixin circle-severity-mixin {
+        // write the css here
+        border-radius: 50%;
+        color: #FFF;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        width: 29px;
+        height: 29px;
+    }
+
+    &--icon-container {
+
+
+
+        &--critical {
+            @include circle-severity-mixin;
+            background: var(--main-critical-severity-color);
+        }
+        &--high {
+            @include circle-severity-mixin;
+            background: var(--main-high-severity-color);
+        }
+        &--medium {
+            @include circle-severity-mixin;
+            background: var(--main-medium-severity-color);
+        }
+        &--low {
+            @include circle-severity-mixin;
+            background: var(--main-low-severity-color);
+        }
+    }
+}

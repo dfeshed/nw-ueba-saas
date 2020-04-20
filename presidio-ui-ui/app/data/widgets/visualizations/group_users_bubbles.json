@@ -1,0 +1,27 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 80
+        }
+    },
+    "views": [
+        {
+            "type": "bubbles",
+            "settings": {
+                "label": "{{group_dn:groupName}}",
+                "childIdField": "displayname",
+                "tooltipText": "{{name}}: {{value}} {{value:pluralOrSingular:User:Users}} ({{_percent:toFixed:2}}% of all users)",
+                "onSelect": {
+                    "action": "openPopup",
+                    "actionOptions": {
+                        "widgetId": "visualizations.group_users_bubbles_popup",
+                        "title": "Members of {{name}}",
+                        "width": 500,
+                        "height": 360
+                    }
+                }
+            }
+        }
+    ]
+}

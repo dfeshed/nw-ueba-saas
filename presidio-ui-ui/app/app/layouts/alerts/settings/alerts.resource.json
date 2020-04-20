@@ -1,0 +1,17 @@
+{
+    "entity": "alerts",
+    "params": {
+        "fromPage": "{{alert_table.value.page}}",
+        "size": "{{alert_table.value.pageSize}}",
+        "sort_field": "{{alert_table.value.sortBy}}",
+        "sort_direction": "{{alert_table.value.sortDirection}}",
+        "severity": "{{severity_filter.value}}",
+        "status": "{{status_filter.value}}",
+        "feedback": "{{feedback_filter.value}}",
+        "alert_start_range": "{{date_range_filter.value|unixToTimeStamp}}",
+        "entity_tags": "{{tags_filter.value}}",
+        "entity_id": "{{entities_ids_filter.value}}",
+        "indicator_types": "{{indicator_types_filter.value}}",
+        "total_severity_count": true
+    }
+}

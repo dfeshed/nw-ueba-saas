@@ -1,0 +1,44 @@
+<section class="fs-report disabled-accounts-activity-report stale-account-monitoring-reports">
+
+    <!-- Header -->
+    <fs-report-header header-title="{{::report.state.reportTitle}}"
+        header-description="{{::report.state.reportDescription}}"></fs-report-header>
+    <!-- END OF Header -->
+
+
+    <!-- Report Content -->
+    <section class="report-content">
+        <fs-state-container container-id="report_main_state"
+            state-model="report.mainState"
+            resource-settings="::report.disabledUsersWithNetworkResource"
+            on-data-fetch="report.dataFetchDelegate(promise)">
+
+
+            <!-- No Users Message -->
+            <div class="no-users-container"
+                style="text-align: center; margin-top: 20px;"
+                ng-class="{hide: stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length === 0 && !stateContainer.isLoading}">
+                <h3>No disabled users with network activity were found</h3>
+            </div>
+            <!-- END of No Users Message -->
+
+            <!-- Table -->
+            <div class="users-table-content table-widget"
+                ng-class="{hide: !stateContainer.dataModel.length || stateContainer.isLoading, show: stateContainer.dataModel.length !== 0 && !stateContainer.isLoading}">
+                <div class="fs-table-wrapper">
+                    <fs-table table-id="disabled_user_table"
+                        table-settings="report.disabledUsersWithNetworkTableSettings"
+                        table-model="stateContainer.dataModel"
+                        fetch-state-delegate="::stateContainer.fetchStateById"
+                        update-state-delegate="::stateContainer.updateCtrlState"
+                        class="general-fs-table"></fs-table>
+                </div>
+            </div>
+            <!-- END OF Table -->
+
+
+        </fs-state-container>
+    </section>
+    <!-- END OF Report Content -->
+</section>
+

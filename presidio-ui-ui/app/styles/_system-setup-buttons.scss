@@ -1,0 +1,25 @@
+.system-setup-button {
+    display: inline-block;
+    height: 35px;
+    line-height: 35px;
+    width: auto;
+
+    background-color: #016a9c;
+
+    @include font-open-sans($color: white);
+    text-align: center;
+
+    padding: 0 30px;
+
+    cursor: pointer;
+
+    &:hover {
+        background-color: #0260a0;
+    }
+
+    &[disabled] {
+        opacity: 0.2;
+        cursor: not-allowed;
+    }
+
+}

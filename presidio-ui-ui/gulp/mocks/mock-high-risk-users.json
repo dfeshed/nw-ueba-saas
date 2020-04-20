@@ -1,0 +1,1594 @@
+{
+    "data": [
+        {
+            "_id" : "57200796e4b071215a83558f",
+            "_class" : "fortscale.domain.core.User",
+            "displayName" : "alr usr10",
+            "username" : "alrusr10@somebigcompany.com",
+            "noDomainUsername" : "alrusr10",
+            "followed" : true,
+            "app" : {
+                "active_directory" : {
+                    "applicationName" : "active_directory",
+                    "userName" : "alrusr10@somebigcompany.com"
+                }
+            },
+            "logUsername" : {
+                "kerberos_logins" : "alrusr10@somebigcompany.com"
+            },
+            "scores" : {
+                "total" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "total",
+                    "prevScores" : [
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : -0.9999998780487953,
+                            "trendScore" : -82,
+                            "timestamp" : "2016-04-27T02:53:30.360Z",
+                            "timestampEpoc" : "1461725610360"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        }
+                    ],
+                    "score" : 0,
+                    "avgScore" : 0,
+                    "trend" : -0.9999998780487953,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-27T02:53:30.360Z",
+                    "timestampEpoc" : "1461725610360"
+                },
+                "auth" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "auth",
+                    "prevScores" : [
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.7552,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32211538461538464,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32689210950080516,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2576985413290113,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.29174311926605506,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-13T23:59:59Z",
+                            "timestampEpoc" : "1460591999000"
+                        }
+                    ],
+                    "score" : 82,
+                    "avgScore" : 2.8420221169036335,
+                    "trend" : 8199999.999999999,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-26T00:37:53Z",
+                    "timestampEpoc" : "1461631073000"
+                }
+            },
+            "sf" : "##alr usr10##usr10 alr##alrusr10@somebigcompany.com",
+            "adInfo" : {
+                "objectGUID" : "VJS2leaUuEaCpdopaO6ksg==",
+                "dn" : "CN=alr au. usr10,OU=employees,DC=somebigcompany,DC=com",
+                "firstname" : "alr",
+                "lastname" : "usr10",
+                "userPrincipalName" : "alrusr10@somebigcompany.com",
+                "sAMAccountName" : "alrusr10",
+                "homePhone" : "+972 (3) 600-6078",
+                "mobile" : "+972 (3) 600-6078",
+                "position" : "SALES ENGINEER",
+                "department" : "SALES",
+                "displayName" : "alr au. usr10",
+                "userAccountControl" : 512,
+                "whenChanged" : "2015-11-24T09:26:36Z",
+                "whenCreated" : "2015-07-13T16:34:24Z",
+                "streetAddress" : "19D Habarzel St.,",
+                "company" : "FORTSCALE",
+                "c" : "IL",
+                "l" : "Tel Aviv",
+                "isAccountDisabled" : false,
+                "directReports" : [ ],
+                "groups" : [
+                    {
+                        "dn" : "CN=securityGroup26,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup26"
+                    },
+                    {
+                        "dn" : "CN=adminTagGroup1,OU=TaggingGroupAccounts,OU=Tagging,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "adminTagGroup1"
+                    },
+                    {
+                        "dn" : "CN=securityGroup15,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup15"
+                    }
+                ]
+            },
+            "whenCreated" : "2015-07-13T16:34:24Z",
+            "logLastActivity" : {
+                "kerberos_logins" : "2016-04-26T17:55:53Z"
+            },
+            "tags" : [
+                "admin",
+                "Research & Development"
+            ],
+            "administratorAccount" : true,
+            "lastActivity" : "2016-04-26T17:55:53Z",
+            "image": "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",
+            "score": 120,
+            "severity": "CRITICAL"
+        },
+        {
+            "_id" : "57200796e4b071215a83558f",
+            "_class" : "fortscale.domain.core.User",
+            "displayName" : "alr usr10",
+            "username" : "alrusr10@somebigcompany.com",
+            "noDomainUsername" : "alrusr10",
+            "followed" : false,
+            "app" : {
+                "active_directory" : {
+                    "applicationName" : "active_directory",
+                    "userName" : "alrusr10@somebigcompany.com"
+                }
+            },
+            "logUsername" : {
+                "kerberos_logins" : "alrusr10@somebigcompany.com"
+            },
+            "scores" : {
+                "total" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "total",
+                    "prevScores" : [
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : -0.9999998780487953,
+                            "trendScore" : -82,
+                            "timestamp" : "2016-04-27T02:53:30.360Z",
+                            "timestampEpoc" : "1461725610360"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        }
+                    ],
+                    "score" : 0,
+                    "avgScore" : 0,
+                    "trend" : -0.9999998780487953,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-27T02:53:30.360Z",
+                    "timestampEpoc" : "1461725610360"
+                },
+                "auth" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "auth",
+                    "prevScores" : [
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.7552,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32211538461538464,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32689210950080516,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2576985413290113,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.29174311926605506,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-13T23:59:59Z",
+                            "timestampEpoc" : "1460591999000"
+                        }
+                    ],
+                    "score" : 82,
+                    "avgScore" : 2.8420221169036335,
+                    "trend" : 8199999.999999999,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-26T00:37:53Z",
+                    "timestampEpoc" : "1461631073000"
+                }
+            },
+            "sf" : "##alr usr10##usr10 alr##alrusr10@somebigcompany.com",
+            "adInfo" : {
+                "objectGUID" : "VJS2leaUuEaCpdopaO6ksg==",
+                "dn" : "CN=alr au. usr10,OU=employees,DC=somebigcompany,DC=com",
+                "firstname" : "alr",
+                "lastname" : "usr10",
+                "userPrincipalName" : "alrusr10@somebigcompany.com",
+                "sAMAccountName" : "alrusr10",
+                "homePhone" : "+972 (3) 600-6078",
+                "mobile" : "+972 (3) 600-6078",
+                "position" : "SALES ENGINEER",
+                "department" : "SALES",
+                "displayName" : "alr au. usr10",
+                "userAccountControl" : 512,
+                "whenChanged" : "2015-11-24T09:26:36Z",
+                "whenCreated" : "2015-07-13T16:34:24Z",
+                "streetAddress" : "19D Habarzel St.,",
+                "company" : "FORTSCALE",
+                "c" : "IL",
+                "l" : "Tel Aviv",
+                "isAccountDisabled" : false,
+                "directReports" : [ ],
+                "groups" : [
+                    {
+                        "dn" : "CN=securityGroup26,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup26"
+                    },
+                    {
+                        "dn" : "CN=adminTagGroup1,OU=TaggingGroupAccounts,OU=Tagging,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "adminTagGroup1"
+                    },
+                    {
+                        "dn" : "CN=securityGroup15,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup15"
+                    }
+                ]
+            },
+            "whenCreated" : "2015-07-13T16:34:24Z",
+            "logLastActivity" : {
+                "kerberos_logins" : "2016-04-26T17:55:53Z"
+            },
+            "tags" : [
+                "admin",
+                "Research & Development"
+            ],
+            "administratorAccount" : true,
+            "lastActivity" : "2016-04-26T17:55:53Z",
+            "image": "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",
+            "score": 120,
+            "severity": "Critical"
+        },
+        {
+            "_id" : "57200796e4b071215a83558f",
+            "_class" : "fortscale.domain.core.User",
+            "displayName" : "alr usr10",
+            "username" : "alrusr10@somebigcompany.com",
+            "noDomainUsername" : "alrusr10",
+            "followed" : false,
+            "app" : {
+                "active_directory" : {
+                    "applicationName" : "active_directory",
+                    "userName" : "alrusr10@somebigcompany.com"
+                }
+            },
+            "logUsername" : {
+                "kerberos_logins" : "alrusr10@somebigcompany.com"
+            },
+            "scores" : {
+                "total" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "total",
+                    "prevScores" : [
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : -0.9999998780487953,
+                            "trendScore" : -82,
+                            "timestamp" : "2016-04-27T02:53:30.360Z",
+                            "timestampEpoc" : "1461725610360"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        }
+                    ],
+                    "score" : 0,
+                    "avgScore" : 0,
+                    "trend" : -0.9999998780487953,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-27T02:53:30.360Z",
+                    "timestampEpoc" : "1461725610360"
+                },
+                "auth" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "auth",
+                    "prevScores" : [
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.7552,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32211538461538464,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32689210950080516,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2576985413290113,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.29174311926605506,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-13T23:59:59Z",
+                            "timestampEpoc" : "1460591999000"
+                        }
+                    ],
+                    "score" : 82,
+                    "avgScore" : 2.8420221169036335,
+                    "trend" : 8199999.999999999,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-26T00:37:53Z",
+                    "timestampEpoc" : "1461631073000"
+                }
+            },
+            "sf" : "##alr usr10##usr10 alr##alrusr10@somebigcompany.com",
+            "adInfo" : {
+                "objectGUID" : "VJS2leaUuEaCpdopaO6ksg==",
+                "dn" : "CN=alr au. usr10,OU=employees,DC=somebigcompany,DC=com",
+                "firstname" : "alr",
+                "lastname" : "usr10",
+                "userPrincipalName" : "alrusr10@somebigcompany.com",
+                "sAMAccountName" : "alrusr10",
+                "homePhone" : "+972 (3) 600-6078",
+                "mobile" : "+972 (3) 600-6078",
+                "position" : "SALES ENGINEER",
+                "department" : "SALES",
+                "displayName" : "alr au. usr10",
+                "userAccountControl" : 512,
+                "whenChanged" : "2015-11-24T09:26:36Z",
+                "whenCreated" : "2015-07-13T16:34:24Z",
+                "streetAddress" : "19D Habarzel St.,",
+                "company" : "FORTSCALE",
+                "c" : "IL",
+                "l" : "Tel Aviv",
+                "isAccountDisabled" : false,
+                "directReports" : [ ],
+                "groups" : [
+                    {
+                        "dn" : "CN=securityGroup26,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup26"
+                    },
+                    {
+                        "dn" : "CN=adminTagGroup1,OU=TaggingGroupAccounts,OU=Tagging,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "adminTagGroup1"
+                    },
+                    {
+                        "dn" : "CN=securityGroup15,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup15"
+                    }
+                ]
+            },
+            "whenCreated" : "2015-07-13T16:34:24Z",
+            "logLastActivity" : {
+                "kerberos_logins" : "2016-04-26T17:55:53Z"
+            },
+            "tags" : [
+                "admin",
+                "Research & Development"
+            ],
+            "administratorAccount" : true,
+            "lastActivity" : "2016-04-26T17:55:53Z",
+            "image": "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",
+            "score": 100,
+            "severity": "HIGH"
+        },
+        {
+            "_id" : "57200796e4b071215a83558f",
+            "_class" : "fortscale.domain.core.User",
+            "displayName" : "alr usr10",
+            "username" : "alrusr10@somebigcompany.com",
+            "noDomainUsername" : "alrusr10",
+            "followed" : true,
+            "app" : {
+                "active_directory" : {
+                    "applicationName" : "active_directory",
+                    "userName" : "alrusr10@somebigcompany.com"
+                }
+            },
+            "logUsername" : {
+                "kerberos_logins" : "alrusr10@somebigcompany.com"
+            },
+            "scores" : {
+                "total" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "total",
+                    "prevScores" : [
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : -0.9999998780487953,
+                            "trendScore" : -82,
+                            "timestamp" : "2016-04-27T02:53:30.360Z",
+                            "timestampEpoc" : "1461725610360"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        }
+                    ],
+                    "score" : 0,
+                    "avgScore" : 0,
+                    "trend" : -0.9999998780487953,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-27T02:53:30.360Z",
+                    "timestampEpoc" : "1461725610360"
+                },
+                "auth" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "auth",
+                    "prevScores" : [
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.7552,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32211538461538464,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32689210950080516,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2576985413290113,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.29174311926605506,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-13T23:59:59Z",
+                            "timestampEpoc" : "1460591999000"
+                        }
+                    ],
+                    "score" : 82,
+                    "avgScore" : 2.8420221169036335,
+                    "trend" : 8199999.999999999,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-26T00:37:53Z",
+                    "timestampEpoc" : "1461631073000"
+                }
+            },
+            "sf" : "##alr usr10##usr10 alr##alrusr10@somebigcompany.com",
+            "adInfo" : {
+                "objectGUID" : "VJS2leaUuEaCpdopaO6ksg==",
+                "dn" : "CN=alr au. usr10,OU=employees,DC=somebigcompany,DC=com",
+                "firstname" : "alr",
+                "lastname" : "usr10",
+                "userPrincipalName" : "alrusr10@somebigcompany.com",
+                "sAMAccountName" : "alrusr10",
+                "homePhone" : "+972 (3) 600-6078",
+                "mobile" : "+972 (3) 600-6078",
+                "position" : "SALES ENGINEER",
+                "department" : "SALES",
+                "displayName" : "alr au. usr10",
+                "userAccountControl" : 512,
+                "whenChanged" : "2015-11-24T09:26:36Z",
+                "whenCreated" : "2015-07-13T16:34:24Z",
+                "streetAddress" : "19D Habarzel St.,",
+                "company" : "FORTSCALE",
+                "c" : "IL",
+                "l" : "Tel Aviv",
+                "isAccountDisabled" : false,
+                "directReports" : [ ],
+                "groups" : [
+                    {
+                        "dn" : "CN=securityGroup26,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup26"
+                    },
+                    {
+                        "dn" : "CN=adminTagGroup1,OU=TaggingGroupAccounts,OU=Tagging,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "adminTagGroup1"
+                    },
+                    {
+                        "dn" : "CN=securityGroup15,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup15"
+                    }
+                ]
+            },
+            "whenCreated" : "2015-07-13T16:34:24Z",
+            "logLastActivity" : {
+                "kerberos_logins" : "2016-04-26T17:55:53Z"
+            },
+            "tags" : [
+                "admin",
+                "Research & Development"
+            ],
+            "administratorAccount" : true,
+            "lastActivity" : "2016-04-26T17:55:53Z",
+            "image": "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",
+            "score": 80,
+            "severity": "MEDIUM"
+        },
+        {
+            "_id" : "57200796e4b071215a83558f",
+            "_class" : "fortscale.domain.core.User",
+            "displayName" : "alr usr10",
+            "username" : "alrusr10@somebigcompany.com",
+            "noDomainUsername" : "alrusr10",
+            "followed" : false,
+            "app" : {
+                "active_directory" : {
+                    "applicationName" : "active_directory",
+                    "userName" : "alrusr10@somebigcompany.com"
+                }
+            },
+            "logUsername" : {
+                "kerberos_logins" : "alrusr10@somebigcompany.com"
+            },
+            "scores" : {
+                "total" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "total",
+                    "prevScores" : [
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : -0.9999998780487953,
+                            "trendScore" : -82,
+                            "timestamp" : "2016-04-27T02:53:30.360Z",
+                            "timestampEpoc" : "1461725610360"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 0,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        }
+                    ],
+                    "score" : 0,
+                    "avgScore" : 0,
+                    "trend" : -0.9999998780487953,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-27T02:53:30.360Z",
+                    "timestampEpoc" : "1461725610360"
+                },
+                "auth" : {
+                    "_class" : "fortscale.domain.core.ClassifierScore",
+                    "classifierId" : "auth",
+                    "prevScores" : [
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-26T00:37:53Z",
+                            "timestampEpoc" : "1461631073000"
+                        },
+                        {
+                            "score" : 82,
+                            "avgScore" : 2.8420221169036335,
+                            "trend" : 8199999.999999999,
+                            "trendScore" : 82,
+                            "timestamp" : "2016-04-25T23:59:59Z",
+                            "timestampEpoc" : "1461628799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.7552,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-24T23:59:59Z",
+                            "timestampEpoc" : "1461542399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32211538461538464,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-23T23:59:59Z",
+                            "timestampEpoc" : "1461455999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.32689210950080516,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-22T23:59:59Z",
+                            "timestampEpoc" : "1461369599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-21T23:59:59Z",
+                            "timestampEpoc" : "1461283199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2568659127625202,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-20T23:59:59Z",
+                            "timestampEpoc" : "1461196799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2576985413290113,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-19T23:59:59Z",
+                            "timestampEpoc" : "1461110399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-18T23:59:59Z",
+                            "timestampEpoc" : "1461023999000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-17T23:59:59Z",
+                            "timestampEpoc" : "1460937599000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-16T23:59:59Z",
+                            "timestampEpoc" : "1460851199000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-15T23:59:59Z",
+                            "timestampEpoc" : "1460764799000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.2623762376237624,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-14T23:59:59Z",
+                            "timestampEpoc" : "1460678399000"
+                        },
+                        {
+                            "score" : 0,
+                            "avgScore" : 0.29174311926605506,
+                            "trend" : 0,
+                            "trendScore" : 0,
+                            "timestamp" : "2016-04-13T23:59:59Z",
+                            "timestampEpoc" : "1460591999000"
+                        }
+                    ],
+                    "score" : 82,
+                    "avgScore" : 2.8420221169036335,
+                    "trend" : 8199999.999999999,
+                    "trendScore" : 82,
+                    "timestamp" : "2016-04-26T00:37:53Z",
+                    "timestampEpoc" : "1461631073000"
+                }
+            },
+            "sf" : "##alr usr10##usr10 alr##alrusr10@somebigcompany.com",
+            "adInfo" : {
+                "objectGUID" : "VJS2leaUuEaCpdopaO6ksg==",
+                "dn" : "CN=alr au. usr10,OU=employees,DC=somebigcompany,DC=com",
+                "firstname" : "alr",
+                "lastname" : "usr10",
+                "userPrincipalName" : "alrusr10@somebigcompany.com",
+                "sAMAccountName" : "alrusr10",
+                "homePhone" : "+972 (3) 600-6078",
+                "mobile" : "+972 (3) 600-6078",
+                "position" : "SALES ENGINEER",
+                "department" : "SALES",
+                "displayName" : "alr au. usr10",
+                "userAccountControl" : 512,
+                "whenChanged" : "2015-11-24T09:26:36Z",
+                "whenCreated" : "2015-07-13T16:34:24Z",
+                "streetAddress" : "19D Habarzel St.,",
+                "company" : "FORTSCALE",
+                "c" : "IL",
+                "l" : "Tel Aviv",
+                "isAccountDisabled" : false,
+                "directReports" : [ ],
+                "groups" : [
+                    {
+                        "dn" : "CN=securityGroup26,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup26"
+                    },
+                    {
+                        "dn" : "CN=adminTagGroup1,OU=TaggingGroupAccounts,OU=Tagging,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "adminTagGroup1"
+                    },
+                    {
+                        "dn" : "CN=securityGroup15,OU=employees,DC=somebigcompany,DC=com",
+                        "name" : "securityGroup15"
+                    }
+                ]
+            },
+            "whenCreated" : "2015-07-13T16:34:24Z",
+            "logLastActivity" : {
+                "kerberos_logins" : "2016-04-26T17:55:53Z"
+            },
+            "tags" : [
+                "admin",
+                "Research & Development"
+            ],
+            "administratorAccount" : true,
+            "lastActivity" : "2016-04-26T17:55:53Z",
+            "image": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCABAAGADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD+JXSvC/iq9ga9g0NYYHFmotiLGBblYY7iFw8EyxzlX2PJMjCIu7uzM4Ys/wBBaR8NtWXwn4T8RxH+ydWuvif4xsHsF0O5t4odJtNJ+HlxaNZ62LibTrtrSXUb2GDRFtbM6Q0q3r306anaxw3m1O41LxreTWtzayaE3gb4VFI9L8PX3hfTTfXXgDw4b2RdJ1Ge5lN9LcvfT3utRyJb+K71rzxRYwQafq0FtF9MyRLD8HfBd22jQOn/AAtbx/b2+oR6frkl7cufDfw0M9hNeNKnh6e2tVNpc21lbRxaskl9cyajJNYyaetv8/Uk5uDla3PFO35+t7HwmKx9elKEOWm5OUX7q5uVST099NNrW75eu258iw+Bdp0izvSsLLbagnmxWUltNqciXmpyxLJJ+/FyVjlVVJHFrFKiuoicW3ceF/h9/wAJLovjPUprO507S/CLeGbPW5Zda0pN9zrU8yaPBaxSR/adReWPSNQupW0yOSO2gtpGvJo4pVSXqdOsfD3h5NV1rUpzqQ1DQdRktrC8nkuryGETXsg8lJJY7uKRZyHWUSqqkRb3QvK87/Bpt/8AhR/7SP2W21eaye4+Ezw3NnpuhT6XEkXifUGhbXNR1B4/EelS3KOVsv8AhHoDHqdz50WuqIo7NHwaaaT6uP4tLz/X5nN7WvWjJRnODXs4xnay96VNO+9vitv59TzrxVo+jaVYbNFN3e/8TbyHuYbkz2cEkQnhS3eWC3a3e6I8oCKOQBmLZIBUV3Pgj4J/Fvxf4Zi8V6ZoTab4PtLfxFFZ+INcuNO0bSrxtQ0wWz2+kDUgLzWnmu5GillsLbULezlM0jSWUtpLIOr/AGXfg7bfHL4+eHPBesRynwnbXt/4l8VJbNJZxHw14dae8urJRaGWWE63Olj4bt5YMyxXGrwTq6FCR9qftq/tYfA74b+ID8J7TXd+seHfsWiXmgeErET6V4Fg0yW1EWhM9nDFpdnJp8Fs9nNo2nxyTWpWOOV7do3SRSUnVVGlCdSbh7SyV7RvZNrf/J2RM8TiVWp4TCU54qr7P2s3yymowb1fu21bu7Oy6btJ/l7r/wALPHnh3VLvSdY8O3cF1bwJdRNE1veabf28t7biOW31W0nm06e1cSsfOS7EaTQS2srR3MckK9n41+Dd74a1vxZ4XtNRvbbTdN1XR7Z11WOzudTW9h0XUJdQt71tPdLRzaajNc21ncWzFZraF5Z7eyll+z19o6drHh34t/Cq4vdDvrPW0srdb7S9WsLh3uI4ra5tLnWtJu4Z91wkr6fZ3E0Wn3bMWv7O18krvElcP8cvEHhjxR8SPFmseD/KHhnUG8Pf2Uf7BtPDQt0s/C0FjeRRaTp8NtYWQ+227hhFGDdNuupDNM8swFBucYzUk0pN2SVpR5dJX2u+nWzsczzHFe1VOUI03ByU4um378VCUeZTj7krNtK7v7y6WPhXUfAviWytoRBPZXEFrf6l5SArFJcGW206KQrHJbuQ3lxgyJPdGD5i0QEgbdx2s+CvFv2eyQ2UNzBb2DCBIp7KOOMfb9VKtFH5kTgoT/Gzv5hlk+46Kv1nqdnKmkWWoMIjb3Wra1awFZl80z6fBoU10HhUmTyVj1O2EbSqsbuzmFmeGUDhPFNkr6bYR2moy2LRWLy3VxBHFGYnjvNUd0cTRskgaARAujM2zYoYFNg05Ur2bvHX9Ttw+YVW4xfI9ZXbi171knfl6bfCuv3eLTeGdQi+GnxD1vVNFv5db0/WvhJBpN/HoVxqMWmWE+j+KV1SW58S6Wx0rQY5nsdMRbDVUmuteYxzQqH0O8uYfK9X1fVG0H+zJUWXTj4+1PUZLaaGwkhN/JZ2MErAwBJXmCOUmAf7A6yJJAqzB2X6JSfTdW+BfxTk1nTryTxJpGufDCPQtVjm8TNp6W2vjxHLc3V8tvaXHh6G/wDsWiPY6VBrN7p91Lb6lqh0eK9FhfR2/wA8SavJfaBDoY0jR4YW8WT6+dVW28jU/OntIrI6V9sM3lR6MhgM0VjHAVS4VplkHmSRNrRqNX2VqsXez2SVz38JKdRS9rCLcaqfMnooKFFvlvr1va3xN9D6XOtaPB4vXStPktPsF94M+CwtmtdHuPDkd1qEHwm8O2uoTQ6Tc3l688kt/bu82qtKttrc7vr1ra2drqS2kPtOufEjR7f4U+G/Dun39pceINP+LnxPlv8AS7nW9ZtpLO0vfCfwq/4R/UJNHNuvh+CG+v7DWdKS50y7TWbhrCf7fDFYW2jtc/Jfj7WtJ1LxAbvw7daHdaQng74PWcs3h/QpvDdnHqWg/DHRrHWoVsJx5g1S11+z1GDWdUiZjr+sR6jrkMzR3yyya/hvU7/WdZ0fQr1E1eJ/E8q2z3MX9pPawI2nJdSRzGE3F9EkDS3D2olinkEEHlTHaYnyaaSb3UlLvfRKz1/qx5NfCxqTVed7QUZcvnBJXate2srrR9t0T/25fTz3F3fr58t1pmr2UamYx+X9tN9tFui25aaOIny0t7pQFQLBGxwpr0z4U2vizxbZa/8AB3wb4Q0Pxbr3xQufC9rp0M1sh8V2V14burvVj/wjWoyX1ra6LZXNlLcS+Jry9xbR6JZG6ubqwtbK4uA9vhwYE8/Rr/fd3Gj6wjpfXBu/tNslvqKgRSJDE8Nw00KogOYngkYybY9619efsO6NeW2gfHW+0qax0v4t+IPCGk/DT4Z3OtWt95Olz3nhjXfGfiq6u4LezvJ9PabTvCOmaXBqoikw+qmydUi1SQ1lNuMb2vtbyu0oy0/ldpW8uxhXxVJYWc6XvShycsXdLnUocsnbl9yD5ZS1Voxd2j6Q+EXwduP2RPD/AMdfiBqHj7QtX+Nfh34b+JI5PA+gWVxeW/hUweFNS+I+m30+vXos31qSa50LTRKNL0tdE823l+xa1qyASR/zBanf3mqX97qWoXU95fX93Pe3t1cSvPcXN3dSyTXFxPNIWklnllZnkkclndmY8mv6W/C37P8A8br/AFT+0fiL4z8H37aj4N/4Q7xBdvqfjCa/v9F1iw1Pw34i04Q2/gtY2iGgz+Hr/St9yYotR8LvZstoniDULmvzbuf+CUvxvjkkkk+JXwVSIvuKx6h8S5JxnJ2pEfhhHEzDODuuEXPRjxnswGIo0ZVZ1q8PaVFBc8mlpBbK2y/4Hz14ezDB4aeNni8Zh/a1VQUal94wUk4x5U1yp8rXVp3u7NryH9hT4i6j4d+I2p+EXup/7G8T6Fql20AbdHBqugWc2q2l4oY4ikkjgmtHYYEkcu1g7qgr7g1rw/bf2KfEXh/UU17w7Ne2Mcuoo01rfaaG+1QQLqmlJPe21rHdyTR21jdi+uYZJWjt5/IvL2K3k8k8Gf8ABOf4o+CbjVNUPxM+Hx1G60a/0ayl0y38YTm1XVQLPUZSL3w9peZX0uW7t7cq22KeZZWkUxYP0H8KPgD40+F09vFf+N4NQ04WtzY6nYx+HhfWup2V5PLJdWMsV/rFqy2TLIo8mMje6gys0QWFXiqmHnU9pSqxu4q6XN77ik019+rObOauX4jFVMXhsXRd40uaCUr1JQTUprRa8vJBaXbi3qmjm/E6bPgb4Mt4kVDJ8Yfiz+7muNLE+P8AhEPg01ssFsszayTxem7uJ4IdKkC2i2dzPdQ3kUXyz46l0+30s58QabHqTabdTw6a12JJpWNzdRS6Ze20cp8p5YGeWIydGkt5UVlCSnpvjppeo+EvEdvZ6bqczaVZfErxqmjz3L2MdyI7zwr8GtXazurdL7UdYIsNN1Sytb24ns4dJkuDdDS7zUJBqUNn5F4hh1nVblr+6t7QDSdFXRp5IowJL6KW+1MMxty/35LO+MrXPmLFAqfuWdUN0eRO6T6Ocu+zcfytoPCYZReHqSqpU6l6kVtJz5otQfMtYuWll0drq6OPufGbL4O8V+F47Ew/8JFq/grUI7mz8R6tFY2dn4S0/wARQSWWoaJzY65c303iSC5ttV1J3udFGmyW2nt5Oq3qs94Ef4JaDLFHJHqMPxg1uPzU8O6dIzQv4S8NT263figy/wBookEsc0lr4blih09Tc3erQ3FzczXCWXE3lssVnqQaCMvPJCtjeyXcqfZVVYzMqxJEsc0joI0KNINjKSoZl216VqGkLF8BdNlmvrWR4fjNrFjLpbeHtWjvrWb/AIRjSUuXk8To0WlS2ksUNkP7CufO1OylL3lqsNpcXK3Gylyxio2adSD1XVOyXTS57z5YOm1JtSrUk7XdlJcstl+ZwKNDNaXNlaxK0tyPDJhkvBbxXWG068aMRywoI/KkSREMfnxO9uyBx5qiSDrNL8Q3fhzxWLsb5J9P1a4laIzKoBM1olxG/wBnXCzMrOpaIHD48s4ArV8G6Tps3w4+OmqwpqF2PDXhb4X39rNapptlZxPc+MNB0S5XXI9Q1bS9SmsrkajcwxJo1lrjTX7213d2kFlGNbtPO7e7hGrMJJLtG+2TxskAt0EZjntkUCOcAgIRlVlcMFQpIzMrMzqRtdLXWy/B/r6Eyh7RzjaUlKyld2b5oQnq76O0lbq/wP0K8J3ujeKPA994jl1u6sxoNtYQaFpB0UXdvqS6xq2t2+sG71m2njh0z+zgVkjW7S4N5PNLBDhYfMb6Q/Z+12y0fxp8JxDeSW154k8da14XQwQt9lura98GaBZ3ukXpANv5kl9qGn6hbRSOJRd6YLmGNZLZlHxv8JfFGj6L+zT8U9SurOzup7XVfA1hpt3f+HtTvtShv5/EPiq7+xab4gtbiLR9DivbRZZNRj1SC4k1qzsvI0tIbrTJ93tP7K3jZNZ8U/APwhJFaaZpelfFDwt4s8VeI3dLm71nxTqfiGWay0aws/3S6batp+radb6hdtJeTO9vcxwpBHaCesJRlaXXluvRKHN597eW58picLU5MU4q9KnXnS18oaO392XL0+Jt7n7rf8IjJKoZYmbA644IIznOOQf5VkSeApZ2dfKIJ5ORhR056d+2emfz+xbTwzCVVnVQpzkKoAU/7XyjgdMADoQBxXxt8fv2tvgx8EfF+geAr+5/t3xVqHi/w74W8Q6Tpc0UVx4Pj8TaPqWtaVq+s/aYxE1vPbaehW2gfz/JuBM5iUBz49OdSo1CnT5pPRJde19l03bsfJUVVxElTpxlUbg5WV37keW710sm1v3Ryuq/DqVAy+Sxw2QQv156e/8AIe9eTeIPBzQB28p1K7sDb9PbGc/1r6i+Bvxj8EftBfC7wv8AFDQ7O50DT/FV1rdrp2ka7NaLqrS6HrOoaNMT9mdrdzO+nyXKRwtJ5UbiNnYxlm0/GHhy08udlVNxjYqAB2IHTGGwSM5656+tqbjNwqLkmpWtrfmTs9uzsi5VHRk6U/dnFuMoN9YvlaaW7Uk0z+cH9piO6sdbudTvPDFqdCh+MHjvSV8QXehWarqupWXws+BIOgHXVsxqWqNocd6mqHRTftZaJ/a66itpDNrclxJ8ppb6vrgsYtJSO48nSljvbn7O8TWgOoavGktzc2zpORHarFHB+9n8i3/d24FskOz6Y/a51HS7fxD4gsfKifULf9oL4yT3c8VksE81l/wgfwFs9MtLzUhfNPqENndQ6lPb6ethax6Zc3N5dJe3/wDbEtvYeR/BLx5p/huz+JMd1pzXa3Xwc8dQwNLZ6Jq8Vhql19p0zTrsW2uTWi2WL24tfM1HT5RrViLq0utNhMheQepTUnFPl0V2+1k0k/8At6//AA/T9Dw8K0cDRqU1zT5I8idlG7na7vbaNpu662OSl8M6noOh6qthqS6gJLGK5udMkCS2ty0clsVtY7R0Z1WS2hmieSOUXId1aN9/NVNT1vTb/wCE8Glx3Wlw61/wuPxJrY0qDRtSXVLbTb/w3olpHeLrLagmhfYBd2721rpA06HU7GUTXVzdzWV7aw21K4+JMf8AY6ErM2pmOOHeHt1h/dQW0rSxoZPMgQecgRJIl3yDEcrKpavM9QkjW4neZZbSCfU2v4dLkR5WhM9xKWeaNGe6WSKEICLhhJMXypk81nfVKTd3dap/NW/P+tUd+Hp4huft4LnjO6lFJJxg7K0U27ab+vkek+D/ALJefD34u3t/DLLe2mh/DaZL5dO0+aaOM+ItO0+6tV1IX9jJpkVzazmPZaWOqT3dxFbJdQWc0T6laYv23SjoFrp9no9u+qQeO9buDq80KSajNYfZPDVtDpk902zz7GENcXKQm9aY3LzS4jMrS3HM6L4yvNK8OeN9HFv4ani8T6X4a06/u9RszNrWlppmp2viG2m8NXCuo0+5uJ9Lt7TUZlEnn6ZcT2rqisjx2pNX02DwjaqiyJrg8b+I737VHqR8tbFtN8LCJBZmQtEz3AkljvUihmkCtC07i32Q9TpttSa3mrxt0fKm79rLt316nVKlOM7uPuyqwbtdxUfZU42eiVk1a1tzobPxjq1roC+GrTUb5NB1q0gfVtKa6WOxvPsOtardWzXEFlNAL8210iXMUV2bhVnjSTy02Wzxb3hL4rar4BlsLzSVDXWh6xpuvaXMqLE9hq2lWV0ti6xT+cslrHc6nLetbTRASXEMLLIEEqSeY3Ws2w0zQrNJx59lBcpeqiRpHCJtT1a6G5yP3mIphIPJ+VA2eCxC0Wu4n0+/QTRsuyAhmkCvmQ2fmIEKM7GNz0LIgQFkyFKtk6UuZvldne8baPpr02t8kQ8OqkJRlRspybkuX4nouZ6faSV7306u1z9g/C//AAU9/bC8Wxa80XjTQNGg0+0F1CNK8B+Fr25jPnzRgN/aOnzQNEEQyy+b+8ZwRCwWOVT+efxs+KfxH+IPxF8QfE7xl4kk1DxZ4kv9C1LVNSt9H0rSvtGo+GdLGi6JcpY6bBBY2xtdNzbvDbwrFPkzTxyzEMOg+BmsWVjovjhRGJWkbRpvPeVOIpP+EhRFWMNu/d7Y5DuMZdZ1UqViRq888fatos8sohdLtstnydzKSxJxu2Fc5OB1Hfkc16ODweGhRU+SnCq+a8lBRaWmj0u72emnyPGwuHpYfMa1GhhKNOKUad4UYxlyyjTnJOUUrpuza/upu/Tb+Gv7SXxj0/Ufhv4I8M+OtZ0+x+GmratqPgi1t9F8MrH4cm1Ce6v9cupLq50qa61eG6knu5UtfELajZxyzrHbwQs0YX6y1L9uL9prWZbuKL4z6reR6fbXTyiPRPBMUF86RRTMI1g8OwoyQPHcQ28/nkFW3sJo7hSPzEae4ado7SeawhnijZnhaVWkV8FIpnQ/vRG0bsBKGCyJuxvVCn0h4Fn+z2aXV1BDdtY20l3IWj8+K7htIpLlg8CbTPHP5RR4eDKrFCOcUPCYeopTlRhdxk0+SOrkk+Z6atWT31etzszLA4ZclX2FGV0k06MHJzc7znKVndy5u2lnq76Un8Y3HiTxwmveMox4qu7rxF4s1nWDrMRQ6peappunxG6ujp8BDypNaRTGGygjhjNvbqojtxuiPhTENRPxFjsdF0q/ksvgn49upVu9Htr9LWCGKSS51iA3Uqy2F/YWxkmg1uFZby0+W0QJbTuY+c8I6npV/wDEe1TWntbfTptQ8UXF6pv7jRLCFzp108UaS2YM1rEt3FCkMS7t3yQS5jeTPl6XGI/LiuTF5aPCjLJsMySNchkkR2yI9sqh45GKE5Lq+0CvJjFx0u0rRWn2vhbur9Wk3569DthRfKqUVJL2dN3s7RvUq7RVrWXJp/Kl0JYikc8ZaGOSONYZLqJvK2y+XHbgKFWXc4do283ABdTkgk4Gt4yltpPFfiS+sbUWFpJ4k1YWcNrCY7KCNdSunjtLNDaWpRLeKSJVhFnAY0MYW1hQxx1s+NbDSdF8RW8VrFGtimheErm4hhv2ula51DwvoN/q22ecErLLc3Nw5VQLZJGLW0a2xjQReLda0PUtM1Waygnt7jUPiDr+r2c0uoTXBj0i7RLiHT7m3e7ld7lZijfb382crHJD9sk2YrZR5nDlvslK22rWvy138uh0xkuaFVRvGpCNn0SqNTetrNK9+l9Xpqf/2Q==",
+            "score": 60,
+            "severity": "LOW"
+        }
+    ]
+,
+    "total": 8962,
+    "offset": 0,
+    "warning": null,
+    "info": null
+}

@@ -1,0 +1,18 @@
+<fs-card-header card-title="All Users"></fs-card-header>
+<div class="all-users-grid">
+    <div class="all-users-grid--column left-column">
+        <div class="all-users-grid--item all-users-grid--top-item">
+            <overview-users-tags-count-item item-settings="::$ctrl.itemsSettings.risky"></overview-users-tags-count-item>
+        </div>
+    </div>
+    <div class="all-users-grid--column middle-column">
+        <div class="all-users-grid--item all-users-grid--top-item">
+            <overview-users-tags-count-item item-settings="::$ctrl.itemsSettings.watched"></overview-users-tags-count-item>
+        </div>
+    </div>
+    <div class="all-users-grid--column right-column">
+        <div class="all-users-grid--item all-users-grid--bottom-item">
+            <overview-users-tags-count-item item-settings="::$ctrl.itemsSettings.admins"></overview-users-tags-count-item>
+        </div>
+    </div>
+</div>

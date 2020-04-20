@@ -1,0 +1,40 @@
+<div class="flex-horizontal control-params clearfix flex-horizontal">
+    <h3 class="control-params-title" ng-if="controlsTitle">{{controlsTitle}}</h3>
+    <div class="flex-1 flex-horizontal {{classname}}">
+        <div class="control-params-field" ng-if="search">
+            <label>
+                {{search.label}}
+                <searchbox
+                       class="search"
+                       ng-model="search.value"
+                       display="search.valueLabel"
+                       search-settings="search.settings"
+                       id="{{widgetControlId}}-search-input"
+					></searchbox>
+
+            </label>
+        </div>
+		<form ng-submit="updateParams()">
+        	<div class="control-params-fields flex-1">
+        	    <div class="control-params-field"
+        	         ng-class="{ 'control-params-field-warning': control.showWarning }"
+        	         ng-repeat="control in controls"
+        	         id="{{widgetControlId}}-{{control.type}}"
+        	         ng-show="controls">
+        	        <span ng-hide="control.hide" ng-include="control.type && ('param_control_' + control.type) || null"></span>
+        	        <i class="icon-warning-sign" ng-title="::control.warning.text" ng-if="control.showWarning"></i>
+        	    </div>
+        	    <button type="submit" id="{{widgetControlId}}-render-update"
+        	       ng-if="renderUpdateButton"
+        	       class="btn btn-default"
+        	       ng-class="{ disabled: !paramChange || !paramsReadyToRun }"
+        	       ng-disabled="!paramChange || !paramsReadyToRun">{{ updateText || 'Update' }}</button>
+        	</div>
+		</form>
+        <div ng-if="buttons && ready" class="control-params-buttons flex-1">
+			<a ng-class="{btn: !button.icon, 'btn-default': !button.icon, 'card-header-button': button.icon }" ng-repeat="button in buttons" ng-click="button.onClick(button)" title="{{::button.title}}">
+				<i class="icon-{{::button.icon}}"></i> {{::button.text}}
+			</a>
+        </div>
+    </div>
+</div>

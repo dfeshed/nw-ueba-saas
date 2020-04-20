@@ -1,0 +1,135 @@
+{
+    "id": "top_events",
+    "reportId": "top_events",
+    "title": "Top Suspicious Access Events",
+    "description":"Top high scored access events for the selected time span",
+    "loadingDataMessage": "Loading events",
+    "controls": [
+        {
+            "label": "Dates",
+            "type": "dateRange",
+            "param": "top_events_dates",
+            "value": {
+                "timeStart": "-7d",
+                "timeEnd": "now"
+            },
+            "isRequired": true
+        },
+        {
+            "controlId": "user_types",
+            "param": "top_events_users"
+        }
+    ],
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "scored_access_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+						"value": "{{display_name || username}}",
+                        "spanRowsIfEqual": true,
+                        "menu": {
+                            "id": "user",
+                            "params": {
+                                "normalizedUsername": "{{normalized_username}}",
+                                "username": "{{username}}"
+                            }
+                        },
+						"tags": "user"
+                    },
+                    {
+                        "name": "Type",
+                        "value": "{{type}}"
+                    },
+                    {
+                        "name": "Source",
+                        "value": "{{source_machine || source_ip}}",
+						"noValueDisplay": "N/A",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_src_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "normalized_src_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Destination",
+                        "value": "{{destination_machine}}",
+						"noValueDisplay": "N/A",
+                        "valueTooltip": "Destination hostname score: {{destination_machine_score:toFixed:2}}",
+                        "tags": "machine",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "destination_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "destination_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Country",
+                        "value": "{{country:capitalize}}",
+                        "valueTooltip": "Country score: {{country_score:toFixed:2}}",
+                        "noValueDisplay": "N/A",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "country_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "country_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{event_time:date:MM/DD/YYYY HH\\:mm\\:ss}}",
+                        "valueTooltip": "Login time score: {{event_time_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_time_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_time_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{event_score:round}}",
+                        "className": "nowrap",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

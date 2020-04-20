@@ -1,0 +1,20 @@
+.searchbox{
+  position: relative;
+
+  .icon-spinner{
+    display: none !important;
+    position: absolute;
+    right: 5%;
+    top: 3px;
+  }
+
+  &.loading{
+    .icon-spinner{
+      display: inline-block !important;
+    }
+
+    input.search{
+      background-image: none;
+    }
+  }
+}

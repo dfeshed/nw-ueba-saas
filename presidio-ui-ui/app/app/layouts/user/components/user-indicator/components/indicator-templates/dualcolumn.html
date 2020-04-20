@@ -1,0 +1,16 @@
+<div class="indicator-template dual-column-template">
+    <div class="chart firstColumn">
+        <fs-indicator-am-chart settings="$ctrl.indicatorType.settings.firstColumn" indicator="$ctrl.indicator"></fs-indicator-am-chart>
+    </div>
+    <div class="charts-separator" ng-if="!$ctrl.indicatorType.settings.secondColumn.hidden">
+        <svg viewBox="0 0 10 600"
+            class="charts-separator"
+            style="stroke: #bcb0b0; fill: white; stroke-width: 2px;">
+            <path d="M0 30 L0 292 L10 300 L0 308 L0 570"/>
+        </svg>
+    </div>
+    <div class="chart secondColumn">
+        <fs-indicator-am-chart ng-if="!$ctrl.indicatorType.settings.secondColumn.hidden" settings="$ctrl.indicatorType.settings.secondColumn" indicator="$ctrl.indicator"></fs-indicator-am-chart>
+    </div>
+</div>
+

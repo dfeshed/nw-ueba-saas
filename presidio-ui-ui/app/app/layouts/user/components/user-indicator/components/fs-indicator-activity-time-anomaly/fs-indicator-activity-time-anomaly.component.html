@@ -1,0 +1,26 @@
+<!-- Title -->
+<div class="title">
+    {{ 'evidence.single.time.'+$ctrl.indicator.dataEntitiesIds+'.chart.title' | translate }}
+</div>
+
+<!-- Grid -->
+<div class="grid-container">
+
+    <!-- Hour Labels -->
+    <div class="hours-column">
+        <div class="day-spacer"></div>
+        <div class="hour-label" ng-repeat="hour in ::$ctrl.HoursInDay"><span ng-if="$index%4===0">{{hour}}:00</span>
+        </div>
+    </div>
+
+    <!-- Day Columns -->
+    <div class="day-column" ng-repeat="day in ::$ctrl.weekDaysUS" ng-class="{'last-column': $last}">
+        <span class="day-label">{{day.toLowerCase()}}</span>
+
+        <!-- Hour Box -->
+        <div class="hour-box"
+            ng-repeat="hour in ::$ctrl.HoursInDay"
+            ng-class="{'last-hour': $last, 'active-hour': $ctrl.gridModel[day][hour].value, 'anomaly-hour': $ctrl.gridModel[day][hour].anomaly}"
+            tt="{{::day}} {{::hour}}:00 : {{$ctrl.gridModel[day][hour].value || '0'}}"></div>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+<div class="legend-horizontal">
+    <div class="legend-horizontal-description" ng-if="view.settings.legend.description" ng-bind-html="view.settings.legend.description"></div>
+    <ul class="legend-horizontal-items unstyled" ng-if="view.settings.legend.items">
+        <li ng-repeat="item in view.settings.legend.items">
+            <i class="icon-circle" ng-style="{ color: item.color }"></i>
+            {{item.text}}
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,25 @@
+.indicator-template.dual-column-template {
+
+    flex: 1 0;
+
+    display: flex;
+    flex-direction: row;
+
+
+    .chart {
+        flex: 1 0;
+
+        position: relative;
+    }
+
+
+    .charts-separator {
+        width: 10px;
+        height: 100%;
+
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+
+}

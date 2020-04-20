@@ -1,0 +1,31 @@
+{
+    "name": "Force Chart",
+    "settings": [
+        {
+            "id": "nodes",
+            "name": "Fields",
+            "type": "objectArray",
+            "sortable": false,
+            "addText": "Add field",
+            "memberSettings": [
+                {
+                    "id": "name",
+                    "name": "Name",
+                    "type": "dataField",
+                    "dataFieldType": "string"
+                },
+                {
+                    "id": "group",
+                    "name": "Group",
+                    "type": "string"
+                },
+                {
+                    "id": "size",
+                    "name": "Size",
+                    "type": "dataField",
+                    "dataFieldType": "number"
+                }
+            ]
+        }
+    ]
+}

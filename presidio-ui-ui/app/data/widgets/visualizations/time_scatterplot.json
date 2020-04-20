@@ -1,0 +1,33 @@
+{
+    "message":{
+        "type": "maxResults",
+        "params": {
+            "maxResults": 200
+        }
+    },
+    "views": [
+        {
+            "type": "scatterPlot",
+            "settings": {
+                "axes": {
+                    "x": {
+                        "type": "time",
+                        "timeFormat": "days",
+                        "label": "Event Time"
+                    },
+                    "y": {
+                        "label": "Hours"
+                    }
+                },
+                "scales": {
+                    "x": {
+                        "type": "time"
+                    },
+                    "y": {
+                        "domain": [0, 24]
+                    }
+                }
+            }
+        }
+    ]
+}

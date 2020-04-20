@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <defs>
+    <style>
+      .cls-edit-icon-1 {
+        fill: #016a9c;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path id="edit" class="cls-edit-icon-1" d="M1238.5,741a2.5,2.5,0,0,1,2,4l-1,1-3.5-3.5,1-1A2.5,2.5,0,0,1,1238.5,741ZM1226,752.5l-1,4.5,4.5-1,9.25-9.25-3.5-3.5Zm10.18-5.819-7,7-0.86-.862,7-7Z" transform="translate(-1225 -741)"/>
+</svg>

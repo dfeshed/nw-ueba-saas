@@ -1,0 +1,96 @@
+{
+	"_mock_data": "user.user_machines_event_count",
+	"endpoint": {
+		"api": "dataQuery",
+		"dataQuery": {
+			"entity": "auth_event",
+			"fields": [
+				{
+					"id": "event_time",
+					"alias": "event_time",
+					"func": {
+						"name": "to_date"
+					}
+				},
+				{
+					"id": "destination_machine",
+					"alias": "machine"
+				},
+				{
+					"alias": "count",
+					"id": "event_time",
+					"func": {
+						"name": "count",
+						"params": {
+							"distinct": true
+						}
+					}
+				}
+			],
+			"conditions": {
+				"operator": "AND",
+				"terms": [
+					{
+						"type": "field",
+						"id": "event_time_utc",
+						"operator": "dateRange",
+						"valueParam": "dateRange"
+					},
+					{
+						"type": "field",
+						"id": "event_score",
+						"operator": "greaterThanOrEquals",
+						"valueParam": "minscore"
+					},
+					{
+						"type": "field",
+						"id": "normalized_username",
+						"operator": "equals",
+						"valueParam": "username"
+					}
+				]
+			},
+			"groupBy" : [{"id": "event_time", "func" : {"name":"to_date"}, "alias": "event_time"} , "destination_machine"],
+			"limit": 50
+		}
+	},
+	"process": {
+		"processId": "groupBy",
+		"params": {
+			"groupBy": [
+				"machine",
+				"event_time"
+			],
+			"fields": [
+				{
+					"fieldFunc": "sum",
+					"fieldName": "count",
+					"fieldNewName": "total_count"
+				},
+				{
+					"fieldFunc": "pivot",
+					"fieldName": "count",
+					"pivotFieldName": "type"
+				}
+			]
+		}
+	},
+	"requiredParams": ["username"],
+	"params": [
+		{
+			"dashboardParam": "normalizedUsername",
+			"field": "username",
+			"isRequired": true
+		},
+		{
+			"field": "dateRange",
+			"dashboardParam": "event_dates",
+			"isRequired": true
+		},
+		{
+			"field": "minscore",
+			"dashboardParam": "minscore",
+			"default": 50
+		}
+	]
+}

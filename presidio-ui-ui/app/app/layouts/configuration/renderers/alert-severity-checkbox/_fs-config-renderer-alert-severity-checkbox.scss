@@ -1,0 +1,30 @@
+.config-item-card.alert-severity-checkbox {
+    .severities-checkboxes {
+
+        display: flex;
+        flex-flow: column nowrap;
+
+        padding-left: 0.1em;
+
+        label {
+            display: flex;
+            flex-flow: row;
+            justify-content: flex-start;
+            align-items: center;
+            margin-right: 1em;
+
+        }
+
+        input {
+            margin-right: 0.5em;
+            width: 1.2em;
+            height: 1.2em;
+
+        }
+    }
+
+    &.invalid {
+        background-color: #FFE1E1;
+    }
+
+}

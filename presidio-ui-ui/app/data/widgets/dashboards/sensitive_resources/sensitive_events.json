@@ -1,0 +1,110 @@
+{
+    "id": "sensitive_events",
+    "reportId": "dashboards.sensitive_resources.sensitive_events",
+    "title": "Access Events to Sensitive Machines",
+    "description":"All of the access events where the target machine is sensitive in the selected time span and minimum event score",
+    "loadingDataMessage": "Loading events",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Username",
+                        "value": "{{displayname || username}}",
+                        "spanRowsIfEqual": true,
+                        "menu": {
+                            "id": "user",
+                            "params": {
+                                "displayname": "{{displayname || username}}",
+                                "username": "{{username}}",
+                                "userid": "{{userid}}"
+                            }
+                        },
+                        "tags": "user"
+                    },
+                    {
+                        "name": "Type",
+                        "value": "{{type}}"
+                    },
+                    {
+                        "name": "Source",
+                        "value": "{{source_machine}}",
+                        "noValueDisplay": "N/A",
+						"valueTooltip": "Source Machine Score: {{normalized_src_machine_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "normalized_src_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "normalized_src_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Destination",
+                        "value": "{{destination_machine}}",
+                        "valueTooltip": "Destination hostname score: {{destination_machine_score:toFixed:2}}",
+                        "tags": "machine",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "destination_machine_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "destination_machine_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{event_time:date:MM/DD/YYYY HH\\:mm\\:ss}}",
+                        "valueTooltip": "Login time score: {{event_time_score:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_time_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_time_score"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{event_score}}",
+                        "transform": {
+                            "method": "round"
+                        },
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "event_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "event_score"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

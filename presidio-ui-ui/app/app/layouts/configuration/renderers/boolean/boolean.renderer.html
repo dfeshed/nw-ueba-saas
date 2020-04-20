@@ -1,0 +1,10 @@
+<input ng-model="$ctrl.configFormCtrl.configModels[$ctrl.configItem.id]"
+    style="display:none"
+    name="boolean-{{$ctrl.configItem.id}}">
+<div class="boolean-switch-container" ng-click="$ctrl.toggleState()">
+    <div class="switch-body">
+         <span class="switch-button" ng-class="{'switch-on': $ctrl.configFormCtrl.configModels[$ctrl.configItem.id]}">
+            {{$ctrl.configFormCtrl.configModels[$ctrl.configItem.id] ? $ctrl.trueLabel : $ctrl.falseLabel}}
+        </span>
+    </div>
+</div>

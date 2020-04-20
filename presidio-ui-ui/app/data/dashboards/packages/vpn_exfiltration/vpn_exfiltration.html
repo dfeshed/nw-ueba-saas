@@ -1,0 +1,17 @@
+<div class="package-description" ng-show="targetMachine">
+    Dots on the graph represent VPN events. Click on the dots to view event details:
+</div>
+<div class="package-contents" ng-if="targetMachine">
+    <ng-include src="'widgets/dataView/dataview.view.html'"></ng-include>
+</div>
+<div class="package-message package-warning" ng-show="!packageLoading && (!startDate || !endDate || !hasData || packageError)">
+    <div class="package-warning-text" ng-show="!startDate || !endDate">Please select start and end dates from above to start</div>
+    <div class="package-warning-text package-warning-text-error" ng-show="isInit && startDate && endDate && !hasData">No events found for the selected time.</div>
+    <div class="package-warning-text package-warning-text-error" ng-show="packageError"><i class="icon-remove-sign"></i> {{packageError}}</div>
+</div>
+<div class="package-loading" ng-show="packageLoading">
+    <div class="widget-message widget-loading">
+        <span class="widget-loader"></span>
+        <div>Loading data</div>
+    </div>
+</div>

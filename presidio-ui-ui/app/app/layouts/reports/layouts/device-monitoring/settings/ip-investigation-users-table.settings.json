@@ -1,0 +1,32 @@
+{
+    "scrollable": false,
+    "groupable": false,
+    "sortable": {
+        "mode": "multiple"
+    },
+    "alwaysPageable": false,
+    "pageable": false,
+    "dataSource" : {
+        "sort": [
+            {
+                "field": "event_time",
+                "dir": "desc"
+            }
+        ]
+    },
+    "columns": [
+        {
+            "title": "Username",
+            "field": "normalized_username"
+        },
+        {
+            "title": "Date",
+            "field": "event_time",
+            "template": "{{ dataItem.event_time | date:\"MMM dd yyyy\"}}"
+        },
+        {
+            "title": "Events Count",
+            "field": "event_count"
+        }
+    ]
+}

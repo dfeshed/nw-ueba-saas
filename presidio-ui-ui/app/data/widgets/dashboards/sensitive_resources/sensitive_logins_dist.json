@@ -1,0 +1,20 @@
+{
+    "id": "sensitive_resources_dist",
+    "height": 220,
+    "views": [
+        {
+            "type": "pie",
+            "settings": {
+                "label": "severity",
+                "value": "login_count",
+                "color": {
+                    "map": "severity",
+                    "field": "severity"
+                },
+                "options": {
+                    "radius": 80
+                }
+            }
+        }
+    ]
+}

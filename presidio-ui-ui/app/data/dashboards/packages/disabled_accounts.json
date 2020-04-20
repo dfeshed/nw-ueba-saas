@@ -1,0 +1,56 @@
+{
+    "id": "disabled_accounts",
+    "title": "Disabled Users Status",
+    "description": "This package enables you to receive relevant and up to date information regarding users whose Active Directory accounts are disabled",
+    "noDataMessage": "No disabled users found.",
+	"controls": [
+		{
+			"label": "Disabled since",
+			"type": "date",
+			"param": "users.account_disabled_date",
+			"value": "-1month",
+			"isRequired": true,
+			"paramGroup": "filters",
+			"formatParam": ">={{value:date:valueOf}}",
+			"settings": {
+				"maxDate": "0",
+				"endOfDay": true
+			}
+		},
+		{
+			"hide": true,
+			"type": "constant",
+			"param": "users.account_is_disabled",
+			"paramGroup": "filters",
+			"value": "true"
+		}
+	],
+    "columns": [
+        {
+            "widgets": [
+                {
+                    "id": "disabled_accounts",
+                    "flags": {
+                        "contentsOnly": true
+                    },
+                    "className": "widget-noPadding",
+                    "title": "Disabled Accounts",
+                    "params": {
+                        "entityId": "users",
+                        "tableview_sort": "display_name",
+                        "tableview_fields": "normalized_username,display_name,department,account_disabled_date,last_activity_date,total_score",
+                        "visualization": "login_events_time"
+                    },
+                    "views": [
+                        {
+                            "type": "explore",
+                            "settings": {
+                                "viewOnly": true
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

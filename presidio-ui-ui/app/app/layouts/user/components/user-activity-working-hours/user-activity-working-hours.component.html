@@ -1,0 +1,13 @@
+<fs-card-header card-title="Working Hours <span class='fs-card-title-small'>(Last 90 Days)</span>"></fs-card-header>
+<div class="working-hours-container">
+    <div class="hour-bars-container">
+        <div class="hour-bar" ng-repeat="hour in $ctrl.workingHours" title="{{::$ctrl.getHourBarTitle(hour)}}">
+            <div class="active-hour-bar" ng-class="{active: hour.active}"></div>
+        </div>
+    </div>
+    <div class="x-axis-labels">
+        <span>1 AM</span>
+        <span>12 PM</span>
+        <span>12 AM</span>
+    </div>
+</div>

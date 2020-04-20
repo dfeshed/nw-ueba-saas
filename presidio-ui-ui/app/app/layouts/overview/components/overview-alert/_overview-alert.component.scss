@@ -1,0 +1,181 @@
+overview-alert {
+    //flex: 0 0 50%;
+
+    display: inline-block;
+    width: 50%;
+    height: 20%;
+    float: left;
+
+    box-sizing: border-box;
+
+    position: relative;
+    background-color: var(--main-widgets-background-color);
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+
+    a {
+        text-decoration: none;
+    }
+
+    &:hover {
+        background-color: var(--main-widgets-background-color-hover);
+
+        .overview-alert{
+            &--info {
+                &--title {
+                    color: var(--main-widgets-titles-text-color-hover);
+                }
+            }
+
+            &--indicator {
+                color: var(--main-widgets-titles-text-color-hover);
+            }
+        }
+
+    }
+
+    /**
+    * Blue Border Lines
+    **/
+    border-bottom: 1px solid var(--main-widgets-lines-seperators);
+    &:nth-child(2n-1) {
+        border-right: 1px solid var(--main-widgets-lines-seperators);
+    }
+
+    &:nth-child(9), &:nth-child(10) {
+        border-bottom: none;
+    }
+    /**
+    * END OF Blue Border Lines
+    **/
+
+    /**
+    * Inner Alert Container
+    **/
+    .overview-alert {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+
+        display: flex;
+        flex-flow: row nowrap;
+
+        padding: 20px 20px 20px 0;
+
+        @media screen and (max-width: 1500px) {
+            padding: 10px 20px 0 0;
+        }
+
+        /**
+        * Alert Inner Parts
+        **/
+        &--container {
+            flex: 1;
+            box-sizing: border-box;
+
+            // TBD
+            //border: 1px solid rgba(255, 0, 0, 0.5);
+        }
+
+        &--severity-icon {
+            flex: 0 0 60px;
+
+        }
+
+        &--info {
+            flex: 1;
+            font-family: 'Open Sans', sans-serif;
+            line-height: 21px;
+            position: relative;
+
+            &--wrapper {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+
+                display: flex;
+                flex-flow: column nowrap;
+
+                > div {
+                    width: 90%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+            }
+
+            &--title {
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--main-widgets-titles-text-color);
+                letter-spacing: 0.5px;
+                line-height: 24px;
+
+
+
+            }
+
+            &--entity-name {
+                display: inline-block;
+                color: var(--main-widgets-titles-link-color);
+                font-size: 12px;
+                text-decoration: underline;
+                max-width: 90%;
+                width: auto !important;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-weight: 600;
+                letter-spacing: 0.43px;
+                line-height: 24px;
+
+                i {
+                    font-size: 14px;
+                    text-decoration: none;
+                    margin-left: 5px;
+                }
+
+            }
+
+            &--date {
+                color: #BDBDBD;
+                font-size: 11px;
+            }
+        }
+
+        &--indicator {
+            flex: 0 0 80px;
+            //border: 1px solid rgba(255, 0, 0, 0.5);
+
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: center;
+            align-items: center;
+
+            color: var(--main-widgets-titles-text-color);
+            font-weight: 400;
+
+            &--amount {
+                font-size: 48px;
+                line-height: 37px;
+            }
+
+            &--label {
+                font-size: 14px;
+            }
+
+        }
+        /**
+        * END OF Alert Inner Parts
+        **/
+    }
+    /**
+    * END OF Inner Alert Container
+    **/
+
+}

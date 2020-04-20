@@ -1,0 +1,25 @@
+<div class="manage-users-tags">
+    <div class="tags-list">
+
+        <div ng-repeat="tag in $ctrl.tags  | filter:{ isAssignable: true }" class="checkbox-row-wrapper">
+            <div class="checkbox-row">
+                <input name="checked" type="checkbox"
+                       id="tag-{{tag.id}}" class="k-checkbox"
+                       value="{{tag.id}}"
+                        ng-model="$ctrl.checked[tag.id]">
+                <label class="k-checkbox-label" for="tag-{{tag.id}}">
+                    {{tag.value}}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="new-tag-name">
+        <input ng-model="$ctrl.newTagName" placeholder="Enter a new tag name">
+    </div>
+    <div class="buttons">
+        <a class="close-link" ng-click="$ctrl.closeTagPopup()">Cancel</a>
+        <button  ng-click="$ctrl.removeTags()" class="btn btn-info">Remove</button>
+        <button  ng-click="$ctrl.addTags()" class="btn btn-info">Assign</button>
+    </div>
+</div>
+

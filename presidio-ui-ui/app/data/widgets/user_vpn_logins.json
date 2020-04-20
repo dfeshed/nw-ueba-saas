@@ -1,0 +1,100 @@
+{
+    "reportId": "user_vpn_logins",
+    "title": "VPN Events",
+    "description": "Top VPN Events in the last 7 days",
+    "refreshOn": ["vpnUser", "date"],
+    "noDataMessage": "No VPN logins data available for this date.",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "vpn"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "Source IP / Machine Name",
+                        "value": "{{hostname || source_ip}}",
+                        "valueTooltip": "Click to see all VPN logins from this source IP"
+                    },
+                    {
+                        "name": "Source Country",
+                        "value": "{{country}}",
+                        "valueTooltip": "Country score: {{countryscore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "countryscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "countryscore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Source City",
+                        "value": "{{city}}",
+                        "valueTooltip": "City score: {{cityscore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "cityscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "cityscore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Internal IP",
+                        "value": "{{local_ip}}"
+                    },
+                    {
+                        "name": "Time",
+                        "value": "{{date_time:date}}",
+                        "valueTooltip": "Login time score: {{date_timescore:toFixed:2}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "date_timescore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "date_timescore"
+                            }
+                        }
+                    },
+                    {
+                        "name": "Status",
+                        "value": "{{status}}",
+                        "valueTooltip": "Click to view all {{status}} VPN logins by {{@vpnUser}}"
+                    },
+                    {
+                        "name": "Score",
+                        "value": "{{eventscore}}",
+                        "transform": {
+                            "method": "round"
+                        },
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "eventscore"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "eventscore"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

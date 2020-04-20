@@ -1,0 +1,43 @@
+.widget-multiTimeline{
+  .labels-container{
+    text{
+      font-size: 14px;
+    }
+  }
+  .series-session{
+    shape-rendering: crispEdges;
+    fill: steelblue;
+  }
+
+  .series{
+    &.selectable{ cursor: pointer }
+    &:hover{
+      .series-background{
+        fill: rgba(87, 178, 244, 0.16);
+      }
+    }
+    &.selected{
+      .series-background{
+        fill: rgba(84, 162, 226, 0.53);
+      }
+    }
+  }
+  .series-divider{
+    stroke: rgba(0,0,0,.2);
+    shape-rendering: crispEdges;
+  }
+
+  .series-background{
+    fill: Transparent;
+  }
+
+  .series-event {
+    fill: White;
+    stroke: Black;
+    stroke-width: 2px;
+
+    &:hover{
+      stroke: #519bd7;
+    }
+  }
+}

@@ -1,0 +1,9 @@
+.dropdown-renderer {
+    min-width: 18em;
+    font-size: $basicFontSize;
+    box-sizing: border-box;
+
+    &.ng-invalid-required {
+        border: 2px solid #ffc8ca;
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "id": "sensitive_resources_users",
+    "title": "Users Who Accessed Sensitive Resources",
+    "description": "Summary details of the users who accessed sensitive machines in the selected time span and minimum event score",
+    "reportId": "dashboards.sensitive_resources.sensitive_resources_users",
+	"show" : {
+		"conditions": [
+			{
+				"operator": "entityExists",
+				"value": "auth_event"
+			}
+		]
+	},
+    "views": [
+        {
+            "type": "table",
+            "settings": {
+                "fields": [
+                    {
+                        "name": "User Name",
+                        "value": "{{display_name || username}}",
+						"spanRowsIfEqual": true,
+                        "noValueDisplay": "N/A",
+                        "tags": "user",
+                        "menu": {
+                            "id": "user",
+                            "params": {
+                                "displayname": "{{display_name || username}}",
+                                "userid": "{{id}}"
+                            }
+                        }
+                    },
+					{
+						"name": "Department",
+						"spanRowsIfEqual": true,
+						"value": "{{department}}",
+						"noValueDisplay": "N/A"
+					},
+                    {
+                        "name": "Type",
+                        "value": "{{type}}",
+                        "noValueDisplay": "N/A"
+                    },
+                    {
+                        "name": "Event Count",
+                        "value": "{{event_count}}",
+                        "noValueDisplay": "0"
+                    },
+                    {
+                        "name": "Event Highest Score",
+                        "value": "{{events_max_score:round}}",
+                        "icon": {
+                            "preset": "scoreBox",
+                            "presetParams": {
+                                "value": "events_max_score"
+                            },
+                            "style": "score",
+                            "styleParams": {
+                                "value": "events_max_score"
+                            }
+                        },
+                        "noValueDisplay": "-"
+                    }
+                ]
+            }
+        }
+    ]
+}
