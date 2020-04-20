@@ -48,7 +48,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 		<generex.version>1.0.2</generex.version>
-		<spring-core.version>4.3.8.RELEASE</spring-core.version>
+		<spring-core.version>4.3.19.RELEASE</spring-core.version>
 	</properties>
 
 	<dependencyManagement>
